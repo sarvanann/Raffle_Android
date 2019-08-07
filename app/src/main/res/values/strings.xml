@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Spot The Ball</string>
+    <!--SignUp-->
+    <string name="sign_up_txt">Sign Up</string>
+    <string name="sign_in_txt">Sign In</string>
+
+    <string name="google_sign_up_txt">Google Sign Up</string>
+    <string name="facebook_sign_up_txt">Facebook Sign Up</string>
+    <string name="e_mail_sign_up_txt">E Mail Sign Up</string>
+    <!--SignIn-->
+    <string name="google_sign_in_txt">Google Sign In</string>
+    <string name="facebook_sign_in_txt">Facebook Sign In</string>
+    <string name="e_mail_sign_in_txt">E Mail Sign In</string>
+
+    <!--Mobile Verification-->
+    <string name="verify_your_num_txt">Verify Your Phone No</string>
+    <string name="enter_your_phone_num_txt">Enter your phone number</string>
+    <string name="send_code_txt">Send code</string>
+
+    <!--Otp_Act-->
+    <string name="resend_txt">Resend</string>
+    <!--Email_Sign_In-->
+    <string name="enter_your_email_txt">Enter Your E Mail ID</string>
+    <string name="enter_pwd_txt">Enter Password</string>
+    <string name="forgot_pwd">Forgot Password ?</string>
+
+    <!--forgot_pwd-->
+    <string name="send_verification_code_txt">Send Verification Code</string>
+
+
+    <string name="in_progress_txt">In Progress</string>
+
+</resources>
