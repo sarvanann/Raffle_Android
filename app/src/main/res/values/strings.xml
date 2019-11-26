@@ -17,17 +17,203 @@
     <string name="enter_your_phone_num_txt">Enter your phone number</string>
     <string name="send_code_txt">Send code</string>
 
+    <string name="pls_enter_your_mobile_num_txt">Please enter your phone number</string>
+    <string name="pls_enter_valid_mobile_num_txt">Please enter valid phone number</string>
+    <string name="pls_wait_txt">Please Wait…</string>
+
     <!--Otp_Act-->
     <string name="resend_txt">Resend</string>
+    <string name="verify_code_txt">Verify code</string>
+    <string name="verify_otp_title_txt">Verify Your OTP</string>
+    <string name="edit_txt"><u>Edit</u></string>
     <!--Email_Sign_In-->
     <string name="enter_your_email_txt">Enter Your E Mail ID</string>
+    <string name="enter_email_for_getting_pwd">Please enter your email id for getting your password</string>
     <string name="enter_pwd_txt">Enter Password</string>
-    <string name="forgot_pwd">Forgot Password ?</string>
-
+    <string name="repeat_pwd_txt">Repeat Password</string>
+    <string name="forgot_pwd_txt">Forgot Password ?</string>
+    <string name="logint_txt">Log in</string>
+    <string name="otp_value_not_empty_txt">Otp values are must not be empty</string>
     <!--forgot_pwd-->
     <string name="send_verification_code_txt">Send Verification Code</string>
+    <string name="forgot_pwd_title_txt">Forgot Password</string>
 
 
     <string name="in_progress_txt">In Progress</string>
+    <!--HomeActivity-->
+    <string name="click_back_to_exit">Please click BACK again to exit.</string>
+
+    <!--Sivasaravanan-->
+    <!--<string name="facebook_app_id">731995337250570</string>-->
+    <!--<string name="fb_login_protocol_scheme">fb731995337250570</string>-->
+
+    <!--Ashok-->
+    <string name="facebook_app_id">2414117928874005</string>
+    <string name="fb_login_protocol_scheme">fb2414117928874005</string>
+
+
+    <!--Email_Sign_up-->
+    <string name="pls_enter_valid_email_address">Please Enter Valid Email Address</string>
+    <string name="pls_enter_your_pwd">Please Enter Your Password</string>
+    <string name="pls_check_your_pwd">Please Check Your Password</string>
+    <string name="pwd_not_matching_txt">Password not match</string>
+    <string name="pls_enter_valid_pwd">Please Enter Valid Password</string>
+    <string name="your_pwd_must_be_atleast_6_characters_txt">Password must be atleast 7 characters.</string>
+    <string name="email_signup_title_txt">E Mail Sign Up</string>
+
+    <!--Signin-->
+    <string name="pls_reg_email_txt">Please Register</string>
+
+
+    <string name="check_internet_conn_txt">Check your internet connection</string>
+    <string name="back_online_txt">You are back online!</string>
+    <string name="showpassword_txt">ShowPassword</string>
+    <string name="title_activity_navigation__drawer_">Navigation_Drawer_Act</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+
+
+    <string name="my_profile_txt">My Profile</string>
+    <string name="my_wallet_txt">My Wallet</string>
+    <string name="my_contest_txt">My Contest</string>
+    <string name="menu_how_to_play_txt">How to play</string>
+    <string name="help_txt">Help</string>
+    <string name="menu_terms_and_condition_txt">T&amp;C</string>
+    <string name="t_and_c_txt">T&amp;C</string>
+    <string name="menu_privacy_policy_txt">Privacy Policy</string>
+    <string name="menu_logout_txt">Log Out</string>
+    <string name="profile_txt">Profile</string>
+    <string name="enter_your_name_txt">Enter Your Name</string>
+    <string name="enter_your_name_warning_txt">Name must be atleast 4 characters.</string>
+    <string name="update_txt">Update</string>
+    <string name="change_password_txt">Change Password</string>
+    <string name="wallet_txt">Wallet</string>
+    <string name="contest_txt">Contest</string>
+    <string name="contests_txt">Contests</string>
+    <string name="home_txt">Home</string>
+
+
+    <!--Logout_alert-->
+    <string name="yes_txt">Yes</string>
+    <string name="no_txt">No</string>
+    <string name="logout_alert_msg">Are you sure want to logout ?</string>
+    <string name="logout_exit_txt_alert_msg">Are you sure\nwant to exit ?</string>
+    <string name="logout_alert_txt">Logout</string>
+    <string name="e_mail_txt">E Mail</string>
+    <string name="phone_number_txt">Phone Number</string>
+    <string name="paytm_phone_number_txt">Paytm Phone Number</string>
+
+    <string name="redeem_txt">Redeem</string>
+    <string name="enter_amount_here_txt">Enter amount</string>
+    <string name="just_a_moment_txt">Just a moment</string>
+    <string name="sec_txt">sec</string>
+    <string name="a_txt">A</string>
+    <string name="b_txt">B</string>
+    <string name="c_txt">C</string>
+    <string name="d_txt">D</string>
+    <string name="_2x_txt">2X</string>
+    <string name="enter_crnt_pwd">Current password</string>
+    <string name="enter_new_pwd">New password</string>
+    <string name="enter_repeat_pwd">Repeat password</string>
+
+    <string name="impossible_game">Impossible Game</string>
+    <string name="retry_button_text">Retry</string>
+    <string name="default_coin_text">Coins:  </string>
+    <string name="watch_video_button_text">Watch Video for additional coins</string>
+    <!--This details using saravanan-->
+    <!--<string name="admob_app_id"> ca-app-pub-4391593775482560~1367072357</string>
+    <string name="ad_unit_id">ca-app-pub-4391593775482560/2700975951</string>-->
+    <!--This details using Gowsalya-->
+    <!--<string name="admob_app_id">ca-app-pub-5145069517293783~7897462318</string>
+    <string name="ad_unit_id">ca-app-pub-5145069517293783/9409213903</string>-->
+
+    <!--&lt;!&ndash;This details using xdemouser&ndash;&gt;
+    <string name="admob_app_id">ca-app-pub-3604953273256606~9057051617</string>
+    <string name="ad_unit_id">ca-app-pub-3604953273256606/5092728206</string>
+-->
+
+
+    <!--This details using skyrandtech for rewardedVideo
+    <string name="admob_app_id">ca-app-pub-7961776813129160~6949709129</string>
+    <string name="ad_unit_id">ca-app-pub-7961776813129160/9477430425</string>-->
+
+    <!--This details using Test-->
+    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="ad_unit_id">ca-app-pub-3940256099942544/5224354917</string>
+
+    <!--This details using Gowsalya-->
+    <!--<string name="admob_app_id">ca-app-pub-5145069517293783~7897462318</string>
+    <string name="ad_unit_id">ca-app-pub-5145069517293783/9409213903</string>-->
+
+
+    <string name="thank_you_for_playing_txt">Thank you for playing</string>
+    <string name="left_txt">left</string>
+    <string name="contest_name_txt">Contest Name</string>
+    <string name="prize_pool_txt">Prize Pool</string>
+    <string name="end_time_txt">End Time</string>
+    <string name="loading_txt">Loading....</string>
+
+    <string-array name="text">
+        <item>Ready</item>
+        <item>Steady</item>
+        <item>Go!</item>
+    </string-array>
+    <string-array name="text_01">
+        <item>Like the video</item>
+        <item>Subscribe to the channel</item>
+    </string-array>
+
+    <string name="skip_txt">Skip</string>
+    <string name="transactions_txt">Transactions</string>
+    <string name="earn_more_txt">Earn More</string>
+    <!--<string name="earn_more_txt"><u>Earn More</u></string>-->
+
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <string name="terms_condtion_txt"><u>Terms &amp; Condtion</u></string>
+    <string name="correct_answer_n_5pts_txt">Correct Answer\n+5pts</string>
+    <string name="wrong_answer_n_5pts_txt">Wrong Answer\n-5pts</string>
+    <string name="skip_question_n_0pts_txt">Skip Question\n0pts</string>
+    <string name="time_for_each_n_question_txt">Time for each  question</string>
+    <string name="correct_answer_txt">Correct Answer</string>
+    <string name="wrong_answer_txt">Wrong Answer</string>
+    <string name="_5_points_txt">+5 Points</string>
+    <string name="_0_points_txt">0 Points</string>
+    <string name="minus_5_points_txt">-5 Points</string>
+    <string name="time_limit_for_each_question_txt">Time limit for each question</string>
+    <string name="thanks_for_nplaying_nyou_can_find_n_your_results_in_nthe_my_contest_nsection_txt">Thanks for playing.\nYou can find\nyour results in  the \'My Contest\' Section</string>
+    <string name="ends_in_txt">Ends in</string>
+    <string name="winnings_txt">Winnings</string>
+    <string name="rules_txt">Rules</string>
+    <string name="scoreboard_txt">ScoreBoard</string>
+    <string name="play_with_n_50_coins_txt">Play with  50 coins</string>
+    <string name="play_for_free_txt">Play for free</string>
+    <string name="old_password_txt">Old Password</string>
+    <string name="next_txt">Next</string>
+    <string name="enter_password_txt">Enter Password</string>
+    <string name="update_password_txt">Update Password</string>
+    <string name="current_rank_txt">Current\nRank</string>
+    <string name="possible_winnings_txt">Possible\nwinnings</string>
+    <string name="your_points_txt">Your\nPoints</string>
+    <string name="play_with_50_txt">Play with 50</string>
+    <string name="earn_txt">Earn</string>
+    <string name="play_txt">Play</string>
+    <string name="truecaller_app_key">fmNBDf56dd0b7b3cf4da89941f1e3127b2433</string>
+
+    <string name="banner_ad_test_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="go_back_txt"><u>Go Back</u></string>
+    <string name="choose_the_correct_position_of_the_ball_txt">Choose the correct position of the ball\nChoose the correct position of the ball\nChoose the correct position of the ball</string>
+    <string name="play_another_contest_txt">Play another contest</string>
 
 </resources>

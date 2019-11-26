@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:actionLayout="@layout/custom_action_item_layout"
+            android:icon="@drawable/home"
+            android:title="@string/home_txt"
+            app:showAsAction="always" />
+        <item
+            android:id="@+id/nav_my_profile"
+            android:actionLayout="@layout/custom_action_item_layout"
+            android:icon="@drawable/icon_material_account_circle"
+            android:title="@string/my_profile_txt"
+            app:showAsAction="always" />
+        <item
+            android:id="@+id/nav_my_wallet"
+            android:icon="@drawable/subtraction_49"
+            android:title="@string/my_wallet_txt"
+            app:actionViewClass="android.widget.TextView" />
+        <item
+            android:id="@+id/nav_contest"
+            android:icon="@drawable/subtraction_50"
+            android:title="@string/my_contest_txt"
+            app:actionViewClass="android.widget.TextView" />
+
+        <item
+            android:id="@+id/nav_how_to_play"
+            android:icon="@drawable/icon_ionic_ios_play_circle"
+            android:title="@string/menu_how_to_play_txt" />
+
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/subtraction_48"
+            android:title="@string/help_txt" />
+
+        <item
+            android:id="@+id/nav_terms_and_condition"
+            android:icon="@drawable/icon_ionic_ios_information_circle"
+            android:title="@string/menu_terms_and_condition_txt" />
+
+        <item
+            android:id="@+id/nav_share"
+            android:icon="@drawable/icon_ionic_ios_information_circle"
+            android:title="@string/menu_share" />
+
+        <!--<item
+            android:id="@+id/nav_privacy_policy"
+            android:title="@string/menu_privacy_policy_txt" />-->
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/subtraction_51"
+            android:title="@string/menu_logout_txt" />
+
+    </group>
+
+
+</menu>

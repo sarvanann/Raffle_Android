@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--<set xmlns:android="http://schemas.android.com/apk/res/android">-->
+    <!--<rotate-->
+        <!--android:duration="350"-->
+        <!--android:fromDegrees="-10"-->
+        <!--android:toDegrees="10"-->
+        <!--android:pivotX="75%"-->
+        <!--android:pivotY="75%"-->
+        <!--android:repeatCount="7"-->
+        <!--android:repeatMode="reverse"-->
+        <!--android:interpolator="@android:anim/linear_interpolator" />-->
+<!--</set>-->
+
+
+
+<!--<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillAfter="true"
+    android:interpolator="@android:anim/overshoot_interpolator">
+
+    <translate
+        android:duration="350"
+        android:fromXDelta="0%p"
+        android:repeatCount="7"
+        android:startOffset="40"
+        android:toXDelta="10%p" />
+
+    <translate
+        android:duration="350"
+        android:fromXDelta="0%p"
+        android:repeatCount="7"
+        android:startOffset="90"
+        android:toXDelta="-25%p" />
+
+    <translate
+        android:duration="350"
+        android:fromXDelta="0%p"
+        android:repeatCount="7"
+        android:startOffset="140"
+        android:toXDelta="25%p" />
+
+    <translate
+        android:duration="350"
+        android:fromXDelta="0%p"
+        android:repeatCount="7"
+        android:startOffset="190"
+        android:toXDelta="-20%p" />
+
+    <translate
+        android:duration="350"
+        android:fromXDelta="0%p"
+        android:repeatCount="7"
+        android:startOffset="240"
+        android:toXDelta="10%p" />
+</set>-->
+
+    <!--<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <rotate
+        android:duration="350"
+        android:fromDegrees="-5"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:repeatCount="7"
+        android:repeatMode="reverse"
+        android:interpolator="@android:anim/linear_interpolator"
+        android:toDegrees="5" />
+    <translate
+        android:fromXDelta="-10"
+        android:toXDelta="10"
+        android:repeatCount="7"
+        android:repeatMode="reverse"
+        android:interpolator="@android:anim/linear_interpolator"
+        android:duration="350" />
+    </set>-->
+
+    <set xmlns:android="http://schemas.android.com/apk/res/android">
+    <translate
+        android:duration="350"
+        android:fromXDelta="-5%"
+        android:repeatCount="7"
+        android:repeatMode="reverse"
+        android:toXDelta="5%" />
+    </set>

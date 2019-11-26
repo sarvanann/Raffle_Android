@@ -6,6 +6,99 @@
 
     <color name="sign_up_txt">#2D2F36</color>
     <color name="sign_in_txt">#8A8A8A</color>
+    <color name="sign_in_txt_new">#C4C4C4</color>
+    <color name="sign_in_txt_new_light">#C4C4C4</color>
     <color name="black_color">#000000</color>
     <color name="white_color">#ffffff</color>
+    <color name="golden_yellow_color">#EABF17</color>
+    <color name="red_color_new">#FD0000</color>
+    <color name="red_color_new_light">#FF6565</color>
+    <color name="red_color_new_light_02">#E79292</color>
+    <color name="timer_bg_color">#13D868</color>
+    <color name="timer_txt_color">#707070</color>
+    <color name="alphabet_border_color">#FFFF00</color>
+    <color name="two_x_bg_txt_color">#1ED7DE</color>
+    <color name="two_x_bg_txt_color_light">#91D5DB</color>
+    <color name="blue_color">#DF3500FF</color>
+    <color name="blue_color_fr_background">#3500FF</color>
+    <color name="light_blue_color">#1795FF</color>
+    <color name="blue_color_light">#A91E88E5</color>
+    <color name="black_color_onsurface">#99000000</color>
+
+    <!--New color from adobe xd-->
+    <color name="new_light_blue_clr">#929EE8</color>
+    <color name="new_light_blue_txt_clr">#0039FF</color>
+    <color name="new_black_txt_clr">#2D2F36</color>
+    <color name="new_txt_grey_color">#8A8A8A</color>
+    <color name="new_ent_time_txt_color">#D7443E</color>
+    <color name="new_dash_bg_color">#F5F5F5</color>
+
+    <color name="new_timer_bg_color">#00DE3D</color>
+    <color name="new_game_scrn_border_color">#71D9FF</color>
+    <color name="new_game_scrn_2x_color">#EAF912</color>
+    <color name="new_profile_inner_scrn_bg_color">#F5F5F5</color>
+    <color name="new_logout_no_txt_bg_color">#5D49D7</color>
+    <!--<color name=""></color>-->
+
+    <color name="button_pressed">#ff8a00</color>
+    <color name="button_focused">#ff8a00</color>
+    <color name="button_default">#1c76bb</color>
+
+
+    <!-- 1st Gradient color -->
+    <color name="colorPurple_A400">#D500F9</color>
+    <color name="colorPurple_900">#4A148C</color>
+    <!-- ./ 1st Gradient color -->
+
+    <!-- 2nd Gradient color -->
+    <color name="colorAmber_A400">#FFC400</color>
+    <color name="colorAmber_900">#FF6F00</color>
+    <!-- ./ 2nd Gradient color -->
+
+    <!-- 3rd Gradient color -->
+    <color name="colorGreen_A400">#00E676</color>
+    <color name="colorGreen_900">#1B5E20</color>
+    <!-- ./ 3rd Gradient color -->
+
+    <!-- 4th Gradient color -->
+    <color name="colorRed_A400">#FF1744</color>
+    <color name="colorRed_900">#B71C1C</color>
+    <!-- ./ 4th Gradient color -->
+
+    <color name="red_color">#FF0000</color>
+    <color name="yellow_color">#FFDD00</color>
+    <color name="green_color">#12F921</color>
+    <color name="dark_green_color">#00A626</color>
+
+
+    <array name="array_dot_active">
+        <item>@color/dot_light_screen1</item>
+        <item>@color/dot_light_screen2</item>
+        <item>@color/dot_light_screen3</item>
+    </array>
+
+    <array name="array_dot_inactive">
+        <item>@color/dot_dark_screen1</item>
+        <item>@color/dot_dark_screen2</item>
+        <item>@color/dot_dark_screen3</item>
+    </array>
+
+    <!-- dots inactive colors -->
+    <color name="dot_dark_screen1">#282828</color>
+    <color name="dot_dark_screen2">#282828</color>
+    <color name="dot_dark_screen3">#282828</color>
+
+
+    <!-- dots active colors -->
+    <color name="dot_light_screen1">#FDD835</color>
+    <color name="dot_light_screen2">#FDD835</color>
+    <color name="dot_light_screen3">#FDD835</color>
+    <!-- dots active colors -->
+
+    <color name="history_grey_color">#B9B9B9</color>
+    <color name="bg_green_color">#5692FF32</color>
+    <color name="bg_transparant_color">#22FFFFFF</color>
+
+    <color name="placeholder_bg">#dddddd</color>
+    <color name="gray_color_new">#37D6D2D2</color>
 </resources>
