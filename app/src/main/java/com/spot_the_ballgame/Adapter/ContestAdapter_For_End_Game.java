@@ -35,8 +35,7 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-/*In this class i'm handling Dashboard cardviews using recyclerview.Here im getting all values from get_contest.php like seconds,power_up_values,contest_id,entry_fee.*/
-public class ContestAdapter extends RecyclerView.Adapter<ContestAdapter.ViewHolder> {
+public class ContestAdapter_For_End_Game extends RecyclerView.Adapter<ContestAdapter_For_End_Game.ViewHolder> {
     private ArrayList<Category_Model.Data> arrayList;
     private Context mContext;
     private String str_seconds, str_2x_powerup, str_contest_id, str_entry_fees;
@@ -46,42 +45,27 @@ public class ContestAdapter extends RecyclerView.Adapter<ContestAdapter.ViewHold
     private String str_status_onclick;
     private ArrayList<String> stringArrayList = new ArrayList<>();
 
-    private String str_imagepath;
-    private String str_correct_ans, str_wrong_ans, str_skip;
+    String str_imagepath;
 
-    public ContestAdapter(FragmentActivity activity, ArrayList<Category_Model.Data> data) {
+    public ContestAdapter_For_End_Game(FragmentActivity activity, ArrayList<Category_Model.Data> data) {
         this.mContext = activity;
         this.arrayList = data;
     }
 
     @NonNull
     @Override
-    public ContestAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ContestAdapter_For_End_Game.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view;
-        view = inflater.inflate(R.layout.contest_adapter_details_layout, parent, false);
-        return new ContestAdapter.ViewHolder(view);
+        view = inflater.inflate(R.layout.contest_adapter_details_for_end_game_layout, parent, false);
+        return new ContestAdapter_For_End_Game.ViewHolder(view);
     }
 
     @SuppressLint("ResourceAsColor")
     @Override
-    public void onBindViewHolder(@NonNull final ContestAdapter.ViewHolder holder, final int position) {
-//        Collections.sort(arrayList, new Comparator<Category_Model.Data>() {
-//            @Override
-//            public int compare(Category_Model.Data obj1, Category_Model.Data obj2) {
-//                return obj1.getStart_date_time().compareToIgnoreCase(obj2.getEnd_date_time()); // To compare string values
-//            }
-//            // return Integer.valueOf(obj1.getId()).compareTo(obj2.getId()); // To compare integer values
-//
-//
-//            // ## Descending order
-//            // return obj2.getCompanyName().compareToIgnoreCase(obj1.getCompanyName()); // To compare string values
-//            // return Integer.valueOf(obj2.getId()).compareTo(obj1.getId()); // To compare integer values
-//
-//        });
+    public void onBindViewHolder(@NonNull final ContestAdapter_For_End_Game.ViewHolder holder, final int position) {
         String str_status = arrayList.get(position).status;
         String str_categories = arrayList.get(position).categories;
-        /*This follwing lines of code are used for if the contest is prediction use this below code.*/
         if (str_categories.equalsIgnoreCase("Prediction")) {
             holder.constraintLayout_country_flag_layout.setVisibility(View.VISIBLE);
             holder.tv_play_with_points_contest_adapter.setVisibility(View.GONE);
@@ -108,7 +92,6 @@ public class ContestAdapter extends RecyclerView.Adapter<ContestAdapter.ViewHold
         }
 
         Log.e("outside", str_status);
-        /*If contests are Completed like status ==1 means end_in textview set to status otherwise ends in */
         if (str_status.equalsIgnoreCase("1")) {
             holder.constraintLayout_play_with_points_contest_adapter.setBackgroundResource(R.drawable.played_status_grey_bg);
             holder.tv_play_with_points_contest_adapter.setTextColor(R.color.black_color);
@@ -209,9 +192,6 @@ public class ContestAdapter extends RecyclerView.Adapter<ContestAdapter.ViewHold
         holder.constraintLayout_constest_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                str_correct_ans = arrayList.get(position).correct_mark;
-                str_wrong_ans = arrayList.get(position).wrong_mark;
-                str_skip = arrayList.get(position).skip;
                 int s1 = holder.getAdapterPosition();
                 String str_categories = arrayList.get(position).categories;
                 str_imagepath = arrayList.get(position).categories_image;
@@ -242,10 +222,6 @@ public class ContestAdapter extends RecyclerView.Adapter<ContestAdapter.ViewHold
                     intent1.putExtra("str_rule_id", str_rule_id);
                     intent1.putExtra("str_status_onclick", str_status_onclick);
                     intent1.putExtra("str_imagepath", str_imagepath);
-
-                    intent1.putExtra("str_correct_ans", str_correct_ans);
-                    intent1.putExtra("str_wrong_ans", str_wrong_ans);
-                    intent1.putExtra("str_skip", str_skip);
                     intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     mContext.startActivity(intent1);
                 }
@@ -278,7 +254,8 @@ public class ContestAdapter extends RecyclerView.Adapter<ContestAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return arrayList.size();
+        return 1;
+//        return arrayList.size();
     }
 
     @Override
