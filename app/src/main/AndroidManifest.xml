@@ -1,35 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.spot_the_ball">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.spot_the_ballgame">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
 
     <application
+        android:name=".AnalyticsApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:hardwareAccelerated="false"
+        android:icon="@drawable/app_icon_02"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:largeHeap="true"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@drawable/app_icon_02"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".Forgot_Pwd_Act">
+        android:theme="@style/AppTheme"
+        tools:targetApi="n">
+        <activity android:name=".My_Contest_History">
 
         </activity>
-        <activity android:name=".Email_Sign_In_Act">
+        <activity
+            android:name=".Carousel_View_Act"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Game_Details_Screen_Act"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Dummy_Splash_Act"
+            android:screenOrientation="portrait" />
 
-        </activity>
-        <activity android:name=".Mobile_Num_Verification_Otp_Act" />
-        <activity android:name=".Mobile_Num_Verification">
 
-        </activity>
-        <activity android:name=".Sign_In_Act" />
-        <activity android:name=".Sign_Up_Act">
+        <activity
+            android:name=".Dummy_Audio_Act"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="Dummy_Image_Act"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Carousel_View_Act_02"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".Media_Player_with_seekbar" />
+
+        <activity
+            android:name=".Reward_Video_Act"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Navigation_Drawer_Act"
+            android:label="@string/title_activity_navigation__drawer_"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".Game_Act"
+            android:noHistory="true"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Game_Two_Act"
+            android:noHistory="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Registration.SignIn.Email_Sign_In_Act"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Splash_Screen_Act"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+
+        <activity
+            android:name=".Home_Activity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Registration.Forgot_Pwd_Act"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Registration.SignUp.Email_Sign_Up_Act"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".Registration.Mobile_Num_Verification_Otp_Act"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".Registration.Mobile_Num_Registration"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".Registration.SignIn.All_Btn_Onclick_Sign_In_Act"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Registration.SignUp.All_Btn_OnClick_Sign_Up_Act"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Game_Details_Screen_Act_02"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Reset_Password_Act"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".Registration.Update_New_Password_Act"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name=".Dummy_reset_pwd"
+            android:screenOrientation="portrait" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-    </application>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
 
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Transaction_Act"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".Native_Ads" />
+
+        <!--This is for fabric key-->
+        <meta-data
+            android:name="io.♦.ApiKey"
+            android:value="642b87032a84cd21b20a3ee695c2e590c3ff77f4" />
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="642b87032a84cd21b20a3ee695c2e590c3ff77f4" />
+
+
+        <!--This is for admob-->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-7961776813129160~6949709129" />
+    </application>
 </manifest>
