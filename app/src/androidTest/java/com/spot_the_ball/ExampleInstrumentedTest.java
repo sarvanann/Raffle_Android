@@ -1,4 +1,4 @@
-package com.spot_the_ball;
+package com.spot_the_ballgame;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
