@@ -43,7 +43,6 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
                 .inflate(R.layout.album_card, parent, false);
         return new MyViewHolder(itemView);
     }
-
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         Album album = albumList.get(position);
