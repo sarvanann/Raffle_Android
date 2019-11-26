@@ -19,7 +19,6 @@ import java.util.List;
  * Created by Ravi Tamada on 18/05/16.
  */
 public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHolder> {
-
     private Context mContext;
     private List<Album> albumList;
 
