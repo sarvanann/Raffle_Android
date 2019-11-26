@@ -201,7 +201,7 @@ public class Carousel_View_Act extends AppCompatActivity {
 
 
         @Override
-        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object     object) {
             View view = (View) object;
             container.removeView(view);
         }
