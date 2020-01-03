@@ -81,12 +81,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout_transaction_history"
         android:layout_width="match_parent"
-        android:layout_height="470dp"
+        android:layout_height="match_parent"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="80dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="50dp"
         android:background="@drawable/shadow_for_border_dashboard"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
@@ -100,7 +101,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout_transaction_history_layout"
             android:layout_width="match_parent"
-            android:layout_height="450dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
@@ -114,6 +115,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0">
+
+            <TextView
+                android:id="@+id/tv_no_data_available_fr_transaction_act"
+                style="@style/sign_up_txt_style_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/no_data_found_txt"
+                android:visibility="gone"
+                ads:layout_constraintBottom_toBottomOf="parent"
+                ads:layout_constraintEnd_toEndOf="parent"
+                ads:layout_constraintStart_toStartOf="parent"
+                ads:layout_constraintTop_toTopOf="@+id/textView34_01" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout_game_1"
@@ -2008,7 +2027,7 @@
 
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/shimmer_view_container"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="340dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="8dp"
@@ -2018,12 +2037,12 @@
                 android:layout_marginBottom="8dp"
                 android:orientation="vertical"
                 android:visibility="visible"
-                ads:layout_constraintBottom_toBottomOf="parent"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintHorizontal_bias="0.485"
-                ads:layout_constraintStart_toStartOf="parent"
-                ads:layout_constraintTop_toBottomOf="@+id/constraintLayout_game_1"
-                ads:layout_constraintVertical_bias="0.0"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.485"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout_game_1"
+                app:layout_constraintVertical_bias="0.0"
                 shimmer:duration="800">
 
                 <!-- Adding 3 rows of placeholders -->
@@ -2032,11 +2051,17 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <include layout="@layout/dashboard_contest_placeholder_item" />
+                    <include layout="@layout/transaction_contest_placeholder_item" />
 
-                    <include layout="@layout/dashboard_contest_placeholder_item" />
+                    <include layout="@layout/transaction_contest_placeholder_item" />
 
-                    <include layout="@layout/dashboard_contest_placeholder_item" />
+                    <include layout="@layout/transaction_contest_placeholder_item" />
+
+                    <include layout="@layout/transaction_contest_placeholder_item" />
+
+                    <include layout="@layout/transaction_contest_placeholder_item" />
+
+                    <include layout="@layout/transaction_contest_placeholder_item" />
 
                 </LinearLayout>
 
@@ -2050,14 +2075,18 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="80dp"
+                android:paddingBottom="8dp"
+                android:scrollbarSize="5dp"
+                android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
+                android:scrollbars="vertical"
                 android:visibility="gone"
-                ads:layout_constraintBottom_toBottomOf="parent"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintHorizontal_bias="0.485"
-                ads:layout_constraintStart_toStartOf="parent"
-                ads:layout_constraintTop_toBottomOf="@+id/constraintLayout_game_1"
-                ads:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.485"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout_game_1"
+                app:layout_constraintVertical_bias="0.0" />
 
             <TextView
                 android:id="@+id/textView34_01"
@@ -2081,18 +2110,103 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout_redeem_history"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="7dp"
-        android:layout_marginLeft="7dp"
-        android:layout_marginTop="34dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="80dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="50dp"
         android:background="@drawable/shadow_for_border_dashboard"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/adView">
+        app:layout_constraintTop_toBottomOf="@+id/adView"
+        app:layout_constraintVertical_bias="0.029">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_redeem_history"
+            android:layout_width="300dp"
+            android:layout_height="360dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="80dp"
+            android:paddingBottom="8dp"
+            android:scrollbarSize="5dp"
+            android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
+            android:scrollbars="vertical"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.485"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView34_02"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/tv_no_data_available_fr_transaction_act_redeem"
+            style="@style/sign_up_txt_style_bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/no_data_found_txt"
+            android:visibility="gone"
+            ads:layout_constraintBottom_toBottomOf="parent"
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintHorizontal_bias="0.504"
+            ads:layout_constraintStart_toStartOf="parent"
+            ads:layout_constraintTop_toBottomOf="@+id/textView34_02"
+            ads:layout_constraintVertical_bias="0.464" />
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/mShimmerViewContainer_redeem_history"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView34_02"
+            shimmer:duration="800">
+
+            <!-- Adding 3 rows of placeholders -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/redeem_history_contest_placeholder_item" />
+
+                <include layout="@layout/redeem_history_contest_placeholder_item" />
+
+                <include layout="@layout/redeem_history_contest_placeholder_item" />
+
+                <include layout="@layout/redeem_history_contest_placeholder_item" />
+
+                <include layout="@layout/redeem_history_contest_placeholder_item" />
+
+            </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout_game_redeem_1"
@@ -2104,7 +2218,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:background="@drawable/game_list_bg_for_game_details_screen_round_edge_transaction_frag"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.505"
             app:layout_constraintStart_toStartOf="parent"
@@ -2308,7 +2422,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:background="@drawable/game_list_bg_for_game_details_screen_round_edge_transaction_frag"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.505"
             app:layout_constraintStart_toStartOf="parent"
@@ -2425,7 +2539,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:background="@drawable/game_list_bg_for_game_details_screen_round_edge_transaction_frag"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.505"
             app:layout_constraintStart_toStartOf="parent"
@@ -2542,7 +2656,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:background="@drawable/game_list_bg_for_game_details_screen_round_edge_transaction_frag"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout_game_redeem_4">
@@ -2658,7 +2772,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:background="@drawable/game_list_bg_for_game_details_screen_round_edge_transaction_frag"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout_game_redeem_5">
@@ -2775,7 +2889,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/game_list_bg_for_game_details_screen_round_edge_transaction_frag"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -3353,6 +3467,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:text="Redeem History"

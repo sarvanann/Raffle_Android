@@ -94,6 +94,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="8dp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.543"
@@ -111,7 +112,7 @@
                 android:gravity="center"
                 android:textColor="#FBD56F"
                 android:textSize="45sp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -198,10 +199,10 @@
             android:background="@drawable/end_game_black_bg_round_edge"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.688"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout_tv_just_a_moment_contest_one_txt"
-            app:layout_constraintVertical_bias="0.232">
+            app:layout_constraintVertical_bias="0.372">
 
             <TextView
                 android:id="@+id/tv_correct_ans_icon"
@@ -223,13 +224,14 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="12dp"
-                android:text="@string/correct_answer_n_5pts_txt"
+                android:text="@string/correct_answer_txt"
                 android:textColor="@color/white_color"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_correct_ans_icon" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_correct_ans_icon"
+                app:layout_constraintVertical_bias="0.0" />
 
             <TextView
                 android:id="@+id/tv_cross_mark_icon"
@@ -256,14 +258,14 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="12dp"
-                android:text="@string/wrong_answer_n_5pts_txt"
+                android:text="@string/wrong_answer_txt"
                 android:textColor="@color/white_color"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tv_correct_ans_txr"
                 app:layout_constraintTop_toBottomOf="@+id/tv_cross_mark_icon"
-                app:layout_constraintVertical_bias="0.428" />
+                app:layout_constraintVertical_bias="0.0" />
 
             <TextView
                 android:id="@+id/tv_skip_icon"
@@ -292,7 +294,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="12dp"
-                android:text="@string/skip_question_n_0pts_txt"
+                android:text="Skip Question"
                 android:textColor="@color/white_color"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -302,6 +304,61 @@
                 app:layout_constraintStart_toEndOf="@+id/tv_cross_txt"
                 app:layout_constraintTop_toBottomOf="@+id/tv_skip_icon"
                 app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/tv_correct_ans_values"
+                style="@style/sign_up_txt_style_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:text="TextView"
+                android:textColor="@color/white_color"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.115"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_correct_ans_txr" />
+
+            <TextView
+                android:id="@+id/tv_wrong_ans_values"
+                style="@style/sign_up_txt_style_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="10dp"
+                android:text="TextView"
+                android:textColor="@color/white_color"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_cross_txt" />
+
+            <TextView
+                android:id="@+id/tv_skip_points_values"
+                style="@style/sign_up_txt_style_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="TextView"
+                android:textColor="@color/white_color"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.932"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_skip_points_txtt" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -697,7 +754,7 @@
             android:layout_marginBottom="8dp"
             android:fontFamily="@font/quicksand_bold"
             android:gravity="start"
-            android:text="@string/thank_you_for_playing_txt"
+            android:text=""
             android:textColor="@color/white_color"
             android:textSize="24sp"
             android:visibility="gone"
@@ -713,6 +770,9 @@
             android:layout_width="300dp"
             android:layout_height="125dp"
             android:layout_marginTop="44dp"
+            android:scrollbarSize="5dp"
+            android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
+            android:scrollbars="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
@@ -721,8 +781,8 @@
         <TextView
             android:id="@+id/tv_close_end_game"
             style="@style/sign_up_txt_style_medium"
-            android:layout_width="125dp"
-            android:layout_height="50dp"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
@@ -733,6 +793,7 @@
             android:text="@string/go_back_txt"
             android:textAllCaps="false"
             android:textColor="@color/white_color"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -766,7 +827,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white_color"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -1006,7 +1067,7 @@
 
 
             <TextView
-                android:id="@+id/textView46"
+                android:id="@+id/tv_entry_fee_details_coins"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_marginStart="2dp"
@@ -1049,7 +1110,7 @@
             android:layout_marginTop="120dp"
             android:layout_marginEnd="24dp"
             android:layout_marginRight="24dp"
-            android:layout_marginBottom="60dp"
+            android:layout_marginBottom="50dp"
             android:background="@drawable/shadow_for_border_dashboard"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -1152,6 +1213,9 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="40dp"
                 android:layout_marginBottom="4dp"
+                android:scrollbarSize="5dp"
+                android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
+                android:scrollbars="vertical"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -1248,6 +1312,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="4dp"
+                    android:scrollbarSize="5dp"
+                    android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
+                    android:scrollbars="vertical"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -1426,7 +1493,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout_watch_ads_btn"
             android:layout_width="170dp"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
@@ -1462,7 +1529,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout_watch_ads_btn_inside"
                 android:layout_width="170dp"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"

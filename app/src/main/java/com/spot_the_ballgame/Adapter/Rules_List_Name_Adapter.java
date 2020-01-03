@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.spot_the_ballgame.Game_Two_Act;
 import com.spot_the_ballgame.Model.Category_Model;
 import com.spot_the_ballgame.R;
 
@@ -22,7 +21,7 @@ public class Rules_List_Name_Adapter extends RecyclerView.Adapter<Rules_List_Nam
     private ArrayList<Category_Model.Data> arrayList;
     private ArrayList<String[]> comma_arrayList = new ArrayList<>();
 
-    public Rules_List_Name_Adapter(Game_Two_Act game_two_act, ArrayList<Category_Model.Data> data) {
+    public Rules_List_Name_Adapter(Context game_two_act, ArrayList<Category_Model.Data> data) {
         this.context = game_two_act;
         this.arrayList = data;
     }

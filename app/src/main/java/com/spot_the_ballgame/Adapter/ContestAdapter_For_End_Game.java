@@ -46,6 +46,7 @@ public class ContestAdapter_For_End_Game extends RecyclerView.Adapter<ContestAda
     private ArrayList<String> stringArrayList = new ArrayList<>();
 
     String str_imagepath;
+    private String str_correct_ans, str_wrong_ans, str_skip;
 
     public ContestAdapter_For_End_Game(FragmentActivity activity, ArrayList<Category_Model.Data> data) {
         this.mContext = activity;
@@ -64,8 +65,22 @@ public class ContestAdapter_For_End_Game extends RecyclerView.Adapter<ContestAda
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull final ContestAdapter_For_End_Game.ViewHolder holder, final int position) {
+        //        Collections.sort(arrayList, new Comparator<Category_Model.Data>() {
+//            @Override
+//            public int compare(Category_Model.Data obj1, Category_Model.Data obj2) {
+//                return obj1.getStart_date_time().compareToIgnoreCase(obj2.getEnd_date_time()); // To compare string values
+//            }
+//            // return Integer.valueOf(obj1.getId()).compareTo(obj2.getId()); // To compare integer values
+//
+//
+//            // ## Descending order
+//            // return obj2.getCompanyName().compareToIgnoreCase(obj1.getCompanyName()); // To compare string values
+//            // return Integer.valueOf(obj2.getId()).compareTo(obj1.getId()); // To compare integer values
+//
+//        });
         String str_status = arrayList.get(position).status;
         String str_categories = arrayList.get(position).categories;
+        /*This follwing lines of code are used for if the contest is prediction use this below code.*/
         if (str_categories.equalsIgnoreCase("Prediction")) {
             holder.constraintLayout_country_flag_layout.setVisibility(View.VISIBLE);
             holder.tv_play_with_points_contest_adapter.setVisibility(View.GONE);
@@ -92,6 +107,7 @@ public class ContestAdapter_For_End_Game extends RecyclerView.Adapter<ContestAda
         }
 
         Log.e("outside", str_status);
+        /*If contests are Completed like status ==1 means end_in textview set to status otherwise ends in */
         if (str_status.equalsIgnoreCase("1")) {
             holder.constraintLayout_play_with_points_contest_adapter.setBackgroundResource(R.drawable.played_status_grey_bg);
             holder.tv_play_with_points_contest_adapter.setTextColor(R.color.black_color);
@@ -192,12 +208,17 @@ public class ContestAdapter_For_End_Game extends RecyclerView.Adapter<ContestAda
         holder.constraintLayout_constest_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                str_correct_ans = arrayList.get(position).correct_mark;
+                str_wrong_ans = arrayList.get(position).wrong_mark;
+                str_skip = arrayList.get(position).skip;
                 int s1 = holder.getAdapterPosition();
                 String str_categories = arrayList.get(position).categories;
                 str_imagepath = arrayList.get(position).categories_image;
                 str_rule_id = arrayList.get(position).rules_id;
                 str_status_onclick = arrayList.get(position).status;
                 Log.e("str_status_onclick", str_status_onclick);
+                Log.e("str_rule_id", str_rule_id);
+                Log.e("rules_name", arrayList.get(position).rules_name);
                 if (str_categories.equalsIgnoreCase("Monday") || str_categories.equalsIgnoreCase("Trivia")) {
                     Toast.makeText(mContext, "Rule ID :" + " " + str_status_onclick, Toast.LENGTH_SHORT).show();
                     String fees_type = arrayList.get(position).fee_type;
@@ -222,10 +243,15 @@ public class ContestAdapter_For_End_Game extends RecyclerView.Adapter<ContestAda
                     intent1.putExtra("str_rule_id", str_rule_id);
                     intent1.putExtra("str_status_onclick", str_status_onclick);
                     intent1.putExtra("str_imagepath", str_imagepath);
+
+                    intent1.putExtra("str_correct_ans", str_correct_ans);
+                    intent1.putExtra("str_wrong_ans", str_wrong_ans);
+                    intent1.putExtra("str_skip", str_skip);
                     intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     mContext.startActivity(intent1);
                 }
                 if (str_categories.equalsIgnoreCase("Spot the ball")) {
+                    // Toast.makeText(mContext, "Rule IDSTB :" + " " + str_status_onclick, Toast.LENGTH_SHORT).show();
                     String fees_type = arrayList.get(position).fee_type;
                     if (fees_type.equalsIgnoreCase("0")) {
                         holder.tv_entry_fee_details.setText("Free");
@@ -236,6 +262,7 @@ public class ContestAdapter_For_End_Game extends RecyclerView.Adapter<ContestAda
                     str_2x_powerup = arrayList.get(position).powerup_count;
                     str_contest_id = arrayList.get(position).contest_id;
                     str_entry_fees = holder.tv_entry_fee_details.getText().toString();
+                    Log.e("str_secondsdsds",str_seconds);
                     Intent intent1 = new Intent(mContext, Game_Details_Screen_Act.class);
                     intent1.putExtra("game_name", holder.tv_play_with_points_contest_adapter.getText().toString());
                     intent1.putExtra("prize_amount", holder.tv_prize_pool_contest_adapter.getText().toString());
@@ -245,6 +272,13 @@ public class ContestAdapter_For_End_Game extends RecyclerView.Adapter<ContestAda
                     intent1.putExtra("str_contest_id", str_contest_id);
                     intent1.putExtra("str_entry_fees", str_entry_fees);
                     intent1.putExtra("str_rule_id", str_rule_id);
+
+                    intent1.putExtra("str_imagepath", str_imagepath);
+                    intent1.putExtra("str_status_onclick", str_status_onclick);
+                    intent1.putExtra("int_onclcik_value", String.valueOf(s1));
+                    intent1.putExtra("str_correct_ans", str_correct_ans);
+                    intent1.putExtra("str_wrong_ans", str_wrong_ans);
+                    intent1.putExtra("str_skip", str_skip);
                     intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     mContext.startActivity(intent1);
                 }
@@ -255,7 +289,6 @@ public class ContestAdapter_For_End_Game extends RecyclerView.Adapter<ContestAda
     @Override
     public int getItemCount() {
         return 1;
-//        return arrayList.size();
     }
 
     @Override
@@ -263,7 +296,6 @@ public class ContestAdapter_For_End_Game extends RecyclerView.Adapter<ContestAda
         Category_Model.Data product = arrayList.get(position);
         return Long.parseLong(product.categories);
     }
-
 
     @Override
     public int getItemViewType(int position) {

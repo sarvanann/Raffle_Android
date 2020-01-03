@@ -15,7 +15,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,7 +43,7 @@ public class Carousel_View_Act_02 extends AppCompatActivity {
         carousel_layout = findViewById(R.id.carousel_layout);
         carousel_layout.setOnClickListener(v -> {
             int s1 = v.getVerticalScrollbarPosition();
-            Toast.makeText(Carousel_View_Act_02.this, "Position : " + s1, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(Carousel_View_Act_02.this, "Position : " + s1, Toast.LENGTH_SHORT).show();
         });
 
         // layouts of all welcome sliders
@@ -146,7 +145,7 @@ public class Carousel_View_Act_02 extends AppCompatActivity {
 //            Toast.makeText(Carousel_View_Act.this, "onPageScrollStateChanged" + arg0, Toast.LENGTH_SHORT).show();
 
             if (arg0 == 3) {
-                Toast.makeText(Carousel_View_Act_02.this, "position" + layouts.length, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(Carousel_View_Act_02.this, "position" + layouts.length, Toast.LENGTH_SHORT).show();
                 btn_skip.setText(R.string.sign_up_txt);
             }
         }

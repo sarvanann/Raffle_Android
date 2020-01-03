@@ -1,7 +1,9 @@
 package com.spot_the_ballgame;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,7 +13,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.adcolony.sdk.AdColony;
 import com.bumptech.glide.Glide;
@@ -21,6 +24,17 @@ import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.ironsource.mediationsdk.IronSource;
+import com.spot_the_ballgame.Interface.APIInterface;
+import com.spot_the_ballgame.Interface.Factory;
+import com.spot_the_ballgame.Model.Category_Model;
+
+import org.json.JSONObject;
+
+import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class Reward_Video_Act extends Activity {
@@ -37,16 +51,35 @@ public class Reward_Video_Act extends Activity {
     TextView tv_loading_tx;
     ProgressBar progress_bar_in_reward_video;
     ImageView gif_image;
+    String str_session_reward_amount, str_playby, str_email, str_auth_token;
+    SQLiteDatabase db;
+    ConstraintLayout constraintLayout_rewarded_video_top;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reward__video_);
-
+        db = Objects.requireNonNull(Reward_Video_Act.this).openOrCreateDatabase("Spottheball.db", Context.MODE_PRIVATE, null);
         tv_loading_tx = findViewById(R.id.tv_loading_txt);
         gif_image = findViewById(R.id.gif_image);
+        constraintLayout_rewarded_video_top = findViewById(R.id.constraintLayout_rewarded_video_top);
         Glide.with(this).asGif().load(R.drawable.giphy).into(gif_image);
         progress_bar_in_reward_video = findViewById(R.id.progress_bar_in_reward_video);
+
+
+        str_auth_token = SessionSave.getSession("Token_value", Reward_Video_Act.this);
+        Log.e("authtoken_game2", str_auth_token);
+
+        String select = "select EMAIL,PHONENO,BALANCE from LOGINDETAILS where STATUS ='" + 1 + "'";
+        Cursor cursor = db.rawQuery(select, null);
+        if (cursor.moveToFirst()) {
+            do {
+                str_email = cursor.getString(0);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
 
         // Initialize the Mobile Ads SDK.
         MobileAds.initialize(this, getString(R.string.admob_app_id));
@@ -57,27 +90,29 @@ public class Reward_Video_Act extends Activity {
         IronSource.setConsent(true);
         //This is for ad colony
         AdColony.configure(this, "appd9b3bb873a744248bd", "vz09df69e0202642b88a");
-
+        str_session_reward_amount = SessionSave.getSession("Reward_Point", Reward_Video_Act.this);
         //This is used for Full screen
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         FullScreenMethod();
         mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
             @Override
             public void onRewarded(RewardItem rewardItem) {
-                Toast.makeText(getBaseContext(), "Ad triggered reward.", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), "Ad triggered reward.", Toast.LENGTH_SHORT).show();
                 // addCoins(rewardItem.getAmount());
-                addCoins(10);
+                int n1 = Integer.parseInt(str_session_reward_amount);
+                Log.e("rewd_session_point_act", "" + n1);
+                addCoins(n1);
             }
 
             @Override
             public void onRewardedVideoAdLoaded() {
-                Toast.makeText(getBaseContext(), "Ad loaded.", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), "Ad loaded.", Toast.LENGTH_SHORT).show();
                 showRewardedVideo_New();
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getBaseContext(), "Ad loaded handler.", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getBaseContext(), "Ad loaded handler.", Toast.LENGTH_SHORT).show();
                     }
                 }, 500);
 
@@ -88,33 +123,37 @@ public class Reward_Video_Act extends Activity {
             @Override
             public void onRewardedVideoAdOpened() {
                 Log.e("ad_opened_log", "Ad Opened");
-                Toast.makeText(getBaseContext(), "Ad opened.", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), "Ad opened.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onRewardedVideoStarted() {
                 Log.e("ad_started_log", "Ad started");
-                Toast.makeText(getBaseContext(), "Ad started.", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), "Ad started.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onRewardedVideoAdClosed() {
                 Log.e("ad_closed_log", "Ad closed");
-                Toast.makeText(getBaseContext(), "Ad closed.", Toast.LENGTH_SHORT).show();
-
-                Intent intent = new Intent(Reward_Video_Act.this, Game_Two_Act.class);
-                startActivity(intent);
+//                Toast.makeText(getBaseContext(), "Ad closed.", Toast.LENGTH_SHORT).show();
+                recreate();
+                str_playby = "Ads";
+                Get_Points_Add_Delete_Details(str_playby);
+                Get_Balance_Details();
+                onBackPressed();
+                /*Intent intent = new Intent(Reward_Video_Act.this, Game_Two_Act.class);
+                startActivity(intent);*/
             }
 
             @Override
             public void onRewardedVideoAdLeftApplication() {
-                Toast.makeText(getBaseContext(), "Ad left application.", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), "Ad left application.", Toast.LENGTH_SHORT).show();
                 Log.e("ad_left_log", "Ad left application");
             }
 
             @Override
             public void onRewardedVideoAdFailedToLoad(int i) {
-                Toast.makeText(getBaseContext(), "Ad failed to load.", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), "Ad failed to load.", Toast.LENGTH_SHORT).show();
                 Log.e("Failed_log", "Ad failed to load.");
             }
 
@@ -125,10 +164,69 @@ public class Reward_Video_Act extends Activity {
         });
 
         if (savedInstanceState == null) {
-            mCoinCount = 0;
-            mCoinCountText.setText("Coins: " + mCoinCount);
-
+            mCoinCountText.setText(String.valueOf(mCoinCount));
             startGame();
+        }
+    }
+
+    private void Get_Points_Add_Delete_Details(String str_playby) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            if (str_playby.equalsIgnoreCase("Ads")) {
+                jsonObject = new JSONObject();
+                jsonObject.put("email", str_email);
+                jsonObject.put("wallet", mCoinCountText.getText().toString());
+                jsonObject.put("playby", str_playby);
+                Log.e("add_dlt_json_value_ad", jsonObject.toString());
+            }
+            APIInterface apiInterface = Factory.getClient();
+            Call<Category_Model> call = apiInterface.GET_Wallet_Point_Delete_Call("application/json", jsonObject.toString(), str_auth_token);
+            call.enqueue(new Callback<Category_Model>() {
+                @Override
+                public void onResponse(Call<Category_Model> call, Response<Category_Model> response) {
+//                    Get_Balance_Details();
+//                    Log.e("gfgdsdfdfs", Objects.requireNonNull(response.body()).current_amt);
+                }
+
+                @Override
+                public void onFailure(Call<Category_Model> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void Get_Balance_Details() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("email", str_email);
+            APIInterface apiInterface = Factory.getClient();
+            Log.e("ad_cls_json", jsonObject.toString());
+            Call<Category_Model> call = apiInterface.GET_WALLET_BALALNCE_DETAILS("application/json", jsonObject.toString(), str_auth_token);
+            call.enqueue(new Callback<Category_Model>() {
+                @Override
+                public void onResponse(Call<Category_Model> call, Response<Category_Model> response) {
+                    if (response.isSuccessful()) {
+                        Log.e("reward_amount", response.body().current_amt + str_session_reward_amount);
+                        String str_rewrd_amnt = response.body().current_amt;
+                        int int_reward_amount = Integer.parseInt(str_rewrd_amnt);
+                        int int_reward_amoun2 = Integer.parseInt(str_session_reward_amount);
+                        int int_reward_amoun_final = int_reward_amount + int_reward_amoun2;
+                        Log.e("int_reward_amoun_final", "" + int_reward_amoun_final);
+                        Navigation_Drawer_Act.tv_points.setText(String.valueOf(int_reward_amoun_final));
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Category_Model> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -167,7 +265,7 @@ public class Reward_Video_Act extends Activity {
         mGameOver = savedInstanceState.getBoolean(GAME_OVER_KEY);
         mTimeRemaining = savedInstanceState.getLong(TIME_REMAINING_KEY);
         mCoinCount = savedInstanceState.getInt(COIN_COUNT_KEY);
-        mCoinCountText.setText("Coins: " + mCoinCount);
+        mCoinCountText.setText(String.valueOf(mCoinCount));
     }
 
     @Override
@@ -213,7 +311,7 @@ public class Reward_Video_Act extends Activity {
 
     private void addCoins(int coins) {
         mCoinCount = mCoinCount + coins;
-        mCoinCountText.setText("Coins: " + mCoinCount);
+        mCoinCountText.setText(String.valueOf(mCoinCount));
     }
 
     private void startGame() {
@@ -230,6 +328,6 @@ public class Reward_Video_Act extends Activity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Toast.makeText(this, "backpress", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "backpress", Toast.LENGTH_SHORT).show();
     }
 }

@@ -224,34 +224,42 @@ public class Mobile_Num_Verification_Otp_Act extends AppCompatActivity implement
             call.enqueue(new Callback<UserModel>() {
                 @Override
                 public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                    if (response.isSuccessful()) {
-                        str_code = response.body().code;
-                        str_message = response.body().message;
-                        if (str_code.equalsIgnoreCase("success")) {
-                            pd.dismiss();
-                            if (!(rowIDExistEmail(str_email_id)) && !(rowIDExistApp_ID(str_firstname))) {
-                                ContentValues contentValues = new ContentValues();
-                                contentValues.put("USERNAME", str_firstname);
-                                contentValues.put("EMAIL", str_email_id);
-                                contentValues.put("SIGNUPSTATUS", 3);
-                                Log.e("Content_Values_otp", contentValues.toString());
-                                db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email_id + "'", null);
-                                DBEXPORT();
-                            }
-                            Intent intent = new Intent(Mobile_Num_Verification_Otp_Act.this, Navigation_Drawer_Act.class);
-                            SessionSave.SaveSession("carousel_value", "1", Mobile_Num_Verification_Otp_Act.this);
+                    if (response.code() == 200) {
+                        if (response.isSuccessful()) {
+                            str_code = response.body().status;
+                            str_message = response.body().message;
+                            if (str_code.equalsIgnoreCase("success")) {
+                                pd.dismiss();
+                                if (!(rowIDExistEmail(str_email_id)) && !(rowIDExistApp_ID(str_firstname))) {
+                                    ContentValues contentValues = new ContentValues();
+                                    contentValues.put("USERNAME", str_firstname);
+                                    contentValues.put("EMAIL", str_email_id);
+                                    contentValues.put("SIGNUPSTATUS", 3);
+                                    Log.e("Content_Values_otp", contentValues.toString());
+                                    db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email_id + "'", null);
+                                    DBEXPORT();
+                                }
+                                Intent intent = new Intent(Mobile_Num_Verification_Otp_Act.this, Navigation_Drawer_Act.class);
+                                SessionSave.SaveSession("carousel_value", "1", Mobile_Num_Verification_Otp_Act.this);
 //                            Intent intent = new Intent(Mobile_Num_Verification_Otp_Act.this, Home_Activity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                            Toast_Message.showToastMessage(Mobile_Num_Verification_Otp_Act.this, str_message);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                                Toast_Message.showToastMessage(Mobile_Num_Verification_Otp_Act.this, str_message);
                         /*} else {
                             Toast_Message.showToastMessage(Mobile_Num_Verification_Otp_Act.this, str_message);
                         }*/
-                        } else if (str_code.equalsIgnoreCase("error")) {
-                            pd.dismiss();
-                            Toast_Message.showToastMessage(Mobile_Num_Verification_Otp_Act.this, str_message);
+                            } else if (str_code.equalsIgnoreCase("error")) {
+                                pd.dismiss();
+                                Toast_Message.showToastMessage(Mobile_Num_Verification_Otp_Act.this, str_message);
+                            }
                         }
+                    } else if (response.code() == 401) {
+                        pd.dismiss();
+                        Toast_Message.showToastMessage(Mobile_Num_Verification_Otp_Act.this, response.message());
+                    } else if (response.code() == 500) {
+                        pd.dismiss();
+                        Toast_Message.showToastMessage(Mobile_Num_Verification_Otp_Act.this, response.message());
                     }
                 }
 
@@ -398,42 +406,51 @@ public class Mobile_Num_Verification_Otp_Act extends AppCompatActivity implement
             call.enqueue(new Callback<UserModel>() {
                 @Override
                 public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                    str_code = response.body().code;
-                    str_message = response.body().message;
-                    if (str_code.equalsIgnoreCase("success")) {
-                        pd.dismiss();
-                        str_id = response.body().datum.id;
-                        str_source_detail = response.body().datum.source_detail;
-                        str_app_id = response.body().datum.app_id;
-                        str_firstname = response.body().datum.first_name;
-                        str_lastname = response.body().datum.last_name;
-                        str_email_id = response.body().datum.email;
-                        str_phone_num = response.body().datum.phoneno;
-                        str_image = response.body().datum.image;
-                        str_walet = response.body().datum.walet;
-                        str_money = response.body().datum.money;
-                        str_token_value = response.body().datum.token;
-                        str_username = response.body().datum.username;
-                        str_pwd = response.body().datum.password;
-                        str_active = response.body().datum.active;
-                        str_verified = response.body().datum.verified;
+                    if (response.code() == 200) {
+                        if (response.isSuccessful()) {
+                            str_code = response.body().status;
+                            str_message = response.body().message;
+                            if (str_code.equalsIgnoreCase("success")) {
+                                pd.dismiss();
+                                str_id = response.body().datum.id;
+                                str_source_detail = response.body().datum.source_detail;
+                                str_app_id = response.body().datum.app_id;
+                                str_firstname = response.body().datum.first_name;
+                                str_lastname = response.body().datum.last_name;
+                                str_email_id = response.body().datum.email;
+                                str_phone_num = response.body().datum.phoneno;
+                                str_image = response.body().datum.image;
+                                str_walet = response.body().datum.walet;
+                                str_money = response.body().datum.money;
+                                str_token_value = response.body().datum.token;
+                                str_username = response.body().datum.username;
+                                str_pwd = response.body().datum.password;
+                                str_active = response.body().datum.active;
+                                str_verified = response.body().datum.verified;
 
-                        Log.e("str_token_value", str_token_value);
+                                Log.e("str_token_value", str_token_value);
 
-                        et_otp_01.setText(str_token_value.substring(0, 1));
-                        et_otp_02.setText(str_token_value.substring(1, 2));
-                        et_otp_03.setText(str_token_value.substring(2, 3));
-                        et_otp_04.setText(str_token_value.substring(3, 4));
+                                et_otp_01.setText(str_token_value.substring(0, 1));
+                                et_otp_02.setText(str_token_value.substring(1, 2));
+                                et_otp_03.setText(str_token_value.substring(2, 3));
+                                et_otp_04.setText(str_token_value.substring(3, 4));
 //                        Toast.makeText(Mobile_Num_Verification_Otp_Act.this, "" + str_message, Toast.LENGTH_SHORT).show();
-                        Toast_Message.showToastMessage(Mobile_Num_Verification_Otp_Act.this, str_message);
-                    } else {
+                                Toast_Message.showToastMessage(Mobile_Num_Verification_Otp_Act.this, str_message);
+                            } else {
 //                        Toast.makeText(Mobile_Num_Verification_Otp_Act.this, "" + str_message, Toast.LENGTH_SHORT).show();
-                        Toast_Message.showToastMessage(Mobile_Num_Verification_Otp_Act.this, str_message);
-                    }
-                    if (str_code.equalsIgnoreCase("error")) {
+                                Toast_Message.showToastMessage(Mobile_Num_Verification_Otp_Act.this, str_message);
+                            }
+                        } else {
+                            pd.dismiss();
+//                        Toast.makeText(Mobile_Num_Verification_Otp_Act.this, "" + str_message, Toast.LENGTH_SHORT).show();
+                            Toast_Message.showToastMessage(Mobile_Num_Verification_Otp_Act.this, str_message);
+                        }
+                    } else if (response.code() == 401) {
                         pd.dismiss();
-//                        Toast.makeText(Mobile_Num_Verification_Otp_Act.this, "" + str_message, Toast.LENGTH_SHORT).show();
-                        Toast_Message.showToastMessage(Mobile_Num_Verification_Otp_Act.this, str_message);
+                        Toast_Message.showToastMessage(Mobile_Num_Verification_Otp_Act.this, response.message());
+                    } else if (response.code() == 500) {
+                        pd.dismiss();
+                        Toast_Message.showToastMessage(Mobile_Num_Verification_Otp_Act.this, response.message());
                     }
                 }
 

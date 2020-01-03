@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Spot The Ball</string>
+    <string name="app_name">Raffle</string>
     <!--SignUp-->
     <string name="sign_up_txt">Sign Up</string>
     <string name="sign_in_txt">Sign In</string>
@@ -164,10 +164,16 @@
     <string name="end_time_txt">End Time</string>
     <string name="loading_txt">Loading....</string>
 
-    <string-array name="text">
+    <!--<string-array name="text">
         <item>Ready</item>
         <item>Steady</item>
         <item>Go!</item>
+    </string-array>-->
+
+    <string-array name="text">
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
     </string-array>
     <string-array name="text_01">
         <item>Like the video</item>
@@ -212,8 +218,10 @@
     <string name="truecaller_app_key">fmNBDf56dd0b7b3cf4da89941f1e3127b2433</string>
 
     <string name="banner_ad_test_unit_id">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="go_back_txt"><u>Go Back</u></string>
+    <string name="go_back_txt">Go Back</string>
     <string name="choose_the_correct_position_of_the_ball_txt">Choose the correct position of the ball\nChoose the correct position of the ball\nChoose the correct position of the ball</string>
     <string name="play_another_contest_txt">Play another contest</string>
+    <string name="get_txt">Get</string>
+    <string name="no_data_found_txt">No Data Found</string>
 
 </resources>

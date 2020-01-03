@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:shimmer="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -445,7 +446,7 @@
             android:layout_marginBottom="8dp"
             android:fontFamily="@font/quicksand_bold"
             android:gravity="start"
-            android:text="@string/thank_you_for_playing_txt"
+            android:text=""
             android:textColor="@color/white_color"
             android:textSize="24sp"
             android:visibility="gone"
@@ -628,7 +629,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
-                    android:id="@+id/tv_play_with_points_contest_adapter"
+                    android:id="@+id/tv_contest_name_history"
                     style="@style/sign_up_txt_style_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -637,7 +638,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:gravity="start|center_vertical"
-                    android:text="Spot the ball"
+                    android:text=""
                     android:textColor="@color/white_color"
                     android:textSize="16sp"
                     android:visibility="visible"
@@ -659,7 +660,7 @@
                     android:textAlignment="textEnd"
                     android:textColor="@color/white_color"
                     android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_play_with_points_contest_adapter"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_contest_name_history"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0" />
@@ -675,7 +676,7 @@
                     android:layout_marginBottom="8dp"
                     android:background="@color/black_color"
                     android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_play_with_points_contest_adapter"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_contest_name_history"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0" />
@@ -700,7 +701,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout_play_with_points_contest_adapter" />
 
             <TextView
-                android:id="@+id/textView7"
+                android:id="@+id/tv_date_history"
                 style="@style/sign_up_txt_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -760,7 +761,7 @@
                 app:layout_constraintVertical_bias="1.0" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/tv_rank_history"
                 style="@style/sign_up_txt_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -796,26 +797,40 @@
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout_play_with_points_contest_adapter" />
 
             <TextView
-                android:id="@+id/tv_entry_fee_details"
+                android:id="@+id/tv_entry_fee_history"
                 style="@style/sign_up_txt_style_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
+                android:layout_marginStart="192dp"
+                android:layout_marginLeft="192dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="start"
+                android:textSize="14sp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_entry_fee_txt_contest_adapter"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/tv_winnings_image_history_details"
+                style="@style/sign_up_txt_style_medium"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="8dp"
+                android:background="@drawable/coin_new"
                 android:gravity="end"
-                android:text="1 Rank"
                 android:textAlignment="textEnd"
                 android:textSize="14sp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.64"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintHorizontal_bias="0.034"
+                app:layout_constraintStart_toEndOf="@+id/tv_entry_fee_history"
                 app:layout_constraintTop_toBottomOf="@+id/tv_entry_fee_txt_contest_adapter"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.307" />
 
             <TextView
                 android:id="@+id/textView61"
@@ -833,20 +848,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout_play_with_points_contest_adapter" />
 
             <TextView
-                android:id="@+id/textView62"
+                android:id="@+id/tv_point_history"
                 style="@style/sign_up_txt_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginStart="96dp"
+                android:layout_marginLeft="96dp"
                 android:gravity="start"
                 android:text="2500"
                 android:textColor="@color/black_color"
                 android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.31"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView61" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -860,7 +871,7 @@
             android:layout_marginTop="120dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginBottom="60dp"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/shadow_for_border_dashboard"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -937,7 +948,7 @@
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_price_list"
+                android:id="@+id/rv_price_list_fr_my_history"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -945,18 +956,74 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="4dp"
                 android:background="@drawable/recyclerview_black_border_bg"
-                android:visibility="gone"
+                android:scrollbarSize="5dp"
+                android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
+                android:scrollbars="vertical"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.352" />
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+                app:layout_constraintVertical_bias="0.0" />
 
-            <include
-                layout="@layout/include_prize_layout"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout_winnings_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/game_list_bg_for_game_details_screen_round_edge"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.333"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/shimmer_view_container_for_winnings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:orientation="vertical"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.416"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    shimmer:duration="800">
+
+                    <!-- Adding 3 rows of placeholders -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                        <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                        <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                        <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                    </LinearLayout>
+
+                </com.facebook.shimmer.ShimmerFrameLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <!--<include
+                layout="@layout/include_prize_layout_fr_my_history"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="40dp"
@@ -968,9 +1035,9 @@
                 app:layout_constraintHorizontal_bias="0.333"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
+-->
             <include
-                layout="@layout/include_score_board_layout"
+                layout="@layout/include_score_board_layout_fr_my_history"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="40dp"
@@ -1015,6 +1082,57 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/shimmer_view_container_for_rules"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:orientation="vertical"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.416"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    shimmer:duration="800">
+
+                    <!-- Adding 3 rows of placeholders -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <include layout="@layout/rules_placeholder_item" />
+
+                        <include layout="@layout/rules_placeholder_item" />
+
+                        <include layout="@layout/rules_placeholder_item" />
+
+                        <include layout="@layout/rules_placeholder_item" />
+
+                    </LinearLayout>
+
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_rules_list_fr_my_history"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="4dp"
+                    android:scrollbarSize="5dp"
+                    android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
+                    android:scrollbars="vertical"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.416"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
+
                 <TextView
                     android:id="@+id/textView35"
                     style="@style/sign_up_txt_style_medium"
@@ -1028,6 +1146,7 @@
                     android:gravity="start"
                     android:text="1.Move or remove any content that is available."
                     android:textSize="12sp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -1046,6 +1165,7 @@
                     android:gravity="start"
                     android:text="2.Establish general practices and limits concerning use."
                     android:textSize="12sp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.025"
                     app:layout_constraintStart_toStartOf="parent"
@@ -1065,6 +1185,7 @@
                     android:gravity="start"
                     android:text="3.Assign its rights and liabilities to all User accounts hereunder."
                     android:textSize="12sp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.024"
                     app:layout_constraintStart_toStartOf="parent"
@@ -1084,6 +1205,7 @@
                     android:gravity="start"
                     android:text="4.Persons who wish to register an Account must have a valid\n e-mail address, paytm mobile number"
                     android:textSize="12sp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.026"
                     app:layout_constraintStart_toStartOf="parent"
@@ -1100,6 +1222,7 @@
                     android:gravity="start"
                     android:text="5. You agree to update and keep updated all information provided for the purposes of registration."
                     android:textSize="12sp"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView38" />
 
@@ -1114,6 +1237,7 @@
                     android:gravity="start"
                     android:text="6.You acknowledge that your participation in any Game(s) available on the Platform is purely voluntary and at your sole discretion and risk."
                     android:textSize="12sp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView39" />
@@ -1149,6 +1273,7 @@
                     android:gravity="start"
                     android:text="8.You agree and acknowledge that decision of STB in this regard shall be final."
                     android:textSize="12sp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -1167,6 +1292,7 @@
                     android:gravity="start"
                     android:text="7.You can also register or log in through your Google or personal e-mail address. You may also be required to provide your mobile number for verification purposes, and verify such mobile number using a one-time passcode sent to your mobile number."
                     android:textSize="12sp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.004"
                     app:layout_constraintStart_toStartOf="parent"
@@ -1183,7 +1309,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/game_list_bg_play_50"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.123"
@@ -1224,6 +1350,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.684" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <TextView
             android:id="@+id/tv_enter_contest_btn"
             style="@style/sign_up_txt_style_bold"
@@ -1239,6 +1366,7 @@
             android:text="Play for free"
             android:textColor="@color/white_color"
             android:textSize="14sp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/constraintLayout_watch_ads_btn"

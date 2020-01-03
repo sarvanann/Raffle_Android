@@ -181,38 +181,46 @@ public class All_Btn_Onclick_Sign_In_Act extends AppCompatActivity implements Vi
             call.enqueue(new Callback<UserModel>() {
                 @Override
                 public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                    str_code = response.body().code;
-                    str_message = response.body().message;
+                    if (response.code() == 200) {
+                        str_code = response.body().status;
+                        str_message = response.body().message;
 
-                    if (str_code.equalsIgnoreCase("success")) {
-                        pd.dismiss();
-                        str_first_name = response.body().datum.first_name;
-                        str_last_name = response.body().datum.last_name;
-                        str_email = response.body().datum.email;
-                        str_image = response.body().datum.image;
-                        str_username = response.body().datum.username;
+                        if (str_code.equalsIgnoreCase("success")) {
+                            pd.dismiss();
+                            str_first_name = response.body().datum.first_name;
+                            str_last_name = response.body().datum.last_name;
+                            str_email = response.body().datum.email;
+                            str_image = response.body().datum.image;
+                            str_username = response.body().datum.username;
 //                        Log.e("str_first_name", str_first_name);
 //                        Log.e("str_last_name", str_last_name);
 //                        Log.e("str_email", str_email);
 //                        Log.e("str_username", str_username);
 
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put("STATUS", "1");
-                        contentValues.put("SIGNUPSTATUS", "3");
-                        db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
-                        DBEXPORT();
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put("STATUS", "1");
+                            contentValues.put("SIGNUPSTATUS", "3");
+                            db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
+                            DBEXPORT();
 
-                        Intent intent = new Intent(All_Btn_Onclick_Sign_In_Act.this, Navigation_Drawer_Act.class);
+                            Intent intent = new Intent(All_Btn_Onclick_Sign_In_Act.this, Navigation_Drawer_Act.class);
 //                        Intent intent = new Intent(All_Btn_Onclick_Sign_In_Act.this, Home_Activity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                    } else if (str_code.equalsIgnoreCase("error")) {
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                        } else if (str_code.equalsIgnoreCase("error")) {
+                            pd.dismiss();
+                            Toast_Message.showToastMessage(All_Btn_Onclick_Sign_In_Act.this, str_message);
+                        } else {
+                            pd.dismiss();
+                            Toast_Message.showToastMessage(All_Btn_Onclick_Sign_In_Act.this, str_message);
+                        }
+                    } else if (response.code() == 401) {
                         pd.dismiss();
-                        Toast_Message.showToastMessage(All_Btn_Onclick_Sign_In_Act.this, str_message);
-                    } else {
+                        Toast_Message.showToastMessage(All_Btn_Onclick_Sign_In_Act.this, response.message());
+                    } else if (response.code() == 500) {
                         pd.dismiss();
-                        Toast_Message.showToastMessage(All_Btn_Onclick_Sign_In_Act.this, str_message);
+                        Toast_Message.showToastMessage(All_Btn_Onclick_Sign_In_Act.this, response.message());
                     }
 
                 }
@@ -222,9 +230,11 @@ public class All_Btn_Onclick_Sign_In_Act extends AppCompatActivity implements Vi
 
                 }
             });
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
@@ -514,45 +524,46 @@ public class All_Btn_Onclick_Sign_In_Act extends AppCompatActivity implements Vi
             call.enqueue(new Callback<UserModel>() {
                 @Override
                 public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                    if (response.isSuccessful()) {
-                        String str_f_name, str_l_name, str_email, str_phone_no, str_username, str_image, str_walet, str_money, str_active, str_verified, str_code, str_message;
-                        str_code = response.body().code;
-                        str_message = response.body().message;
-                        if (str_code.equalsIgnoreCase("success")) {
-                            pd.dismiss();
-                            str_f_name = response.body().datum.first_name;
-                            str_l_name = response.body().datum.last_name;
-                            str_email = response.body().datum.email;
-                            str_phone_no = response.body().datum.phoneno;
-                            str_username = response.body().datum.username;
-                            str_image = response.body().datum.image;
-                            str_walet = response.body().datum.walet;
-                            str_money = response.body().datum.money;
-                            str_active = response.body().datum.verified;
-                            str_verified = response.body().datum.active;
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put("STATUS", "1");
-                            contentValues.put("SIGNUPSTATUS", "3");
-                            db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
-                            DBEXPORT();
+                    if (response.code() == 200) {
+                        if (response.isSuccessful()) {
+                            String str_f_name, str_l_name, str_email, str_phone_no, str_username, str_image, str_walet, str_money, str_active, str_verified, str_code, str_message;
+                            str_code = response.body().status;
+                            str_message = response.body().message;
+                            if (str_code.equalsIgnoreCase("success")) {
+                                pd.dismiss();
+                                str_f_name = response.body().datum.first_name;
+                                str_l_name = response.body().datum.last_name;
+                                str_email = response.body().datum.email;
+                                str_phone_no = response.body().datum.phoneno;
+                                str_username = response.body().datum.username;
+                                str_image = response.body().datum.image;
+                                str_walet = response.body().datum.walet;
+                                str_money = response.body().datum.money;
+                                str_active = response.body().datum.verified;
+                                str_verified = response.body().datum.active;
+                                ContentValues contentValues = new ContentValues();
+                                contentValues.put("STATUS", "1");
+                                contentValues.put("SIGNUPSTATUS", "3");
+                                db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
+                                DBEXPORT();
 
 
-                            String s1 = "";
-                            String select = "select EMAIL from LOGINDETAILS where SOURCEDETAILS ='" + "gmail" + "'";
-                            Cursor cursor = db.rawQuery(select, null);
-                            if (cursor.moveToFirst()) {
-                                do {
-                                    s1 = cursor.getString(0);
-                                } while (cursor.moveToNext());
-                            }
-                            cursor.close();
-                            Splash_Screen_Act.str_global_mail_id = s1;
+                                String s1 = "";
+                                String select = "select EMAIL from LOGINDETAILS where SOURCEDETAILS ='" + "gmail" + "'";
+                                Cursor cursor = db.rawQuery(select, null);
+                                if (cursor.moveToFirst()) {
+                                    do {
+                                        s1 = cursor.getString(0);
+                                    } while (cursor.moveToNext());
+                                }
+                                cursor.close();
+                                Splash_Screen_Act.str_global_mail_id = s1;
 
 
-                            Intent intent = new Intent(All_Btn_Onclick_Sign_In_Act.this, Navigation_Drawer_Act.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                                Intent intent = new Intent(All_Btn_Onclick_Sign_In_Act.this, Navigation_Drawer_Act.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 //                            Log.e("str_f_name", str_f_name);
 //                            Log.e("str_l_name", str_l_name);
 //                            Log.e("str_email", str_email);
@@ -562,14 +573,21 @@ public class All_Btn_Onclick_Sign_In_Act extends AppCompatActivity implements Vi
 //                            Log.e("str_money", str_money);
 //                            Log.e("str_active", str_active);
 //                            Log.e("str_verified", str_verified);
-                            Toast_Message.showToastMessage(All_Btn_Onclick_Sign_In_Act.this, str_message);
-                        } else if (str_code.equalsIgnoreCase("error")) {
-                            pd.dismiss();
-                            Toast_Message.showToastMessage(All_Btn_Onclick_Sign_In_Act.this, str_message);
-                        } else {
-                            pd.dismiss();
-                            Toast_Message.showToastMessage(All_Btn_Onclick_Sign_In_Act.this, str_message);
+                                Toast_Message.showToastMessage(All_Btn_Onclick_Sign_In_Act.this, str_message);
+                            } else if (str_code.equalsIgnoreCase("error")) {
+                                pd.dismiss();
+                                Toast_Message.showToastMessage(All_Btn_Onclick_Sign_In_Act.this, str_message);
+                            } else {
+                                pd.dismiss();
+                                Toast_Message.showToastMessage(All_Btn_Onclick_Sign_In_Act.this, str_message);
+                            }
                         }
+                    } else if (response.code() == 401) {
+                        pd.dismiss();
+                        Toast_Message.showToastMessage(All_Btn_Onclick_Sign_In_Act.this, response.message());
+                    } else if (response.code() == 500) {
+                        pd.dismiss();
+                        Toast_Message.showToastMessage(All_Btn_Onclick_Sign_In_Act.this, response.message());
                     }
                 }
 

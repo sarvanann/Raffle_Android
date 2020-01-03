@@ -8,6 +8,14 @@
         <item name="colorAccent">@color/black_color</item>
     </style>
 
+    <!-- Base application theme. -->
+    <style name="CardTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/white_color</item>
+        <item name="colorPrimaryDark">@color/white_color</item>
+        <item name="colorAccent">@color/white_color</item>
+    </style>
+
     <style name="title_header_txt_style">
         <item name="android:fontFamily">@font/quicksand_light</item>
         <item name="android:textSize">28sp</item>

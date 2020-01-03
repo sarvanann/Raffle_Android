@@ -36,6 +36,7 @@ import com.spot_the_ballgame.Interface.Factory;
 import com.spot_the_ballgame.Model.Category_Model;
 import com.spot_the_ballgame.Navigation_Drawer_Act;
 import com.spot_the_ballgame.R;
+import com.spot_the_ballgame.SessionSave;
 import com.spot_the_ballgame.Toast_Message;
 
 import org.json.JSONObject;
@@ -69,6 +70,8 @@ public class Update_New_Password_Act extends AppCompatActivity implements View.O
     private boolean internetConnected = true;
     Snackbar snackbar;
 
+    String str_auth_token;
+
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,6 +95,10 @@ public class Update_New_Password_Act extends AppCompatActivity implements View.O
         btn_show_hide_new_pwd.setOnClickListener(this);
         btn_show_hide_repeat_pwd.setOnClickListener(this);
 
+        str_auth_token = SessionSave.getSession("Token_value", Update_New_Password_Act.this);
+        Log.e("authtoken_updt_nw_pw", str_auth_token);
+
+
         String select = "select SOURCEDETAILS,EMAIL,PASSWORD from LOGINDETAILS where STATUS ='" + 1 + "'";
         Cursor cursor = db.rawQuery(select, null);
         if (cursor.moveToFirst()) {
@@ -102,7 +109,7 @@ public class Update_New_Password_Act extends AppCompatActivity implements View.O
             } while (cursor.moveToNext());
         }
         cursor.close();
-        Log.e("update_str_source_details", str_source_details);
+        Log.e("update_str_src", str_source_details);
         Log.e("update_str_email", str_email);
         Log.e("update_str_email_pwd", str_email_password);
         ContentValues contentValues = new ContentValues();
@@ -267,28 +274,36 @@ public class Update_New_Password_Act extends AppCompatActivity implements View.O
             progressbar.getIndeterminateDrawable().setColorFilter(Color.parseColor("#000000"), android.graphics.PorterDuff.Mode.SRC_IN);
 
             APIInterface apiInterface = Factory.getClient();
-            Call<Category_Model> call = apiInterface.GET_NEW_PWD_UPDATE_CALL("application/json", jsonObject.toString());
+            Call<Category_Model> call = apiInterface.GET_NEW_PWD_UPDATE_CALL("application/json", jsonObject.toString(), str_auth_token);
             Log.e("updatepwd_json_value", jsonObject.toString());
             call.enqueue(new Callback<Category_Model>() {
                 @Override
                 public void onResponse(Call<Category_Model> call, Response<Category_Model> response) {
-                    if (response.isSuccessful()) {
+                    if (response.code() == 200) {
+                        if (response.isSuccessful()) {
+                            pd.dismiss();
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put("SOURCEDETAILS", "email");
+                            contentValues.put("EMAIL", str_email);
+                            contentValues.put("STATUS", "1");
+                            contentValues.put("SIGNUPSTATUS", "6");
+                            contentValues.put("PASSWORD", str_repeat_pwd);
+                            db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
+                            DBEXPORT();
+                            Log.e("update_pwd_cntn_values", contentValues.toString());
+                            Intent intent = new Intent(Update_New_Password_Act.this, Navigation_Drawer_Act.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                        }
+                    } else if (response.code() == 401) {
                         pd.dismiss();
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put("SOURCEDETAILS", "email");
-                        contentValues.put("EMAIL", str_email);
-                        contentValues.put("STATUS", "1");
-                        contentValues.put("SIGNUPSTATUS", "6");
-                        contentValues.put("PASSWORD", str_repeat_pwd);
-                        db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
-                        DBEXPORT();
-                        Log.e("update_pwd_cntn_values", contentValues.toString());
-                        Intent intent = new Intent(Update_New_Password_Act.this, Navigation_Drawer_Act.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                        Toast_Message.showToastMessage(Update_New_Password_Act.this, response.message());
+                    } else if (response.code() == 500) {
+                        pd.dismiss();
+                        Toast_Message.showToastMessage(Update_New_Password_Act.this, response.message());
                     }
                 }
 

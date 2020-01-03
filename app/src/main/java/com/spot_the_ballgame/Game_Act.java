@@ -1,5 +1,6 @@
 package com.spot_the_ballgame;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -31,16 +32,23 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.snackbar.Snackbar;
+import com.spot_the_ballgame.Adapter.ContestAdapter_For_End_Game;
+import com.spot_the_ballgame.Interface.APIInterface;
+import com.spot_the_ballgame.Interface.Factory_For_Categories;
+import com.spot_the_ballgame.Model.Category_Model;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,10 +58,15 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class Game_Act extends AppCompatActivity implements View.OnClickListener {
+    String str_auth_token;
     Dialog dialog;
     SQLiteDatabase db;
-    String str_source_details, str_email;
+    String str_source_details, str_email, str_phone_no, str_balance;
     int int_onclick_getting_remaing_value, int_signup_status;
     TextView tv_A_alphabet, tv_B_alphabet, tv_C_alphabet, tv_D_alphabet,
             tv_2x_txt, tv_2x_power_up, tv_remaining_count_value, tv_total_count_value,
@@ -69,7 +82,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
     public int int_sec = 10;
     private long totalTimeCountInMilliseconds;
     public long seconds;
-    ConstraintLayout constraintLayout_just_a_moment, constraintLayout_game, constraintLayout_end_game, constraintLayout_count_down_timer_game_one, constraintLayout_tv_just_a_moment_contest_one_txt;
+    ConstraintLayout constraintLayout_tv_2x_power_up, constraintLayout_just_a_moment, constraintLayout_game, constraintLayout_end_game, constraintLayout_count_down_timer_game_one, constraintLayout_tv_just_a_moment_contest_one_txt;
 //    ConstraintLayout constraintLayout32;
 
 
@@ -84,7 +97,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
     String str_user_selection_value;
     String str_db_values;
     String str_db_concat;
-    TextView tv_just_a_moment_contest_one;
+    TextView tv_just_a_moment_contest_one, tv_close_end_game;
 
     ProgressBar progress_bar_horizontal;
     private int progressStatus = 0;
@@ -99,8 +112,10 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
 
     Vibrator vibrator;
     Dialog dialog_fr_timer;
-    String str_count_down_seconds, str_2x_powerup;
+    Bundle bundle;
+    String str_count_down_seconds, str_2x_powerup, str_entry_fees, str_correct_ans, str_wrong_ans, str_skip;
     int int_2x_onclick_count = 0;
+    int int_entry_fee, int_correct_ans, int_wrong_ans, int_skip, int_db_balance;
     TextView tv_time_limit_sec_txt;
     private AdView mAdView;
 
@@ -109,6 +124,15 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
     ImageView iv_ready_steady_go_state;
     ImageView iv_end_game_sucess_message_gif;
 
+    RecyclerView rv_single_card_end_game_one;
+    ContestAdapter_For_End_Game contestAdapter_for_end_game;
+    String str_code, str_message;
+
+    TextView tv_skip_points_values, tv_wrong_ans_values, tv_correct_ans_values;
+    private AdView mAdView_end_game;
+    AdRequest adRequest;
+
+    @SuppressLint({"WrongConstant", "SetTextI18n"})
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,9 +157,18 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
         tv_timer_seconds_count_game_one = findViewById(R.id.tv_timer_seconds_count_game_one);
         tv_timer_seconds_txt = findViewById(R.id.tv_timer_seconds_txt_game_one);
         constraintLayout_just_a_moment = findViewById(R.id.constraintLayout_just_a_moment_contest_one);
+        constraintLayout_tv_2x_power_up = findViewById(R.id.constraintLayout_tv_2x_power_up);
         constraintLayout_tv_just_a_moment_contest_one_txt = findViewById(R.id.constraintLayout_tv_just_a_moment_contest_one_txt);
         tv_just_a_moment_contest_one = findViewById(R.id.tv_just_a_moment_contest_one);
         tv_time_limit_sec_txt = findViewById(R.id.tv_time_limit_sec_txt);
+
+        tv_correct_ans_values = findViewById(R.id.tv_correct_ans_values);
+        tv_wrong_ans_values = findViewById(R.id.tv_wrong_ans_values);
+        tv_skip_points_values = findViewById(R.id.tv_skip_points_values);
+
+
+        tv_close_end_game = findViewById(R.id.tv_close_end_game);
+        tv_close_end_game.setText(R.string.go_back_txt);
 
         constraintLayout_end_game = findViewById(R.id.constraintLayout_end_game);
         constraintLayout_game = findViewById(R.id.constraintLayout_game_screen);
@@ -151,7 +184,21 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
         Objects.requireNonNull(dialog_fr_timer.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView_end_game = findViewById(R.id.adView_end_game);
+        adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        mAdView_end_game.loadAd(adRequest);
+
+        rv_single_card_end_game_one = findViewById(R.id.rv_single_card_end_game);
+
+        str_auth_token = SessionSave.getSession("Token_value", Game_Act.this);
+        Log.e("authtoken_game", str_auth_token);
+
+        rv_single_card_end_game_one.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+        rv_single_card_end_game_one.setHasFixedSize(true);
+        rv_single_card_end_game_one.setVisibility(View.VISIBLE);
+
+        adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
         tv_A_alphabet.setOnClickListener(this);
@@ -159,6 +206,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
         tv_C_alphabet.setOnClickListener(this);
         tv_D_alphabet.setOnClickListener(this);
         tv_2x_txt.setOnClickListener(this);
+        tv_close_end_game.setOnClickListener(this);
         /*1st set of images*/
         imageIntegerArrayList.add(R.drawable.play_img_01);
         imageIntegerArrayList.add(R.drawable.play_img_02);
@@ -171,6 +219,45 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
         imageIntegerArrayList.add(R.drawable.play_img_01);
         imageIntegerArrayList.add(R.drawable.play_img_02);
         imageIntegerArrayList.add(R.drawable.play_img_01);
+
+        String select = "select EMAIL,PHONENO,BALANCE from LOGINDETAILS where STATUS ='" + 1 + "'";
+        Cursor cursor = db.rawQuery(select, null);
+        if (cursor.moveToFirst()) {
+            do {
+                str_email = cursor.getString(0);
+                str_phone_no = cursor.getString(1);
+                str_balance = cursor.getString(2);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        Log.e("db_blnce", str_balance);
+        bundle = getIntent().getExtras();
+        if (bundle == null) {
+            str_2x_powerup = null;
+        } else {
+            str_2x_powerup = bundle.getString("str_2x_powerup");
+            str_correct_ans = bundle.getString("str_correct_ans");
+            str_wrong_ans = bundle.getString("str_wrong_ans");
+            str_skip = bundle.getString("str_skip");
+            str_entry_fees = bundle.getString("str_entry_fees");
+        }
+//        Log.e("str_correct_ans", str_correct_ans);
+//        Log.e("str_wrong_ans", str_wrong_ans);
+//        Log.e("str_skip", str_skip);
+//        Log.e("str_entry_fees", str_entry_fees);
+        tv_correct_ans_values.setText("+ " + str_correct_ans + " Points");
+        tv_wrong_ans_values.setText("- " + str_wrong_ans + " Points");
+        tv_skip_points_values.setText(str_skip + " Points");
+
+
+        try {
+            int_entry_fee = Integer.parseInt(str_entry_fees);
+            int_correct_ans = Integer.parseInt(str_correct_ans);
+            int_wrong_ans = Integer.parseInt(str_wrong_ans);
+            int_skip = Integer.parseInt(str_skip);
+        } catch (NumberFormatException nfe) {
+            nfe.printStackTrace();
+        }
 
 
         //This is used for Full screen
@@ -224,10 +311,15 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
         } else {
             str_count_down_seconds = bundle.getString("str_count_down_seconds");
             str_2x_powerup = bundle.getString("str_2x_powerup");
+
+            str_correct_ans = bundle.getString("str_correct_ans");
+            str_wrong_ans = bundle.getString("str_wrong_ans");
+            str_skip = bundle.getString("str_skip");
         }
         int_2x_onclick_count = Integer.parseInt(str_2x_powerup);
         Log.e("str_2x_powerup", "" + int_2x_onclick_count);
         tv_2x_power_up.setText(String.valueOf(int_2x_onclick_count));
+        Log.e("str_count_down_seconds", str_count_down_seconds);
         tv_time_limit_sec_txt.setText(str_count_down_seconds + "S");
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -237,6 +329,19 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                 if (!isNetworkAvaliable()) {
                     registerInternetCheckReceiver();
                 } else {
+                    int_db_balance = Integer.parseInt(str_balance);
+
+                    if (!(str_entry_fees.equalsIgnoreCase("Free"))) {
+                        int_entry_fee = Integer.parseInt(str_entry_fees);
+                        int int_minus_value = 50;
+                        Log.e("int_db_balance", "" + int_db_balance);
+                        Log.e("int_entry_fee", "" + int_entry_fee);
+                        int int_calc = int_db_balance - int_entry_fee;
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put("BALANCE", int_calc);
+                        Log.e("Content_Values_mob_reg", contentValues.toString());
+                        db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
+                    }
 
                     assert str_count_down_seconds != null;
 //                    int time = Integer.parseInt(str_count_down_seconds);
@@ -348,8 +453,6 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                 tv_B_alphabet.setTextColor(getResources().getColor(R.color.white_color));
                 tv_C_alphabet.setTextColor(getResources().getColor(R.color.white_color));
                 tv_D_alphabet.setTextColor(getResources().getColor(R.color.white_color));
-
-
                 do {
                     if (int_count_value < imageIntegerArrayList.size()) {
 //                        int_count_value++;
@@ -380,22 +483,54 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                                         int time = 12;
                                         long s1 = time * 1000 + 1;
                                         startTimer(s1);
-
-
                                         ProgressBar_Init_Method();
+
+                                        if (int_onclcik_2x_power_up != 0) {
+                                            if (int_2x_onclick_count != 0) {
+                                                tv_2x_txt.setBackground(getResources().getDrawable(R.drawable.two_x_onclick_bg));
+                                                tv_2x_txt.setTextColor(getResources().getColor(R.color.new_game_scrn_2x_color));
+                                                tv_2x_txt.setEnabled(true);
+                                                tv_2x_power_up.setText(String.valueOf(int_2x_onclick_count));
+
+                                                int_2x_onclick_count = int_2x_onclick_count + 1;
+                                                int_onclcik_2x_power_up = 1;
+                                                tv_2x_power_up.setText(String.valueOf(int_2x_onclick_count));
+
+                                                tv_2x_txt.setBackground(getResources().getDrawable(R.drawable.two_x_onclick_bg));
+                                                tv_2x_txt.setTextColor(getResources().getColor(R.color.new_game_scrn_2x_color));
+                                            } else if (int_2x_onclick_count == 0) {
+                                                if (int_onclcik_2x_power_up != 0) {
+                                                    int_2x_onclick_count = int_2x_onclick_count + 1;
+                                                    int_onclcik_2x_power_up = 1;
+                                                    tv_2x_power_up.setText(String.valueOf(int_2x_onclick_count));
+                                                    tv_2x_txt.setBackground(getResources().getDrawable(R.drawable.two_x_onclick_bg));
+                                                    tv_2x_txt.setTextColor(getResources().getColor(R.color.new_game_scrn_2x_color));
+                                                    tv_2x_txt.setEnabled(true);
+                                                } else {
+                                                    tv_2x_power_up.setText(String.valueOf(int_2x_onclick_count));
+                                                    tv_2x_txt.setEnabled(false);
+                                                    tv_2x_txt.setBackground(getResources().getDrawable(R.drawable._2x_bg_grey_disable));
+                                                    constraintLayout_tv_2x_power_up.setBackground(getResources().getDrawable(R.drawable._2x_bg_grey_disable));
+                                                    tv_2x_power_up.setTextColor(getResources().getColor(R.color.black_color));
+                                                    tv_2x_txt.setTextColor(getResources().getColor(R.color.black_color));
+                                                }
+                                            }
+                                        }
+                                        int_onclcik_2x_power_up = 0;
                                     }
                                 }, 1000);
-
                             } else {
                                 dialog_fr_timer.dismiss();
+//                                dialog_fr_timer.dismiss();
 //                                Toast.makeText(Game_Act.this, "els", Toast.LENGTH_SHORT).show();
                                 constraintLayout_game.setVisibility(View.GONE);
 //                                constraintLayout32.setVisibility(View.GONE);
                                 constraintLayout_just_a_moment.setVisibility(View.GONE);
                                 Glide.with(Game_Act.this).asGif().load(R.drawable.thanks_fr_playing).into(iv_end_game_sucess_message_gif);
                                 constraintLayout_end_game.setVisibility(View.VISIBLE);
-                                constraintLayout_end_game.setBackgroundResource((R.color.sign_up_txt));
-                                Handler handler = new Handler();
+                                Get_End_Game_Contest_Details();
+                                constraintLayout_end_game.setBackgroundResource((R.color.white_color));
+                               /* Handler handler = new Handler();
                                 handler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
@@ -407,7 +542,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                                         startActivity(intent);
                                     }
                                 }, 2000);
-
+*/
                             }
 
                         } catch (IndexOutOfBoundsException ari) {
@@ -420,6 +555,48 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
             }
         }.start();
         performTick(10000);
+    }
+
+    private void Get_End_Game_Contest_Details() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("email", str_email);
+            APIInterface apiInterface = Factory_For_Categories.getClient();
+            Call<Category_Model> call = apiInterface.GET_CONTEST_CALL("application/json", jsonObject.toString(), str_auth_token);
+            call.enqueue(new Callback<Category_Model>() {
+                @TargetApi(Build.VERSION_CODES.KITKAT)
+                @Override
+                public void onResponse(Call<Category_Model> call, Response<Category_Model> response) {
+                    if (response.isSuccessful()) {
+                        try {
+//                        Toast.makeText(Game_Act.this, "Else_Response", Toast.LENGTH_SHORT).show();
+                            if (response.body().data == null) {
+//                            Toast.makeText(Game_Act.this, "Null", Toast.LENGTH_SHORT).show();
+                                rv_single_card_end_game_one.setVisibility(View.VISIBLE);
+                            } else {
+                                rv_single_card_end_game_one.setVisibility(View.VISIBLE);
+                            }
+                            str_code = response.body().code;
+                            str_message = response.body().message;
+//                        Log.e("str_code-->", str_code);
+//                        Log.e("str_message-->", str_message);
+//                        Log.e("str_datum_value-->", String.valueOf(response.body()));
+                            rv_single_card_end_game_one.setVisibility(View.VISIBLE);
+                            contestAdapter_for_end_game = new ContestAdapter_For_End_Game(Game_Act.this, response.body().data);
+                            rv_single_card_end_game_one.setAdapter(contestAdapter_for_end_game);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Category_Model> call, Throwable t) {
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void performTick(int millisUntilFinished) {
@@ -521,7 +698,23 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.tv_close_end_game:
+                Intent intent = new Intent(Game_Act.this, Navigation_Drawer_Act.class);
+                startActivity(intent);
+                break;
             case R.id.tv_A_alphabet:
+                if (int_2x_onclick_count == 0) {
+                    tv_2x_txt.setEnabled(false);
+                    tv_2x_txt.setBackground(getResources().getDrawable(R.drawable._2x_bg_grey_disable));
+                    constraintLayout_tv_2x_power_up.setBackground(getResources().getDrawable(R.drawable._2x_bg_grey_disable));
+                    tv_2x_power_up.setTextColor(getResources().getColor(R.color.black_color));
+                    tv_2x_txt.setTextColor(getResources().getColor(R.color.black_color));
+                } else {
+                    tv_2x_txt.setBackground(getResources().getDrawable(R.drawable.two_x_onclick_bg));
+                    tv_2x_txt.setTextColor(getResources().getColor(R.color.new_game_scrn_2x_color));
+                    tv_2x_txt.setEnabled(true);
+                }
+
                 countDownTimer.cancel();
                 dialog_fr_timer.show();
                 dialog_fr_timer.setCancelable(false);
@@ -573,8 +766,9 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                             constraintLayout_just_a_moment.setVisibility(View.GONE);
                             Glide.with(Game_Act.this).asGif().load(R.drawable.thanks_fr_playing).into(iv_end_game_sucess_message_gif);
                             constraintLayout_end_game.setVisibility(View.VISIBLE);
-                            constraintLayout_end_game.setBackgroundResource((R.color.sign_up_txt));
-                            Handler handler = new Handler();
+                            Get_End_Game_Contest_Details();
+                            constraintLayout_end_game.setBackgroundResource((R.color.white_color));
+                           /* Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -585,7 +779,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                                     startActivity(intent);
                                 }
-                            }, 2000);
+                            }, 2000);*/
                         }
 //                Alphabet_Input_Method();
                     }
@@ -593,6 +787,17 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
 
                 break;
             case R.id.tv_B_alphabet:
+                if (int_2x_onclick_count == 0) {
+                    tv_2x_txt.setEnabled(false);
+                    tv_2x_txt.setBackground(getResources().getDrawable(R.drawable._2x_bg_grey_disable));
+                    constraintLayout_tv_2x_power_up.setBackground(getResources().getDrawable(R.drawable._2x_bg_grey_disable));
+                    tv_2x_power_up.setTextColor(getResources().getColor(R.color.black_color));
+                    tv_2x_txt.setTextColor(getResources().getColor(R.color.black_color));
+                } else {
+                    tv_2x_txt.setBackground(getResources().getDrawable(R.drawable.two_x_onclick_bg));
+                    tv_2x_txt.setTextColor(getResources().getColor(R.color.new_game_scrn_2x_color));
+                    tv_2x_txt.setEnabled(true);
+                }
                 countDownTimer.cancel();
                 dialog_fr_timer.show();
                 dialog_fr_timer.setCancelable(false);
@@ -657,8 +862,9 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                             constraintLayout_just_a_moment.setVisibility(View.GONE);
                             Glide.with(Game_Act.this).asGif().load(R.drawable.thanks_fr_playing).into(iv_end_game_sucess_message_gif);
                             constraintLayout_end_game.setVisibility(View.VISIBLE);
-                            constraintLayout_end_game.setBackgroundResource((R.color.sign_up_txt));
-                            Handler handler = new Handler();
+                            constraintLayout_end_game.setBackgroundResource((R.color.white_color));
+                            Get_End_Game_Contest_Details();
+                           /* Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -669,13 +875,24 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                                     startActivity(intent);
                                 }
-                            }, 2000);
+                            }, 2000);*/
                         }
 //                Alphabet_Input_Method();
                     }
                 }, 1000);
                 break;
             case R.id.tv_C_alphabet:
+                if (int_2x_onclick_count == 0) {
+                    tv_2x_txt.setEnabled(false);
+                    tv_2x_txt.setBackground(getResources().getDrawable(R.drawable._2x_bg_grey_disable));
+                    constraintLayout_tv_2x_power_up.setBackground(getResources().getDrawable(R.drawable._2x_bg_grey_disable));
+                    tv_2x_power_up.setTextColor(getResources().getColor(R.color.black_color));
+                    tv_2x_txt.setTextColor(getResources().getColor(R.color.black_color));
+                } else {
+                    tv_2x_txt.setBackground(getResources().getDrawable(R.drawable.two_x_onclick_bg));
+                    tv_2x_txt.setTextColor(getResources().getColor(R.color.new_game_scrn_2x_color));
+                    tv_2x_txt.setEnabled(true);
+                }
                 countDownTimer.cancel();
                 dialog_fr_timer.show();
                 dialog_fr_timer.setCancelable(false);
@@ -741,8 +958,9 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                             constraintLayout_just_a_moment.setVisibility(View.GONE);
                             Glide.with(Game_Act.this).asGif().load(R.drawable.thanks_fr_playing).into(iv_end_game_sucess_message_gif);
                             constraintLayout_end_game.setVisibility(View.VISIBLE);
-                            constraintLayout_end_game.setBackgroundResource((R.color.sign_up_txt));
-                            Handler handler = new Handler();
+                            constraintLayout_end_game.setBackgroundResource((R.color.white_color));
+                            Get_End_Game_Contest_Details();
+                            /*Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -753,13 +971,25 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                                     startActivity(intent);
                                 }
-                            }, 2000);
+                            }, 2000);*/
                         }
 //                Alphabet_Input_Method();
                     }
                 }, 1000);
                 break;
             case R.id.tv_D_alphabet:
+                if (int_2x_onclick_count == 0) {
+                    tv_2x_txt.setEnabled(false);
+                    tv_2x_txt.setBackground(getResources().getDrawable(R.drawable._2x_bg_grey_disable));
+                    constraintLayout_tv_2x_power_up.setBackground(getResources().getDrawable(R.drawable._2x_bg_grey_disable));
+                    tv_2x_power_up.setTextColor(getResources().getColor(R.color.black_color));
+                    tv_2x_txt.setTextColor(getResources().getColor(R.color.black_color));
+                } else {
+                    tv_2x_txt.setBackground(getResources().getDrawable(R.drawable.two_x_onclick_bg));
+                    tv_2x_txt.setTextColor(getResources().getColor(R.color.new_game_scrn_2x_color));
+                    tv_2x_txt.setEnabled(true);
+                }
+
                 countDownTimer.cancel();
                 dialog_fr_timer.show();
                 dialog_fr_timer.setCancelable(false);
@@ -826,8 +1056,9 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                             constraintLayout_just_a_moment.setVisibility(View.GONE);
                             Glide.with(Game_Act.this).asGif().load(R.drawable.thanks_fr_playing).into(iv_end_game_sucess_message_gif);
                             constraintLayout_end_game.setVisibility(View.VISIBLE);
-                            constraintLayout_end_game.setBackgroundResource((R.color.sign_up_txt));
-                            Handler handler = new Handler();
+                            constraintLayout_end_game.setBackgroundResource((R.color.white_color));
+                            Get_End_Game_Contest_Details();
+                           /* Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -838,7 +1069,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                                     startActivity(intent);
                                 }
-                            }, 2000);
+                            }, 2000);*/
                         }
 //                Alphabet_Input_Method();
                     }
@@ -846,26 +1077,11 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
 
                 break;
             case R.id.tv_2x_txt:
-            /*    str_remaining_count_value = tv_remaining_count_value.getText().toString();
-                int_2x_onclick_count = int_2x_onclick_count - 1;
-//                tv_2x_power_up.setText(String.valueOf(str_2x_powerup));
-                if (int_2x_onclick_count >= 1) {
-                    int_2_x_count = 0;
-                    tv_2x_power_up.setText(String.valueOf(int_2x_onclick_count));
-                } else {
-                    int_2_x_count = 1;
-                    tv_2x_txt.setVisibility(View.GONE);
-                    tv_2x_power_up.setVisibility(View.GONE);
-                    tv_2x_txt.setEnabled(false);
-                    tv_2x_txt.setBackground(getResources().getDrawable(R.drawable._2x_bg_normal));
-                    tv_2x_txt.setTextColor(getResources().getColor(R.color.black_color));
-                }*/
-
                 n2_new_value = Integer.parseInt(tv_remaining_count_value.getText().toString());
                 n1_old_value = n2_new_value;
                 int_onclcik_2x_power_up = 1;
                 Log.e("2x_count", "" + int_2x_onclick_count);
-                Toast.makeText(Game_Act.this, "2x_power_up" + int_onclcik_2x_power_up, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(Game_Act.this, "2x_power_up" + int_onclcik_2x_power_up, Toast.LENGTH_SHORT).show();
                 if (int_2x_onclick_count == 0) {
                     tv_2x_txt.setEnabled(false);
                     tv_2x_power_up.setText(String.valueOf(int_2x_onclick_count));
@@ -882,7 +1098,8 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
         }
     }
 
-    private void Alphabet_Input_Method_For_2X(int int_2_x_count, String str_remaining_count_value) {
+    private void Alphabet_Input_Method_For_2X(int int_2_x_count, String
+            str_remaining_count_value) {
         Toast_Message.showToastMessage(Game_Act.this, "2_X_Value :" + int_2_x_count + "  Remaining count :" + str_remaining_count_value);
     }
 

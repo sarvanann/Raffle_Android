@@ -94,7 +94,7 @@ public class Dummy_Audio_Act extends Activity {
         btn_rewind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Playing sound", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "Playing sound", Toast.LENGTH_SHORT).show();
                 Button_Rewind_Method();
             }
         });

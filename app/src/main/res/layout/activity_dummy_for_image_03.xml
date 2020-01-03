@@ -110,7 +110,7 @@
                 android:layout_marginBottom="16dp"
                 android:fontFamily="@font/quicksand_bold"
                 android:gravity="center"
-                android:textColor="#FBD56F"
+                android:textColor="@color/white_color"
                 android:textSize="82sp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -752,7 +752,7 @@
             android:layout_marginBottom="8dp"
             android:fontFamily="@font/quicksand_bold"
             android:gravity="start"
-            android:text="@string/thank_you_for_playing_txt"
+            android:text=""
             android:textColor="@color/white_color"
             android:textSize="24sp"
             android:visibility="gone"
@@ -768,6 +768,9 @@
             android:layout_width="300dp"
             android:layout_height="125dp"
             android:layout_marginTop="8dp"
+            android:scrollbarSize="5dp"
+            android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
+            android:scrollbars="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
@@ -1129,7 +1132,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/tv_price_btn"
+                    android:id="@+id/tv_winnings_btn"
                     style="@style/sign_up_txt_style_medium"
                     android:layout_width="10dp"
                     android:layout_height="28dp"
@@ -1169,13 +1172,13 @@
             </LinearLayout>
 
             <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/shimmer_view_container"
+                android:id="@+id/shimmer_view_container_winning_list_game_two"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="4dp"
                 android:orientation="vertical"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.416"
@@ -1190,13 +1193,15 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <include layout="@layout/dashboard_contest_placeholder_item" />
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
 
-                    <include layout="@layout/dashboard_contest_placeholder_item" />
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
 
-                    <include layout="@layout/dashboard_contest_placeholder_item" />
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
 
-                    <include layout="@layout/dashboard_contest_placeholder_item" />
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
 
                 </LinearLayout>
 
@@ -1208,13 +1213,16 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="40dp"
                 android:layout_marginBottom="4dp"
-                android:visibility="gone"
+                android:scrollbarSize="5dp"
+                android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
+                android:scrollbars="vertical"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.416"
+                app:layout_constraintHorizontal_bias="0.333"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="1.0" />
 
             <!-- <include
                  layout="@layout/include_prize_layout"
@@ -1287,13 +1295,13 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <include layout="@layout/dashboard_contest_placeholder_item" />
+                        <include layout="@layout/rules_placeholder_item" />
 
-                        <include layout="@layout/dashboard_contest_placeholder_item" />
+                        <include layout="@layout/rules_placeholder_item" />
 
-                        <include layout="@layout/dashboard_contest_placeholder_item" />
+                        <include layout="@layout/rules_placeholder_item" />
 
-                        <include layout="@layout/dashboard_contest_placeholder_item" />
+                        <include layout="@layout/rules_placeholder_item" />
 
                     </LinearLayout>
 
@@ -1304,6 +1312,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="4dp"
+                    android:scrollbarSize="5dp"
+                    android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
+                    android:scrollbars="vertical"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -1488,7 +1499,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/game_list_bg_play_50"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.516"
@@ -1524,7 +1535,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/game_list_bg_play_50"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/tv_watch_ads_btn"
@@ -1571,7 +1582,7 @@
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:text="30"
+                    android:text=""
                     android:textColor="@color/white_color"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -1944,13 +1955,14 @@
                 android:id="@+id/tv_questions_in_game_two"
                 style="@style/sign_up_txt_style_bold"
                 android:layout_width="match_parent"
-                android:layout_height="125dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="8dp"
+                android:gravity="center"
                 android:isScrollContainer="true"
                 android:scrollbarSize="2dp"
                 android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
@@ -1960,46 +1972,47 @@
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.135" />
+                app:layout_constraintVertical_bias="0.511" />
 
             <ImageView
-                android:id="@+id/imageView10"
+                android:id="@+id/iv_hint_icon"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="6dp"
                 android:background="@drawable/idea_tool_tip"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_questions_in_game_two" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
 
             <TextView
-                android:id="@+id/textView93"
+                android:id="@+id/tv_hint_text"
                 style="@style/sign_up_txt_style_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginLeft="4dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="TextView"
+                android:layout_marginBottom="4dp"
+                android:text="Hint1Hint1Hint1"
                 android:textColor="@color/golden_yellow_color"
                 android:textSize="14sp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/imageView10"
-                app:layout_constraintTop_toBottomOf="@+id/tv_questions_in_game_two"
-                app:layout_constraintVertical_bias="0.583" />
+                app:layout_constraintStart_toEndOf="@+id/iv_hint_icon"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -2260,7 +2273,7 @@
             android:text="@string/default_coin_text"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/white_color"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.892"
@@ -2283,7 +2296,7 @@
             android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/white_color"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"

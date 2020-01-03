@@ -15,7 +15,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,7 +45,7 @@ public class Carousel_View_Act extends AppCompatActivity {
         carousel_layout = findViewById(R.id.carousel_layout);
         carousel_layout.setOnClickListener(v -> {
             int s1 = v.getVerticalScrollbarPosition();
-            Toast.makeText(Carousel_View_Act.this, "Position : " + s1, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(Carousel_View_Act.this, "Position : " + s1, Toast.LENGTH_SHORT).show();
         });
 
         // layouts of all welcome sliders
@@ -66,14 +65,20 @@ public class Carousel_View_Act extends AppCompatActivity {
             startActivity(new Intent(Carousel_View_Act.this, All_Btn_OnClick_Sign_Up_Act.class));
             finish();
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            Insert_Singup_Details();
         });
 
         btn_skip.setOnClickListener(v -> {
             startActivity(new Intent(Carousel_View_Act.this, All_Btn_OnClick_Sign_Up_Act.class));
             finish();
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            Insert_Singup_Details();
         });
 //        FullScreenMethod();
+    }
+
+    private void Insert_Singup_Details() {
+        SessionSave.SaveSession("Carosel_Status", "1", Carousel_View_Act.this);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -155,7 +160,7 @@ public class Carousel_View_Act extends AppCompatActivity {
 //            Toast.makeText(Carousel_View_Act.this, "onPageScrollStateChanged" + arg0, Toast.LENGTH_SHORT).show();
 
             if (arg0 == 3) {
-                Toast.makeText(Carousel_View_Act.this, "position" + layouts.length, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(Carousel_View_Act.this, "position" + layouts.length, Toast.LENGTH_SHORT).show();
                 btn_skip.setText(R.string.sign_up_txt);
             }
         }
@@ -201,7 +206,7 @@ public class Carousel_View_Act extends AppCompatActivity {
 
 
         @Override
-        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object     object) {
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             View view = (View) object;
             container.removeView(view);
         }

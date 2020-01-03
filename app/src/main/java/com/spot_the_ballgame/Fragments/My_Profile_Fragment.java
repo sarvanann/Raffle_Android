@@ -21,7 +21,6 @@ import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +29,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,6 +43,7 @@ import com.spot_the_ballgame.Interface.Factory;
 import com.spot_the_ballgame.Model.Category_Model;
 import com.spot_the_ballgame.Navigation_Drawer_Act;
 import com.spot_the_ballgame.R;
+import com.spot_the_ballgame.SessionSave;
 import com.spot_the_ballgame.Toast_Message;
 
 import org.json.JSONObject;
@@ -82,6 +81,7 @@ public class My_Profile_Fragment extends Fragment implements View.OnClickListene
     public static int TYPE_NOT_CONNECTED = 0;
     private boolean internetConnected = true;
     Snackbar snackbar;
+    String str_auth_token;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @SuppressLint("ClickableViewAccessibility")
@@ -107,6 +107,10 @@ public class My_Profile_Fragment extends Fragment implements View.OnClickListene
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
+
+        str_auth_token = SessionSave.getSession("Token_value", getActivity());
+//        Log.e("authtoken_profile", str_auth_token);
+
         String select = "select FIRSTNAME,SOURCEDETAILS,PHONENO,EMAIL,PASSWORD,SIGNUPSTATUS from LOGINDETAILS  where STATUS='" + 1 + "'";
         Cursor cursor = db.rawQuery(select, null);
         if (cursor.moveToFirst()) {
@@ -121,12 +125,12 @@ public class My_Profile_Fragment extends Fragment implements View.OnClickListene
         }
         cursor.close();
 
-        Log.e("str_first_name_profile", str_first_name);
-        Log.e("source_details_profile", str_source_details);
-        Log.e("str_phone_no_profile", str_phone_no);
-        Log.e("str_email_profile", str_email);
+//        Log.e("str_first_name_profile", str_first_name);
+//        Log.e("source_details_profile", str_source_details);
+//        Log.e("str_phone_no_profile", str_phone_no);
+//        Log.e("str_email_profile", str_email);
 //        Log.e("str_password_profile", str_password);
-        Log.e("sign_up_status_profile", str_sign_up_status);
+//        Log.e("sign_up_status_profile", str_sign_up_status);
 
         et_name_profile.setText(str_first_name);
         et_email_id_profile.setText(str_email);
@@ -144,14 +148,14 @@ public class My_Profile_Fragment extends Fragment implements View.OnClickListene
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void onBackPressed() {
         int backStackEntryCount = Objects.requireNonNull(getActivity()).getSupportFragmentManager().getBackStackEntryCount();
-        Log.e("backStackCnt_profile", "" + backStackEntryCount);
+//        Log.e("backStackCnt_profile", "" + backStackEntryCount);
         if (backStackEntryCount == 1) {
             Intent intent = new Intent(getContext(), Navigation_Drawer_Act.class);
             startActivity(intent);
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            Toast.makeText(getActivity(), "IF", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "IF", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getActivity(), "ELSE", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "ELSE", Toast.LENGTH_SHORT).show();
             Objects.requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();// write your code to switch between fragments.
         }
 
@@ -185,21 +189,23 @@ public class My_Profile_Fragment extends Fragment implements View.OnClickListene
                     @Override
                     public void onClick(View v) {
                         String str_user_enter_pwd = et_pwd_in_change_pwd_dialog.getText().toString();
+//                        Log.e("str_user_enter_pwd", str_user_enter_pwd);
                         String str_new_password = et_repeat_pwd_in_change_pwd_dialog.getText().toString();
+//                        Log.e("str_new_pwd", str_new_password);
                         if (!isNetworkAvaliable()) {
                             registerInternetCheckReceiver();
                         } else {
                             if (str_user_enter_pwd.isEmpty()) {
-                                Toast_Message.showToastMessage(getActivity(), getResources().getString(R.string.pls_enter_your_pwd));
+                                Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), getResources().getString(R.string.pls_enter_your_pwd));
                                 et_pwd_in_change_pwd_dialog.requestFocus();
                             } else if (!str_user_enter_pwd.matches(str_password)) {
-                                Toast_Message.showToastMessage(getActivity(), getResources().getString(R.string.pls_check_your_pwd));
+                                Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), getResources().getString(R.string.pls_check_your_pwd));
                                 et_pwd_in_change_pwd_dialog.requestFocus();
                             } else if (str_new_password.isEmpty()) {
-                                Toast_Message.showToastMessage(getActivity(), getResources().getString(R.string.pls_enter_your_pwd));
+                                Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), getResources().getString(R.string.pls_enter_your_pwd));
                                 et_repeat_pwd_in_change_pwd_dialog.requestFocus();
                             } else if (str_new_password.length() <= 6) {
-                                Toast_Message.showToastMessage(getActivity(), getResources().getString(R.string.your_pwd_must_be_atleast_6_characters_txt));
+                                Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), getResources().getString(R.string.your_pwd_must_be_atleast_6_characters_txt));
                                 et_repeat_pwd_in_change_pwd_dialog.requestFocus();
                             } else {
                                 Get_Update_Password_Details();
@@ -311,35 +317,40 @@ public class My_Profile_Fragment extends Fragment implements View.OnClickListene
             pd.setCancelable(false);
             ProgressBar progressbar = pd.findViewById(android.R.id.progress);
             progressbar.getIndeterminateDrawable().setColorFilter(Color.parseColor("#000000"), android.graphics.PorterDuff.Mode.SRC_IN);
-            Log.e("Json_value_Profile", jsonObject.toString());
+//            Log.e("Json_value_Profile", jsonObject.toString());
             APIInterface apiInterface = Factory.getClient();
-            Call<Category_Model> call = apiInterface.GET_NEW_PWD_UPDATE_CALL("application/json", jsonObject.toString());
+            Call<Category_Model> call = apiInterface.GET_NEW_PWD_UPDATE_CALL("application/json", jsonObject.toString(), str_auth_token);
             call.enqueue(new Callback<Category_Model>() {
                 @TargetApi(Build.VERSION_CODES.KITKAT)
                 @Override
                 public void onResponse(Call<Category_Model> call, Response<Category_Model> response) {
-                    if (response.isSuccessful()) {
-                        pd.dismiss();
-                        dialog.dismiss();
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put("SOURCEDETAILS", "email");
-                        contentValues.put("EMAIL", str_email);
-                        contentValues.put("SIGNUPSTATUS", "6");
-                        contentValues.put("PASSWORD", str_repeat_pwd);
-                        db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
-                        DBEXPORT();
-                        Log.e("profile_cntn_values", contentValues.toString());
-                        assert response.body() != null;
-                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.body().message);
+                    if (response.code() == 200) {
+                        if (response.isSuccessful()) {
+                            pd.dismiss();
+                            dialog.dismiss();
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put("SOURCEDETAILS", "email");
+                            contentValues.put("EMAIL", str_email);
+                            contentValues.put("SIGNUPSTATUS", "6");
+                            contentValues.put("PASSWORD", str_repeat_pwd);
+                            db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
+                            DBEXPORT();
+//                        Log.e("profile_cntn_values", contentValues.toString());
+                            assert response.body() != null;
+                            Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.body().message);
 
-                        /*This is for refreshing current activity*/
-                        // Reload current fragment
-                        FragmentTransaction ft = null;
-                        if (getFragmentManager() != null) {
-                            ft = getFragmentManager().beginTransaction();
-                            ft.detach(My_Profile_Fragment.this).attach(My_Profile_Fragment.this).commit();
+                            /*This is for refreshing current activity*/
+                            // Reload current fragment
+                            FragmentTransaction ft = null;
+                            if (getFragmentManager() != null) {
+                                ft = getFragmentManager().beginTransaction();
+                                ft.detach(My_Profile_Fragment.this).attach(My_Profile_Fragment.this).commit();
+                            }
                         }
-
+                    } else if (response.code() == 401) {
+                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
+                    } else if (response.code() == 500) {
+                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
                     }
                 }
 

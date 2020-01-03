@@ -1,10 +1,12 @@
 package com.spot_the_ballgame.Model;
+
 import java.util.ArrayList;
+
 /*This class is used for all signup and signin api's calling*/
 public class UserModel {
     public Datum datum;
     ArrayList<Datum> data;
-    public String message, code;
+    public String message, code, api_token, status;
 
     public static class Datum {
         public String id;

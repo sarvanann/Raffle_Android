@@ -100,5 +100,11 @@
     <color name="bg_transparant_color">#22FFFFFF</color>
 
     <color name="placeholder_bg">#dddddd</color>
-    <color name="gray_color_new">#37D6D2D2</color>
+    <color name="gray_color_new">#57D6D2D2</color>
+
+
+    <color name="item_name">#0c0c0c</color>
+    <color name="description">#1a1a1a</color>
+    <color name="chef">#777</color>
+    <color name="timestamp">#777</color>
 </resources>

@@ -33,7 +33,9 @@ import com.google.android.material.snackbar.Snackbar;
 import com.spot_the_ballgame.Interface.APIInterface;
 import com.spot_the_ballgame.Interface.Factory;
 import com.spot_the_ballgame.Model.UserModel;
+import com.spot_the_ballgame.Navigation_Drawer_Act;
 import com.spot_the_ballgame.R;
+import com.spot_the_ballgame.SessionSave;
 import com.spot_the_ballgame.Toast_Message;
 
 import org.json.JSONObject;
@@ -68,7 +70,7 @@ public class Mobile_Num_Registration extends AppCompatActivity implements View.O
     Snackbar snackbar;
     ProgressDialog pd;
     String str_intent_mobile_number, str_intent_mobile_number_new, str_status, str_phoneno_db;
-
+    String str_auth_token;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -114,6 +116,9 @@ public class Mobile_Num_Registration extends AppCompatActivity implements View.O
         } else {
             et_mobile_number.setText("");
         }
+        str_auth_token = SessionSave.getSession("Token_value", Mobile_Num_Registration.this);
+
+        Log.e("str_auth_token_reg", str_auth_token);
     }
 
     @Override
@@ -154,43 +159,45 @@ public class Mobile_Num_Registration extends AppCompatActivity implements View.O
 
             APIInterface apiInterface = Factory.getClient();
             Log.e("Json_Value_mob_reg", jsonObject.toString());
-            Call<UserModel> call = apiInterface.MOBILE_NUM_REGISTER_RESPONSE_CALL("application/json", jsonObject.toString());
+            Call<UserModel> call = apiInterface.MOBILE_NUM_REGISTER_RESPONSE_CALL("application/json", jsonObject.toString(), str_auth_token);
             call.enqueue(new Callback<UserModel>() {
                 @Override
                 public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                    if (response.isSuccessful()) {
-                        str_code = response.body().code;
-                        str_message = response.body().message;
-                        if (str_code.equalsIgnoreCase("success")) {
-                            pd.dismiss();
-                            str_source_detail = response.body().datum.source_detail;
-                            str_app_id = response.body().datum.app_id;
-                            str_first_name = response.body().datum.first_name;
-                            str_last_name = response.body().datum.last_name;
-                            str_email = response.body().datum.email;
-                            str_phoneno = response.body().datum.phoneno;
-                            str_image = response.body().datum.image;
-                            str_walet = response.body().datum.walet;
-                            str_money = response.body().datum.money;
-                            str_token = response.body().datum.token;
-                            str_username = response.body().datum.username;
-                            str_password = response.body().datum.password;
-                            str_active = response.body().datum.active;
-                            str_verified = response.body().datum.verified;
-                            Log.e("emailll", str_email);
+                    if (response.code()==200) {
+                        if (response.isSuccessful()) {
+                            str_code = response.body().status;
+                            str_message = response.body().message;
+                            if (str_code.equalsIgnoreCase("success")) {
+                                pd.dismiss();
+                                str_source_detail = response.body().datum.source_detail;
+                                str_app_id = response.body().datum.app_id;
+                                str_first_name = response.body().datum.first_name;
+                                str_last_name = response.body().datum.last_name;
+                                str_email = response.body().datum.email;
+                                str_phoneno = response.body().datum.phoneno;
+                                str_image = response.body().datum.image;
+                                str_walet = response.body().datum.walet;
+                                str_money = response.body().datum.money;
+                                str_token = response.body().datum.token;
+                                str_username = response.body().datum.username;
+                                str_password = response.body().datum.password;
+                                str_active = response.body().datum.active;
+                                str_verified = response.body().datum.verified;
+                                Log.e("emailll", str_email);
 
 
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put("PHONENO", str_phoneno);
-                            contentValues.put("TOKEN", str_token);
-                            contentValues.put("SIGNUPSTATUS", 2);
-                            Log.e("Content_Values_mob_reg", contentValues.toString());
-                            db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
-                            DBEXPORT();
-                            Intent intent = new Intent(Mobile_Num_Registration.this, Mobile_Num_Verification_Otp_Act.class);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                            Toast.makeText(Mobile_Num_Registration.this, "Message" + response.body().message, Toast.LENGTH_SHORT).show();
+                                ContentValues contentValues = new ContentValues();
+                                contentValues.put("PHONENO", str_phoneno);
+                                contentValues.put("TOKEN", str_token);
+                                contentValues.put("SIGNUPSTATUS", 2);
+                                Log.e("Content_Values_mob_reg", contentValues.toString());
+                                db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
+                                DBEXPORT();
+                                Intent intent = new Intent(Mobile_Num_Registration.this, Navigation_Drawer_Act.class);
+//                            Intent intent = new Intent(Mobile_Num_Registration.this, Mobile_Num_Verification_Otp_Act.class);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                                Toast.makeText(Mobile_Num_Registration.this, "Message" + response.body().message, Toast.LENGTH_SHORT).show();
 
 
                             /*if ((!(rowIDExistEmail(str_email)))) {
@@ -206,10 +213,17 @@ public class Mobile_Num_Registration extends AppCompatActivity implements View.O
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                                 Toast.makeText(Mobile_Num_Registration.this, "Message" + response.body().message, Toast.LENGTH_SHORT).show();
                             }*/
-                        } else {
-                            pd.dismiss();
-                            Toast_Message.showToastMessage(Mobile_Num_Registration.this, str_message);
+                            } else {
+                                pd.dismiss();
+                                Toast_Message.showToastMessage(Mobile_Num_Registration.this, str_message);
+                            }
                         }
+                    }else if (response.code() == 401) {
+                        pd.dismiss();
+                        Toast_Message.showToastMessage(Mobile_Num_Registration.this, response.message());
+                    } else if (response.code() == 500) {
+                        pd.dismiss();
+                        Toast_Message.showToastMessage(Mobile_Num_Registration.this, response.message());
                     }
                 }
 
@@ -222,6 +236,7 @@ public class Mobile_Num_Registration extends AppCompatActivity implements View.O
             e.printStackTrace();
         }
     }
+
     private void DBEXPORT() {
         File sd = Environment.getExternalStorageDirectory();
         File data = Environment.getDataDirectory();

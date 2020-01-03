@@ -14,7 +14,6 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.Gravity;
 import android.view.View;
@@ -114,10 +113,8 @@ public class Forgot_Pwd_Act extends AppCompatActivity implements View.OnClickLis
 
     private void GetForgot_Pwd_Details() {
         try {
-
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("email", et_email_id_in_forgot_pwd.getText().toString());
-
             pd.setMessage("Loading...");
             pd.show();
             pd.setCancelable(false);
@@ -129,71 +126,81 @@ public class Forgot_Pwd_Act extends AppCompatActivity implements View.OnClickLis
             call.enqueue(new Callback<UserModel>() {
                 @Override
                 public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                    if (response.isSuccessful()) {
-                        str_code = response.body().code;
-                        str_message = response.body().message;
-                        Log.e("str_code", str_code);
-                        Log.e("str_message", str_message);
-                        if (str_code.equalsIgnoreCase("success")) {
-                            pd.dismiss();
-                            Toast_Message.showToastMessage(Forgot_Pwd_Act.this, str_message);
-                            str_id = response.body().datum.id;
-                            str_source_detail = response.body().datum.source_detail;
-                            str_firstname = response.body().datum.first_name;
-                            str_lastname = response.body().datum.last_name;
-                            static_str_email_id = response.body().datum.email;
-                            str_phone_no = response.body().datum.phoneno;
-                            str_image = response.body().datum.image;
-                            str_token = response.body().datum.token;
-                            str_username = response.body().datum.username;
-                            str_email_password = response.body().datum.password;
-                            str_active = response.body().datum.active;
-                            str_verified = response.body().datum.verified;
-
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put("SOURCEDETAILS", "email");
-                            contentValues.put("EMAIL", static_str_email_id);
-                            contentValues.put("STATUS", "1");
-                            contentValues.put("SIGNUPSTATUS", "4");
-                            contentValues.put("PASSWORD", str_email_password);
-                            db.update("LOGINDETAILS", contentValues, "EMAIL='" + static_str_email_id + "'", null);
-                            DBEXPORT();
-                            Log.e("frgt_pwd_cnt_values", contentValues.toString());
+                    if (response.code() == 200) {
+                        if (response.isSuccessful()) {
+                            str_code = response.body().status;
+                            str_message = response.body().message;
+//                        Log.e("str_code", str_code);
+//                        Log.e("str_message", str_message);
+                            if (str_code.equalsIgnoreCase("success")) {
+                                pd.dismiss();
+                                Toast_Message.showToastMessage(Forgot_Pwd_Act.this, str_message);
+                                str_id = response.body().datum.id;
+                                str_source_detail = response.body().datum.source_detail;
+                                str_firstname = response.body().datum.first_name;
+                                str_lastname = response.body().datum.last_name;
+                                static_str_email_id = response.body().datum.email;
+                                str_phone_no = response.body().datum.phoneno;
+                                str_image = response.body().datum.image;
+                                str_token = response.body().datum.token;
+                                str_username = response.body().datum.username;
+                                str_email_password = response.body().datum.password;
+                                str_active = response.body().datum.active;
+                                str_verified = response.body().datum.verified;
+                                ContentValues contentValues = new ContentValues();
+                                contentValues.put("SOURCEDETAILS", "email");
+                                contentValues.put("EMAIL", static_str_email_id);
+                                contentValues.put("STATUS", "1");
+                                contentValues.put("SIGNUPSTATUS", "4");
+//                            contentValues.put("PASSWORD", str_email_password);
+                                db.update("LOGINDETAILS", contentValues, "EMAIL='" + static_str_email_id + "'", null);
+                                DBEXPORT();
+//                            Log.e("frgt_pwd_cnt_values", contentValues.toString());
 //                            Toast_Message.showToastMessage(Forgot_Pwd_Act.this, str_message);
-                            Intent intent = new Intent(Forgot_Pwd_Act.this, Email_Sign_In_Act.class);
-                            intent.putExtra("str_email_password", str_email_password);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                            Log.e("str_id", str_id);
-                            Log.e("str_source_detail", str_source_detail);
-                            Log.e("str_firstname", str_firstname);
-                            Log.e("str_lastname", str_lastname);
-                            Log.e("static_str_email_id", static_str_email_id);
-                            Log.e("str_phone_no", str_phone_no);
-                            Log.e("str_image", String.valueOf(str_image));
+                                Intent intent = new Intent(Forgot_Pwd_Act.this, Email_Sign_In_Act.class);
+                                intent.putExtra("str_email_password", str_email_password);
+                                intent.putExtra("str_signup_status", "4");
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+//                            Log.e("str_id", str_id);
+//                            Log.e("str_source_detail", str_source_detail);
+//                            Log.e("str_firstname", str_firstname);
+//                            Log.e("str_lastname", str_lastname);
+//                            Log.e("static_str_email_id", static_str_email_id);
+//                            Log.e("str_phone_no", str_phone_no);
+//                            Log.e("str_image", String.valueOf(str_image));
 
-                            Log.e("str_token", str_token);
-                            Log.e("str_username", str_username);
-                            Log.e("str_email_password", str_email_password);
-                            Log.e("str_active", str_active);
-                            Log.e("str_verified", str_verified);
-                            et_email_id_in_forgot_pwd.setText("");
+//                            Log.e("str_token", str_token);
+//                            Log.e("str_username", str_username);
+//                            Log.e("str_email_password", str_email_password);
+//                            Log.e("str_active", str_active);
+//                            Log.e("str_verified", str_verified);
+                                et_email_id_in_forgot_pwd.setText("");
 //                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                        } else {
-                            pd.dismiss();
-                            Toast_Message.showToastMessage(Forgot_Pwd_Act.this, str_message);
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                            } else {
+                                pd.dismiss();
+                                Toast_Message.showToastMessage(Forgot_Pwd_Act.this, str_message);
+                            }
+                            if (str_code.equalsIgnoreCase("error")) {
+                                pd.dismiss();
+                                Toast_Message.showToastMessage(Forgot_Pwd_Act.this, str_message);
+                            }
                         }
-                        if (str_code.equalsIgnoreCase("error")) {
-                            pd.dismiss();
-                            Toast_Message.showToastMessage(Forgot_Pwd_Act.this, str_message);
-                        }
+                    } else if (response.code() == 401) {
+                        pd.dismiss();
+                        Toast_Message.showToastMessage(Forgot_Pwd_Act.this, response.message());
+//                        Toast_Message.showToastMessage(Email_Sign_In_Act.this, "Un Authorized");
+                    } else if (response.code() == 500) {
+                        pd.dismiss();
+                        Toast_Message.showToastMessage(Forgot_Pwd_Act.this, response.message());
+//                        Toast_Message.showToastMessage(Email_Sign_In_Act.this, "Un Authorized");
                     }
                 }
 
                 @Override
                 public void onFailure(Call<UserModel> call, Throwable t) {
-                    Log.e("Failure_Msg", t.getMessage());
+//                    Log.e("Failure_Msg", t.getMessage());
                 }
             });
         } catch (Exception e) {

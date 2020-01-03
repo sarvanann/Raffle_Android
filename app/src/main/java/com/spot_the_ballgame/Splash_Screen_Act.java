@@ -16,8 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.crashlytics.android.Crashlytics;
 import com.spot_the_ballgame.Registration.Mobile_Num_Registration;
-import com.spot_the_ballgame.Registration.Mobile_Num_Verification_Otp_Act;
 import com.spot_the_ballgame.Registration.SignIn.Email_Sign_In_Act;
+import com.spot_the_ballgame.Registration.SignUp.All_Btn_OnClick_Sign_Up_Act;
 import com.spot_the_ballgame.Registration.Update_New_Password_Act;
 
 import java.security.MessageDigest;
@@ -29,8 +29,8 @@ public class Splash_Screen_Act extends AppCompatActivity {
     private static final String TAG = "splashscreen";
     public static SQLiteDatabase db;
     static long SLEEP_TIME = 2;
-    int int_normal_status, int_reg_status, int_verify_status;
-    public static String str_global_mail_id;
+    int int_normal_status, int_carosel_status, int_verify_status;
+    public static String str_global_mail_id, str_carosel_status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,17 +84,24 @@ public class Splash_Screen_Act extends AppCompatActivity {
             } else {
                 int_normal_status = 0;
             }
+            str_carosel_status = (SessionSave.getSession("Carosel_Status", Splash_Screen_Act.this));
+            Log.e("str_carosel_status", "" + str_carosel_status);
             Log.e("int_normal_status", "" + int_normal_status);
-            if (int_normal_status == 0) {
+//            if (int_normal_status == 0 && str_carosel_status.equalsIgnoreCase("No data")) {
+            if (str_carosel_status.equalsIgnoreCase("No data")) {
                 Intent intent = new Intent(Splash_Screen_Act.this, Carousel_View_Act.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-            } else if (int_normal_status == 1) {
+            }
+
+            if (int_normal_status == 1) {
                 Intent intent = new Intent(Splash_Screen_Act.this, Mobile_Num_Registration.class);
+//                Intent intent = new Intent(Splash_Screen_Act.this, Navigation_Drawer_Act.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             } else if (int_normal_status == 2) {
-                Intent intent = new Intent(Splash_Screen_Act.this, Mobile_Num_Verification_Otp_Act.class);
+                Intent intent = new Intent(Splash_Screen_Act.this, Navigation_Drawer_Act.class);
+//                Intent intent = new Intent(Splash_Screen_Act.this, Mobile_Num_Verification_Otp_Act.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             } else if (int_normal_status == 3 || int_normal_status == 6) {
@@ -108,6 +115,10 @@ public class Splash_Screen_Act extends AppCompatActivity {
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             } else if (int_normal_status == 5) {
                 Intent intent = new Intent(Splash_Screen_Act.this, Update_New_Password_Act.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            } else if (str_carosel_status.equalsIgnoreCase("1")) {
+                Intent intent = new Intent(Splash_Screen_Act.this, All_Btn_OnClick_Sign_Up_Act.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }

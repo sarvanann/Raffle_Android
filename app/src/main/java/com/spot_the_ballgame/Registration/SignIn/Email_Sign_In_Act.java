@@ -40,7 +40,7 @@ import com.spot_the_ballgame.Model.UserModel;
 import com.spot_the_ballgame.Navigation_Drawer_Act;
 import com.spot_the_ballgame.R;
 import com.spot_the_ballgame.Registration.Forgot_Pwd_Act;
-import com.spot_the_ballgame.Registration.Update_New_Password_Act;
+import com.spot_the_ballgame.SessionSave;
 import com.spot_the_ballgame.Toast_Message;
 
 import org.json.JSONObject;
@@ -50,6 +50,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -71,6 +73,7 @@ public class Email_Sign_In_Act extends AppCompatActivity implements View.OnClick
             str_pwd,
             str_source_details,
             str_sign_up_status,
+            str_intent_signup_status,
             str_email_password;
 
     //This is for Internet alert using snackbar status
@@ -78,7 +81,9 @@ public class Email_Sign_In_Act extends AppCompatActivity implements View.OnClick
     public static int TYPE_MOBILE = 2;
     public static int TYPE_NOT_CONNECTED = 0;
     private boolean internetConnected = true;
-    boolean show;
+    boolean show = false;
+    Bundle bundle;
+    Cursor cursor;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -142,16 +147,24 @@ public class Email_Sign_In_Act extends AppCompatActivity implements View.OnClick
                 }
             }
         });
+
+        bundle = getIntent().getExtras();
+        if (bundle == null) {
+            str_intent_signup_status = null;
+        } else {
+            str_intent_signup_status = bundle.getString("str_signup_status");
+        }
         String s1 = "email";
         String select = "select SIGNUPSTATUS ,PASSWORD,SOURCEDETAILS from LOGINDETAILS";
 //        String select = "select SIGNUPSTATUS ,PASSWORD,SOURCEDETAILS from LOGINDETAILS where SOURCEDETAILS ='" + s1 + "'";
-        Cursor cursor = db.rawQuery(select, null);
+        cursor = db.rawQuery(select, null);
         int n1 = cursor.getCount();
+        Log.e("n1_count", "" + n1);
         if (n1 > 0) {
             if (cursor.moveToFirst()) {
                 do {
                     str_sign_up_status = cursor.getString(0);
-                    str_email_password = cursor.getString(1);
+//                    str_email_password = cursor.getString(1);
                     str_source_details = cursor.getString(2);
                     Log.e("inside_sign_status", str_sign_up_status);
                     Log.e("inside_source_details", str_source_details);
@@ -159,7 +172,6 @@ public class Email_Sign_In_Act extends AppCompatActivity implements View.OnClick
             }
             cursor.close();
             if (str_sign_up_status.equals("4")) {
-                Log.e("inside_str_email_password", str_email_password);
                 tv_dont_receive_otp.setVisibility(View.VISIBLE);
                 tv_resend_code.setVisibility(View.VISIBLE);
                 tv_forgot_pwd_in_signin.setVisibility(View.GONE);
@@ -219,6 +231,12 @@ public class Email_Sign_In_Act extends AppCompatActivity implements View.OnClick
                         Toast_Message.showToastMessage(Email_Sign_In_Act.this, getResources().getString(R.string.pls_enter_valid_pwd));
                         et_pwd_in_signin.requestFocus();
                     } else {
+                        softKeyboardVisibility(show);
+                        int n1 = cursor.getCount();
+                        Log.e("crsr_count", "" + n1);
+                        if (n1 > 0) {
+//                            Get_Email_SignIn_Details();
+                        }
                         Get_Email_SignIn_Details();
                     }
                 }
@@ -255,19 +273,27 @@ public class Email_Sign_In_Act extends AppCompatActivity implements View.OnClick
             call.enqueue(new Callback<UserModel>() {
                 @Override
                 public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                    if (response.isSuccessful()) {
+                    if (response.code() == 200) {
+                        if (response.isSuccessful()) {
+                            pd.dismiss();
+                            assert response.body() != null;
+                            String str_msg = response.body().message;
+                            Toast_Message.showToastMessage(Email_Sign_In_Act.this, str_msg);
+//                            str_email_password = response.body().datum.password;
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put("SOURCEDETAILS", "email");
+                            contentValues.put("EMAIL", str_email_id);
+                            contentValues.put("STATUS", "1");
+//                            contentValues.put("PASSWORD", str_email_password);
+                            db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email_id + "'", null);
+                            Log.e("resend_cnt_values", contentValues.toString());
+                        }
+                    } else if (response.code() == 401) {
                         pd.dismiss();
-                        assert response.body() != null;
-                        String str_msg = response.body().message;
-                        Toast_Message.showToastMessage(Email_Sign_In_Act.this, str_msg);
-                        str_email_password = response.body().datum.password;
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put("SOURCEDETAILS", "email");
-                        contentValues.put("EMAIL", str_email_id);
-                        contentValues.put("STATUS", "1");
-                        contentValues.put("PASSWORD", str_email_password);
-                        db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email_id + "'", null);
-                        Log.e("resend_cnt_values", contentValues.toString());
+                        Toast_Message.showToastMessage(Email_Sign_In_Act.this, response.message());
+                    } else if (response.code() == 500) {
+                        pd.dismiss();
+                        Toast_Message.showToastMessage(Email_Sign_In_Act.this, response.message());
                     }
                 }
 
@@ -303,44 +329,88 @@ public class Email_Sign_In_Act extends AppCompatActivity implements View.OnClick
             call.enqueue(new Callback<UserModel>() {
                 @Override
                 public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                    if (response.isSuccessful()) {
-                        String str_f_name, str_l_name, str_email, str_phone_no, str_username, str_image, str_walet, str_money, str_active, str_verified, str_code, str_message;
-                        str_code = response.body().code;
-                        str_message = response.body().message;
-                        if (str_code.equalsIgnoreCase("success")) {
-                            pd.dismiss();
-                            str_f_name = response.body().datum.first_name;
-                            str_l_name = response.body().datum.last_name;
-                            str_email = response.body().datum.email;
-                            str_phone_no = response.body().datum.phoneno;
-                            str_username = response.body().datum.username;
-                            str_image = response.body().datum.image;
-                            str_walet = response.body().datum.walet;
-                            str_money = response.body().datum.money;
-                            str_active = response.body().datum.verified;
-                            str_verified = response.body().datum.active;
-                            String select = "Select SIGNUPSTATUS FROM LOGINDETAILS";
-                            Cursor cursor = db.rawQuery(select, null);
-                            int int_cursor_count = cursor.getCount();
-                            Log.e("int_cursor_count_signin", "" + int_cursor_count);
-                            int n1 = 0;
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put("STATUS", "1");
-                            contentValues.put("SIGNUPSTATUS", "3");
-                            db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
-                            DBEXPORT();
-                            Log.e("email_signin_cntn_values", contentValues.toString());
-                            if (str_sign_up_status.equals("4")) {
+                    if (response.code() == 200) {
+                        if (response.isSuccessful()) {
+                            String str_f_name, str_l_name, str_email, str_phone_no, str_username, str_image, str_walet, str_money, str_active, str_verified, str_code, str_status, str_message, str_api_token;
+                            str_status = response.body().status;
+                            Log.e("str_status", str_status);
+                            str_message = response.body().message;
+                            if (str_status.equalsIgnoreCase("success")) {
+                                pd.dismiss();
+                                str_f_name = response.body().datum.first_name;
+                                str_l_name = response.body().datum.last_name;
+                                str_email = response.body().datum.email;
+                                str_phone_no = response.body().datum.phoneno;
+                                str_username = response.body().datum.username;
+                                str_image = response.body().datum.image;
+                                str_walet = response.body().datum.walet;
+                                str_money = response.body().datum.money;
+                                str_active = response.body().datum.verified;
+                                str_verified = response.body().datum.active;
+                                str_api_token = response.body().api_token;
+                                SessionSave.SaveSession("Token_value", str_api_token, Email_Sign_In_Act.this);
+                                String select = "Select SIGNUPSTATUS FROM LOGINDETAILS";
+                                Cursor cursor = db.rawQuery(select, null);
+                                int int_cursor_count = cursor.getCount();
+                                Log.e("int_cursor_count_signin", "" + int_cursor_count);
+                                int n1 = 0;
+                                ContentValues contentValues = new ContentValues();
+                                if (rowIDExistEmail(str_email_id)) {
+                                    contentValues.put("SOURCEDETAILS", "email");
+                                    contentValues.put("EMAIL", str_email_id);
+                                    contentValues.put("FIRSTNAME", str_email_id);
+                                    contentValues.put("STATUS", 1);
+                                    contentValues.put("SIGNUPSTATUS", 1);
+                                    contentValues.put("PASSWORD", str_pwd);
+                                    Log.e("CntValuesemailsignup", contentValues.toString());
+                                    db.insert("LOGINDETAILS", null, contentValues);
+
+                                    Intent intent = new Intent(Email_Sign_In_Act.this, Navigation_Drawer_Act.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                                } else {
+                                    contentValues.put("SOURCEDETAILS", "email");
+                                    contentValues.put("FIRSTNAME", str_email_id.substring(0, 8));
+                                    contentValues.put("EMAIL", str_email_id);
+                                    contentValues.put("STATUS", "1");
+                                    contentValues.put("SIGNUPSTATUS", "3");
+                                    db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
+                                    DBEXPORT();
+                                    Log.e("else_email_cntn_values", contentValues.toString());
+
+                                    Intent intent = new Intent(Email_Sign_In_Act.this, Navigation_Drawer_Act.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                                }
+
+                                /*if (str_sign_up_status.equals("4")) {
+                                    ContentValues contentValues = new ContentValues();
+                                    contentValues.put("STATUS", "1");
+                                    contentValues.put("SIGNUPSTATUS", "3");
+                                    contentValues.put("PASSWORD", et_pwd_in_signin.getText().toString());
+                                    db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
+                                    DBEXPORT();
+                                    Log.e("if_email__cntn_values", contentValues.toString());
+                                } else {
+                                    ContentValues contentValues = new ContentValues();
+                                    contentValues.put("STATUS", "1");
+                                    contentValues.put("SIGNUPSTATUS", "3");
+                                    db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
+                                    DBEXPORT();
+                                    Log.e("else_email_cntn_values", contentValues.toString());
+                                }*/
+
+
+                            /*if (str_sign_up_status.equals("4")) {
                                 Intent intent = new Intent(Email_Sign_In_Act.this, Update_New_Password_Act.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                            } else {
-                                Intent intent = new Intent(Email_Sign_In_Act.this, Navigation_Drawer_Act.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                            }
+                            } else {*/
+
+//                            }
 
 //                            Log.e("str_f_name", str_f_name);
 //                            Log.e("str_l_name", str_l_name);
@@ -352,10 +422,19 @@ public class Email_Sign_In_Act extends AppCompatActivity implements View.OnClick
 //                            Log.e("str_active", str_active);
 //                            Log.e("str_verified", str_verified);
 //                            Toast_Message.showToastMessage(Email_Sign_In_Act.this, str_message);
-                        } else if (str_code.equalsIgnoreCase("error")) {
-                            pd.dismiss();
-                            Toast_Message.showToastMessage(Email_Sign_In_Act.this, str_message);
+                            } else if (str_status.equalsIgnoreCase("error")) {
+                                pd.dismiss();
+                                Toast_Message.showToastMessage(Email_Sign_In_Act.this, str_message);
+                            }
                         }
+                    } else if (response.code() == 401) {
+                        pd.dismiss();
+                        Toast_Message.showToastMessage(Email_Sign_In_Act.this, response.message());
+//                        Toast_Message.showToastMessage(Email_Sign_In_Act.this, "Un Authorized");
+                    } else if (response.code() == 500) {
+                        pd.dismiss();
+                        Toast_Message.showToastMessage(Email_Sign_In_Act.this, response.message());
+//                        Toast_Message.showToastMessage(Email_Sign_In_Act.this, "Un Authorized");
                     }
                 }
 
@@ -369,6 +448,27 @@ public class Email_Sign_In_Act extends AppCompatActivity implements View.OnClick
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean rowIDExistEmail(String str_email_id) {
+        String select = "select * from LOGINDETAILS ";
+        Cursor cursor = db.rawQuery(select, null);
+        List<String> labels = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                String var = cursor.getString(3);
+                labels.add(var);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        boolean allMatch = true;
+        for (String string : labels) {
+            if (string.equalsIgnoreCase(str_email_id)) {
+                allMatch = false;
+                break;
+            }
+        }
+        return allMatch;
     }
 
 

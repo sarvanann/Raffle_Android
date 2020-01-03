@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +43,12 @@ import com.spot_the_ballgame.Fragments.My_Profile_Fragment;
 import com.spot_the_ballgame.Fragments.My_Wallet_Fragment;
 import com.spot_the_ballgame.Fragments.Share_Fragment;
 import com.spot_the_ballgame.Fragments.Terms_and_Condition_Fragment;
+import com.spot_the_ballgame.Interface.APIInterface;
+import com.spot_the_ballgame.Interface.Factory;
+import com.spot_the_ballgame.Model.Category_Model;
 import com.spot_the_ballgame.Registration.SignUp.All_Btn_OnClick_Sign_Up_Act;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,12 +58,16 @@ import java.nio.channels.FileChannel;
 import java.util.Objects;
 
 import io.fabric.sdk.android.Fabric;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Navigation_Drawer_Act extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     boolean doubleBackToExitPressedOnce = false;
     Fragment fragment;
     FragmentTransaction ft;
     public static TextView tv_title_txt, tv_points;
+    ImageView iv_points_img;
     NotificationBadge notification_badge;
     int mCartItemCount = 10;
 
@@ -68,6 +78,7 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
     public static TextView tv_toolbar_left_arrow;
     SQLiteDatabase db;
     String str_balance_points, str_session_carousel_values;
+    String str_auth_token, str_email;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -79,11 +90,16 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
         final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ImageButton menuRight = findViewById(R.id.menuRight);
         tv_title_txt = findViewById(R.id.tv_title_txt);
+        iv_points_img = findViewById(R.id.iv_points_img);
         tv_points = findViewById(R.id.tv_points);
         tv_toolbar_left_arrow = findViewById(R.id.tv_toolbar_left_arrow);
         tv_toolbar_left_arrow.setVisibility(View.GONE);
         notification_badge = findViewById(R.id.notification_badge);
         notification_badge.setNumber(1);
+
+        str_auth_token = SessionSave.getSession("Token_value", Navigation_Drawer_Act.this);
+        Log.e("str_auth_token_nav", str_auth_token);
+
 
         str_session_carousel_values = SessionSave.getSession("carousel_value", Navigation_Drawer_Act.this);
         Log.e("session_carousel_values", str_session_carousel_values);
@@ -91,9 +107,10 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
         if (str_session_carousel_values.equals("1")) {
             Show_Carousel_Layout();
         }
-        if (str_session_carousel_values != null && str_session_carousel_values.equals("5")) {
+        ShowDashboard();
+        /*if (str_session_carousel_values != null && str_session_carousel_values.equals("5")) {
             ShowDashboard();
-        }
+        }*/
         menuRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,18 +125,18 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
         navigationView2.setNavigationItemSelectedListener(this);
         db.execSQL("create table if not exists LOGINDETAILS(USERNAME varchar,PASSWORD varchar,STATUS int,IMEI varchar);");
 
-        String select = "select BALANCE from LOGINDETAILS where STATUS ='" + 1 + "'";
+        String select = "select BALANCE,EMAIL from LOGINDETAILS where STATUS ='" + 1 + "'";
         Cursor cursor = db.rawQuery(select, null);
         if (cursor.moveToFirst()) {
             do {
                 str_balance_points = cursor.getString(0);
+                str_email = cursor.getString(1);
             } while (cursor.moveToNext());
         }
         cursor.close();
         DBEXPORT();
-        Log.e("dash_balance_points", str_balance_points);
-
-        tv_points.setText(str_balance_points);
+        ///
+        Get_Wallet_Balance_Details();
 //        showBottomSheetDialogFragment();
         tv_points.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,6 +146,13 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
             }
         });
 
+        iv_points_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragment = new My_Wallet_Fragment();
+                getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, fragment).commit();
+            }
+        });
         //These lines should be added in the OnCreate() of your main activity
         gallery = (TextView) MenuItemCompat.getActionView(navigationView2.getMenu().
                 findItem(R.id.nav_my_wallet));
@@ -149,13 +173,45 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
                     Intent intent = new Intent(Navigation_Drawer_Act.this, Navigation_Drawer_Act.class);
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    Toast.makeText(Navigation_Drawer_Act.this, "IF", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(Navigation_Drawer_Act.this, "IF", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(Navigation_Drawer_Act.this, "ELSE", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(Navigation_Drawer_Act.this, "ELSE", Toast.LENGTH_SHORT).show();
                     getSupportFragmentManager().popBackStack();// write your code to switch between fragments.
                 }
             }
         });
+    }
+
+    private void Get_Wallet_Balance_Details() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("email", str_email);
+            APIInterface apiInterface = Factory.getClient();
+            Call<Category_Model> call = apiInterface.GET_WALLET_BALALNCE_DETAILS("application/json", jsonObject.toString(), str_auth_token);
+            call.enqueue(new Callback<Category_Model>() {
+                @Override
+                public void onResponse(Call<Category_Model> call, Response<Category_Model> response) {
+                    if (response.code() == 200) {
+                        if (response.isSuccessful()) {
+                            String str_amount = response.body().current_amt;
+                            tv_points.setText(str_amount);
+                            Log.e("str_amount_nav", str_amount);
+                        }
+                    } else if (response.code() == 401) {
+                        Toast_Message.showToastMessage(Navigation_Drawer_Act.this, response.message());
+                    } else if (response.code() == 500) {
+                        Toast_Message.showToastMessage(Navigation_Drawer_Act.this, response.message());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Category_Model> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void Show_Carousel_Layout() {
@@ -356,14 +412,7 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
                     db.update("LOGINDETAILS", cv, null, null);
                     Splash_Screen_Act.str_global_mail_id = "";
                     DBEXPORT();
-                    finish();
-                    Intent intent = new Intent(Navigation_Drawer_Act.this, All_Btn_OnClick_Sign_Up_Act.class);
-                    intent.addCategory(Intent.CATEGORY_HOME);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                    System.exit(0);
+                    Get_Logout_Details();
                     dialog.dismiss();
                 }
             });
@@ -378,6 +427,44 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
         drawer.closeDrawer(GravityCompat.END);
         drawer.closeDrawer(GravityCompat.END);
         return true;
+    }
+
+    private void Get_Logout_Details() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("email", str_email);
+            APIInterface apiInterface = Factory.getClient();
+            Call<Category_Model> call = apiInterface.GET_LOGOUT_DETAILS("application/json", jsonObject.toString(), str_auth_token);
+            call.enqueue(new Callback<Category_Model>() {
+                @Override
+                public void onResponse(Call<Category_Model> call, Response<Category_Model> response) {
+                    if (response.code() == 200) {
+                        if (response.isSuccessful()) {
+                            Intent intent = new Intent(Navigation_Drawer_Act.this, All_Btn_OnClick_Sign_Up_Act.class);
+                            intent.addCategory(Intent.CATEGORY_HOME);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+//                        System.exit(0);
+                        } else {
+                            Toast_Message.showToastMessage(Navigation_Drawer_Act.this, response.message());
+                        }
+                    } else if (response.code() == 401) {
+                        Toast_Message.showToastMessage(Navigation_Drawer_Act.this, response.message());
+                    } else if (response.code() == 500) {
+                        Toast_Message.showToastMessage(Navigation_Drawer_Act.this, response.message());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Category_Model> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void DBEXPORT() {

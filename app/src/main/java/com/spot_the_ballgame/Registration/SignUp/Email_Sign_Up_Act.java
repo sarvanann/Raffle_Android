@@ -28,7 +28,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,6 +39,7 @@ import com.spot_the_ballgame.Model.UserModel;
 import com.spot_the_ballgame.R;
 import com.spot_the_ballgame.Registration.Forgot_Pwd_Act;
 import com.spot_the_ballgame.Registration.Mobile_Num_Registration;
+import com.spot_the_ballgame.SessionSave;
 import com.spot_the_ballgame.Splash_Screen_Act;
 import com.spot_the_ballgame.Toast_Message;
 
@@ -78,8 +78,11 @@ public class Email_Sign_Up_Act extends AppCompatActivity implements View.OnClick
             str_repeat_pwd,
             str_username,
             str_pwd,
-            str_code,
+            str_status,
             str_message;
+
+    public String str_token;
+
     //This is for Internet alert using snackbar status
     public static int TYPE_WIFI = 1;
     public static int TYPE_MOBILE = 2;
@@ -272,12 +275,13 @@ public class Email_Sign_Up_Act extends AppCompatActivity implements View.OnClick
                 @Override
                 public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                     if (response.isSuccessful()) {
-                        str_code = response.body().code;
+                        str_status = response.body().status;
                         str_message = response.body().message;
-                        Log.e("str_code", str_code);
                         Log.e("str_message", str_message);
-
-                        if (str_code.equalsIgnoreCase("success")) {
+                        str_token = response.body().api_token;
+                        SessionSave.SaveSession("Token_value", str_token, Email_Sign_Up_Act.this);
+//                        Log.e("str_token_signup", str_token);
+                        if (str_status.equalsIgnoreCase("success")) {
                             pd.dismiss();
                             str_source_detail = response.body().datum.source_detail;
                             str_firstname = response.body().datum.first_name;
@@ -290,6 +294,7 @@ public class Email_Sign_Up_Act extends AppCompatActivity implements View.OnClick
                             Log.e("str_email", str_email_id);
                             Log.e("str_username", str_username);
                             Log.e("str_pwd", str_pwd);
+//                            Log.e("str_token", str_token);
                             /*if (rowIDExistEmail(str_email_id) && rowIDExistFirst_Name(str_firstname)) {
                                 ContentValues contentValues = new ContentValues();
                                 contentValues.put("SOURCEDETAILS", str_source_detail);
@@ -306,10 +311,11 @@ public class Email_Sign_Up_Act extends AppCompatActivity implements View.OnClick
                             }*/
                             Get_Insert_DB_Sign_Up_Values();
                             Intent intent = (new Intent(Email_Sign_Up_Act.this, Mobile_Num_Registration.class));
+//                            Intent intent = (new Intent(Email_Sign_Up_Act.this, Navigation_Drawer_Act.class));
                             intent.putExtra("source_details", str_source_detail);
                             startActivity(intent);
                             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                        } else if (str_code.equalsIgnoreCase("error")) {
+                        } else if (str_status.equalsIgnoreCase("error")) {
                             pd.dismiss();
                             Toast_Message.showToastMessage(Email_Sign_Up_Act.this, str_message);
                         } else {
@@ -334,13 +340,13 @@ public class Email_Sign_Up_Act extends AppCompatActivity implements View.OnClick
         Cursor cursor = db.rawQuery(select, null);
         int n1 = cursor.getCount();
         if (n1 > 0) {
-            Toast.makeText(this, "if", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "if", Toast.LENGTH_SHORT).show();
             ContentValues contentValues1 = new ContentValues();
             contentValues1.put("STATUS", 0);
             db.update("LOGINDETAILS", contentValues1, null, null);
             Insert_Singup_Details();
         } else {
-            Toast.makeText(this, "else", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "else", Toast.LENGTH_SHORT).show();
             Insert_Singup_Details();
         }
         cursor.close();
@@ -354,7 +360,7 @@ public class Email_Sign_Up_Act extends AppCompatActivity implements View.OnClick
             contentValues.put("FIRSTNAME", str_firstname);
             contentValues.put("STATUS", 1);
             contentValues.put("SIGNUPSTATUS", 1);
-            contentValues.put("BALANCE", 1000);
+//            contentValues.put("BALANCE", 1000);
             contentValues.put("PASSWORD", str_pwd);
             Log.e("CntValuesemailsignup", contentValues.toString());
             db.insert("LOGINDETAILS", null, contentValues);

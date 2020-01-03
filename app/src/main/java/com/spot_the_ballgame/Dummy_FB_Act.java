@@ -5,7 +5,6 @@ import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
@@ -57,7 +56,7 @@ public class Dummy_FB_Act extends Activity {
                     startGame();
                 }
                 else {
-                    Toast.makeText(getBaseContext(), "int_video_loaded is 0", Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(getBaseContext(), "int_video_loaded is 0", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -72,7 +71,7 @@ public class Dummy_FB_Act extends Activity {
         mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
             @Override
             public void onRewarded(RewardItem rewardItem) {
-                Toast.makeText(getBaseContext(), "Ad triggered reward.", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), "Ad triggered reward.", Toast.LENGTH_SHORT).show();
                 // addCoins(rewardItem.getAmount());
                 addCoins(10);
             }
@@ -80,33 +79,33 @@ public class Dummy_FB_Act extends Activity {
             @Override
             public void onRewardedVideoAdLoaded() {
                 int_video_loaded = 1;
-                Toast.makeText(getBaseContext(), "Ad loaded.", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), "Ad loaded.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onRewardedVideoAdOpened() {
-                Toast.makeText(getBaseContext(), "Ad opened.", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), "Ad opened.", Toast.LENGTH_SHORT).show();
             }
 
 
             @Override
             public void onRewardedVideoStarted() {
-                Toast.makeText(getBaseContext(), "Ad started.", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), "Ad started.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onRewardedVideoAdClosed() {
-                Toast.makeText(getBaseContext(), "Ad closed.", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), "Ad closed.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onRewardedVideoAdLeftApplication() {
-                Toast.makeText(getBaseContext(), "Ad left application.", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), "Ad left application.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onRewardedVideoAdFailedToLoad(int i) {
-                Toast.makeText(getBaseContext(), "Ad failed to load.", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), "Ad failed to load.", Toast.LENGTH_SHORT).show();
             }
 
             @Override

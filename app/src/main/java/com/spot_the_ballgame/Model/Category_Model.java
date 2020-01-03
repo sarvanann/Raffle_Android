@@ -8,6 +8,24 @@ public class Category_Model {
     public ArrayList<Data> data;
     public String message, code;
 
+    /*This is for get_ranking.php*/
+    public String your_rank;
+
+    /*This is for app_settings.php*/
+    public String wallet_coins;
+    public String wallet_rupees;
+    public String initial_coins;
+    public String reward_point;
+    public String min_withdraw_amt;
+    public String max_withdraw_amt;
+
+    /*This is for wallet_balance.php*/
+    public String current_amt;
+    public String wallet1;
+    public String wallet2;
+
+
+
     public static class Data {
         /*This is for get_contest.php*/
         public String id;
@@ -39,6 +57,7 @@ public class Category_Model {
         public String skip;
         public String rules_id;
         public String status;
+        public String play_status;
 
         /*This is for get_prize_distribution.php*/
         public String rank;
@@ -80,5 +99,36 @@ public class Category_Model {
         /*This is for result.php*/
         public String total_onclick_time;
         public String total_onclick_answer_values;
+
+        /*This is for redeem.php*/
+        public String email;
+        public String phoneno;
+        public String coins;
+        public String amount;
+        public String payment_type;
+
+        /*This is for redeem_history.php*/
+        public String request_status;
+        public String created_at;
+        public String updated_at;
+
+        /*This is for get_ranking.php*/
+        public String first_name;
+
+        /*This is for get_played_records.php*/
+        public String hint;
+        public String question_count;
+
+        /*This is for get_played_records.php*/
+        public String contest_answer;
+        public String onclick_time;
+        public String click_points_correct;
+        public String click_points_skip;
+        public String click_points_wrong;
+
+
+        /*This is for contest_history.php*/
+        public String winning_prize;
+        public String user_rank;
     }
 }

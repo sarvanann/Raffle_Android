@@ -73,7 +73,6 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".Game_Two_Act"
-            android:noHistory="true"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Registration.SignIn.Email_Sign_In_Act"
@@ -167,6 +166,7 @@
             android:name="io.fabric.ApiKey"
             android:value="642b87032a84cd21b20a3ee695c2e590c3ff77f4" />
 
+        <activity android:name=".Code_Testing_Page"></activity>
 
         <!--This is for admob-->
         <meta-data

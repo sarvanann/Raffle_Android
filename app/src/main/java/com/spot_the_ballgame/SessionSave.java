@@ -20,6 +20,12 @@ public class SessionSave {
         return prefs.getString(key, "No data");
     }
 
+    public static void clearAllSession(Context context) {
+        if (context != null) {
+            context.getSharedPreferences("KEY", 0).getAll().clear();
+        }
+    }
+
     public static SharedPreferences.Editor ClearSession(String string, Context context) {
         SharedPreferences.Editor editor = context.getSharedPreferences("FCM", Activity.MODE_PRIVATE).edit();
         editor.clear();

@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,9 +44,9 @@ public class Share_Fragment extends Fragment implements View.OnClickListener {
             Intent intent = new Intent(getContext(), Navigation_Drawer_Act.class);
             startActivity(intent);
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            Toast.makeText(getActivity(), "IF", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity(), "IF", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getActivity(), "ELSE", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity(), "ELSE", Toast.LENGTH_SHORT).show();
             Objects.requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();// write your code to switch between fragments.
         }
 
