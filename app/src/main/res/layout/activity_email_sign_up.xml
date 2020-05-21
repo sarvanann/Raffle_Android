@@ -39,7 +39,6 @@
         android:layout_marginLeft="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/intersection_2"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_watch_ads_btn_contest_one"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -91,18 +90,16 @@
     <include
         android:id="@+id/constraintLayout_email_sign_up"
         layout="@layout/include_email_sign_up"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/iv_background_lines"
-        app:layout_constraintVertical_bias="0.267" />
+        app:layout_constraintTop_toTopOf="@+id/iv_background_lines" />
 </androidx.constraintlayout.widget.ConstraintLayout>

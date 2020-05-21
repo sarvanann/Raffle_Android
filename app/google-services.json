@@ -15,23 +15,22 @@
       },
       "oauth_client": [
         {
-          "client_id": "1033332205486-6p6padep89pcg4k3g4deeltr3u6eonjv.apps.googleusercontent.com",
-          "client_type": 3
+          "client_id": "1033332205486-hpsng6cacbtkp931524mkaf6g2k8g3h3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.spot_the_ballgame",
+            "certificate_hash": "f00e12f058f6ef53acedb6ee23bcfe8225f84dee"
+          }
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAXt0Y3RMciLWIVsGR8GXBIOEmPCSj32DU"
+          "current_key": "AIzaSyC7eNdTJ-FYA-Odwo6e5VH5Suy1qIfpqJ4"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1033332205486-6p6padep89pcg4k3g4deeltr3u6eonjv.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

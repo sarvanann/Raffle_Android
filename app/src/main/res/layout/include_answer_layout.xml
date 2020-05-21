@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:shimmer="http://schemas.android.com/apk/res-auto"
     android:id="@+id/constraintLayout_answer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white_color"
     android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -29,10 +29,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.013" />
 
-    <com.facebook.shimmer.ShimmerFrameLayout
+    <io.supercharge.shimmerlayout.ShimmerLayout
         android:id="@+id/shimmer_view_container_for_answer_list"
         android:layout_width="match_parent"
-        android:layout_height="470dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -51,8 +51,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.013"
-        shimmer:duration="800">
+        app:layout_constraintVertical_bias="0.013">
 
         <!-- Adding 3 rows of placeholders -->
         <LinearLayout
@@ -66,9 +65,11 @@
 
             <include layout="@layout/answer_list_placeholder_item" />
 
+            <include layout="@layout/answer_list_placeholder_item" />
+
         </LinearLayout>
 
-    </com.facebook.shimmer.ShimmerFrameLayout>
+    </io.supercharge.shimmerlayout.ShimmerLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout32"

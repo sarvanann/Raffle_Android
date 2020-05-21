@@ -44,10 +44,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/carousel_layout"
-        android:layout_width="350dp"
+        android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/menu_page_result_lay_bg"
@@ -56,8 +56,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.482"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.277">
+        app:layout_constraintTop_toTopOf="parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -83,9 +82,8 @@
             <LinearLayout
                 android:id="@+id/carousel_dotsLayout"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="35dp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginTop="10dp"
                 android:gravity="center|bottom"
                 android:orientation="horizontal" />
         </RelativeLayout>
@@ -102,6 +100,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
+        android:visibility="gone"
         android:text="@string/skip_txt"
         android:textColor="@color/white_color"
         app:layout_constraintBottom_toBottomOf="parent"

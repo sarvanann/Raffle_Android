@@ -61,27 +61,27 @@ import retrofit2.Response;
 
 public class My_Profile_Fragment extends Fragment implements View.OnClickListener {
 
-    EditText et_name_profile, et_email_id_profile, et_mobile_num_profile;
-    Button btn_login;
-    TextView tv_change_pwd_dialog_link;
-    Dialog dialog;
+    private EditText et_name_profile, et_email_id_profile, et_mobile_num_profile;
+    private Button btn_update;
+    private TextView tv_change_pwd_dialog_link;
+    private Dialog dialog;
     private AdView mAdView;
-    SQLiteDatabase db;
+    private SQLiteDatabase db;
 
-    String str_first_name, str_source_details, str_phone_no, str_email, str_password, str_repeat_pwd, str_sign_up_status;
-
+    private String str_first_name, str_source_details, str_phone_no, str_email, str_password, str_repeat_pwd, str_sign_up_status;
+    private String str_username, str_phone_num;
     /*This is  for update password alert dialog*/
-    EditText et_pwd_in_change_pwd_dialog, et_repeat_pwd_in_change_pwd_dialog;
-    Button btn_update_change_pwd_dialog, btn_btn_show_hide_crnt_pwd, btn_show_hide_repeat;
-    ProgressDialog pd;
+    private EditText et_pwd_in_change_pwd_dialog, et_repeat_pwd_in_change_pwd_dialog;
+    private Button btn_update_change_pwd_dialog, btn_btn_show_hide_crnt_pwd, btn_show_hide_repeat;
+    private ProgressDialog pd;
 
     //This is for Internet alert using snackbar status
     public static int TYPE_WIFI = 1;
     public static int TYPE_MOBILE = 2;
     public static int TYPE_NOT_CONNECTED = 0;
     private boolean internetConnected = true;
-    Snackbar snackbar;
-    String str_auth_token;
+    private Snackbar snackbar;
+    private String str_auth_token, str_code, str_message;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @SuppressLint("ClickableViewAccessibility")
@@ -95,10 +95,10 @@ public class My_Profile_Fragment extends Fragment implements View.OnClickListene
         et_name_profile = view.findViewById(R.id.et_name_profile);
         et_email_id_profile = view.findViewById(R.id.et_email_id_profile);
         et_mobile_num_profile = view.findViewById(R.id.et_mobile_num_profile);
-        btn_login = view.findViewById(R.id.btn_login);
+        btn_update = view.findViewById(R.id.btn_update);
         tv_change_pwd_dialog_link = view.findViewById(R.id.tv_change_pwd_dialog_link);
 
-        btn_login.setOnClickListener(this);
+        btn_update.setOnClickListener(this);
         tv_change_pwd_dialog_link.setOnClickListener(this);
         Navigation_Drawer_Act.tv_title_txt.setText(R.string.profile_txt);
         Navigation_Drawer_Act.tv_toolbar_left_arrow.setVisibility(View.VISIBLE);
@@ -115,7 +115,7 @@ public class My_Profile_Fragment extends Fragment implements View.OnClickListene
         Cursor cursor = db.rawQuery(select, null);
         if (cursor.moveToFirst()) {
             do {
-                str_first_name = cursor.getString(0);
+//                str_first_name = cursor.getString(0);
                 str_source_details = cursor.getString(1);
                 str_phone_no = cursor.getString(2);
                 str_email = cursor.getString(3);
@@ -132,9 +132,6 @@ public class My_Profile_Fragment extends Fragment implements View.OnClickListene
 //        Log.e("str_password_profile", str_password);
 //        Log.e("sign_up_status_profile", str_sign_up_status);
 
-        et_name_profile.setText(str_first_name);
-        et_email_id_profile.setText(str_email);
-        et_mobile_num_profile.setText(str_phone_no);
 
         et_name_profile.setSelection(et_name_profile.getText().toString().length());
         if (str_source_details.equalsIgnoreCase("email")) {
@@ -142,7 +139,58 @@ public class My_Profile_Fragment extends Fragment implements View.OnClickListene
         } else {
             tv_change_pwd_dialog_link.setVisibility(View.GONE);
         }
+        if (!isNetworkAvaliable()) {
+            registerInternetCheckReceiver();
+        } else {
+            Get_User_Wallet_Details();
+        }
         return view;
+    }
+
+    private void Get_User_Wallet_Details() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("email", str_email);
+            APIInterface apiInterface = Factory.getClient();
+//            Log.e("wallet_json", jsonObject.toString());
+            Call<Category_Model> call = apiInterface.GET_WalletDetailsModelCall("application/json", jsonObject.toString(), str_auth_token);
+            call.enqueue(new Callback<Category_Model>() {
+                @Override
+                public void onResponse(Call<Category_Model> call, Response<Category_Model> response) {
+                    if (response.body() != null) {
+                        if (response.code() == 200) {
+                            if (response.isSuccessful()) {
+                                str_username = response.body().data.get(0).username;
+                                str_email = response.body().data.get(0).email;
+                                str_phone_no = response.body().data.get(0).phoneno;
+//                            Log.e("str_username", str_username);
+//                            Log.e("str_email", str_email);
+//                            Log.e("str_phone_no", str_phone_no);
+
+                                et_name_profile.setText(str_username);
+                                et_email_id_profile.setText(str_email);
+                                et_mobile_num_profile.setText(str_phone_no);
+
+                            }
+                        } else if (response.code() == 401) {
+                            Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
+                        } else if (response.code() == 500) {
+                            Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
+                        }
+                    } else {
+                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), "Something went wrong try again :)");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Category_Model> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -172,132 +220,136 @@ public class My_Profile_Fragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_login:
+            case R.id.btn_update:
                 break;
             case R.id.tv_change_pwd_dialog_link:
-                dialog = new Dialog(getContext());
-                dialog.setContentView(R.layout.update_alert);
-                dialog.setCancelable(true);
+                if (!isNetworkAvaliable()) {
+                    registerInternetCheckReceiver();
+                } else {
+                    dialog = new Dialog(getContext());
+                    dialog.setContentView(R.layout.update_alert);
+                    dialog.setCancelable(true);
 
-                et_pwd_in_change_pwd_dialog = dialog.findViewById(R.id.et_pwd_in_change_pwd_dialog);
-                btn_btn_show_hide_crnt_pwd = dialog.findViewById(R.id.btn_btn_show_hide_crnt_pwd);
-                btn_show_hide_repeat = dialog.findViewById(R.id.btn_show_hide_repeat);
-                et_repeat_pwd_in_change_pwd_dialog = dialog.findViewById(R.id.et_repeat_pwd_in_change_pwd_dialog);
-                btn_update_change_pwd_dialog = dialog.findViewById(R.id.btn_update_change_pwd_dialog);
-                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                btn_update_change_pwd_dialog.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String str_user_enter_pwd = et_pwd_in_change_pwd_dialog.getText().toString();
+                    et_pwd_in_change_pwd_dialog = dialog.findViewById(R.id.et_pwd_in_change_pwd_dialog);
+                    btn_btn_show_hide_crnt_pwd = dialog.findViewById(R.id.btn_btn_show_hide_crnt_pwd);
+                    btn_show_hide_repeat = dialog.findViewById(R.id.btn_show_hide_repeat);
+                    et_repeat_pwd_in_change_pwd_dialog = dialog.findViewById(R.id.et_repeat_pwd_in_change_pwd_dialog);
+                    btn_update_change_pwd_dialog = dialog.findViewById(R.id.btn_update_change_pwd_dialog);
+                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    btn_update_change_pwd_dialog.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String str_user_enter_pwd = et_pwd_in_change_pwd_dialog.getText().toString();
 //                        Log.e("str_user_enter_pwd", str_user_enter_pwd);
-                        String str_new_password = et_repeat_pwd_in_change_pwd_dialog.getText().toString();
+                            String str_new_password = et_repeat_pwd_in_change_pwd_dialog.getText().toString();
 //                        Log.e("str_new_pwd", str_new_password);
-                        if (!isNetworkAvaliable()) {
-                            registerInternetCheckReceiver();
-                        } else {
-                            if (str_user_enter_pwd.isEmpty()) {
-                                Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), getResources().getString(R.string.pls_enter_your_pwd));
-                                et_pwd_in_change_pwd_dialog.requestFocus();
-                            } else if (!str_user_enter_pwd.matches(str_password)) {
+                            if (!isNetworkAvaliable()) {
+                                registerInternetCheckReceiver();
+                            } else {
+                                if (str_user_enter_pwd.isEmpty()) {
+                                    Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), getResources().getString(R.string.pls_enter_your_pwd));
+                                    et_pwd_in_change_pwd_dialog.requestFocus();
+                                }/* else if (!str_user_enter_pwd.matches(str_password)) {
                                 Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), getResources().getString(R.string.pls_check_your_pwd));
                                 et_pwd_in_change_pwd_dialog.requestFocus();
-                            } else if (str_new_password.isEmpty()) {
-                                Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), getResources().getString(R.string.pls_enter_your_pwd));
-                                et_repeat_pwd_in_change_pwd_dialog.requestFocus();
-                            } else if (str_new_password.length() <= 6) {
-                                Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), getResources().getString(R.string.your_pwd_must_be_atleast_6_characters_txt));
-                                et_repeat_pwd_in_change_pwd_dialog.requestFocus();
-                            } else {
-                                Get_Update_Password_Details();
+                            } */ else if (str_new_password.isEmpty()) {
+                                    Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), getResources().getString(R.string.pls_enter_your_pwd));
+                                    et_repeat_pwd_in_change_pwd_dialog.requestFocus();
+                                } else if (str_new_password.length() <= 6) {
+                                    Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), getResources().getString(R.string.your_pwd_must_be_atleast_6_characters_txt));
+                                    et_repeat_pwd_in_change_pwd_dialog.requestFocus();
+                                } else {
+                                    Get_Update_Password_Details();
+                                }
                             }
                         }
-                    }
-                });
+                    });
 
-                et_pwd_in_change_pwd_dialog.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    et_pwd_in_change_pwd_dialog.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        if (!(et_pwd_in_change_pwd_dialog.getText().toString().length() == 0)) {
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            if (!(et_pwd_in_change_pwd_dialog.getText().toString().length() == 0)) {
 //                            Toast.makeText(getContext(), "zero", Toast.LENGTH_SHORT).show();
-                            btn_btn_show_hide_crnt_pwd.setVisibility(View.VISIBLE);
-                            btn_btn_show_hide_crnt_pwd.setBackgroundResource((R.drawable.eye_open));
-                        } else {
+                                btn_btn_show_hide_crnt_pwd.setVisibility(View.VISIBLE);
+                                btn_btn_show_hide_crnt_pwd.setBackgroundResource((R.drawable.eye_open));
+                            } else {
 //                            Toast.makeText(getContext(), "not_zero", Toast.LENGTH_SHORT).show();
-                            btn_btn_show_hide_crnt_pwd.setVisibility(View.GONE);
+                                btn_btn_show_hide_crnt_pwd.setVisibility(View.GONE);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void afterTextChanged(Editable s) {
+                        @Override
+                        public void afterTextChanged(Editable s) {
 
-                    }
-                });
-                btn_btn_show_hide_crnt_pwd.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (btn_btn_show_hide_crnt_pwd.getText().toString().equals("Show")) {
-                            btn_btn_show_hide_crnt_pwd.setText("Hide");
-                            et_pwd_in_change_pwd_dialog.setTransformationMethod(null);
-                            et_pwd_in_change_pwd_dialog.setSelection(et_pwd_in_change_pwd_dialog.getText().toString().length());
+                        }
+                    });
+                    btn_btn_show_hide_crnt_pwd.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (btn_btn_show_hide_crnt_pwd.getText().toString().equals("Show")) {
+                                btn_btn_show_hide_crnt_pwd.setText("Hide");
+                                et_pwd_in_change_pwd_dialog.setTransformationMethod(null);
+                                et_pwd_in_change_pwd_dialog.setSelection(et_pwd_in_change_pwd_dialog.getText().toString().length());
 //                            Toast.makeText(getContext(), "show", Toast.LENGTH_SHORT).show();
-                            btn_btn_show_hide_crnt_pwd.setBackgroundResource((R.drawable.eye_hide));
-                        } else {
-                            btn_btn_show_hide_crnt_pwd.setText("Show");
-                            et_pwd_in_change_pwd_dialog.setTransformationMethod(new PasswordTransformationMethod());
-                            et_pwd_in_change_pwd_dialog.setSelection(et_pwd_in_change_pwd_dialog.getText().toString().length());
+                                btn_btn_show_hide_crnt_pwd.setBackgroundResource((R.drawable.eye_hide));
+                            } else {
+                                btn_btn_show_hide_crnt_pwd.setText("Show");
+                                et_pwd_in_change_pwd_dialog.setTransformationMethod(new PasswordTransformationMethod());
+                                et_pwd_in_change_pwd_dialog.setSelection(et_pwd_in_change_pwd_dialog.getText().toString().length());
 //                            Toast.makeText(getContext(), "hide", Toast.LENGTH_SHORT).show();
-                            btn_btn_show_hide_crnt_pwd.setBackgroundResource((R.drawable.eye_open));
+                                btn_btn_show_hide_crnt_pwd.setBackgroundResource((R.drawable.eye_open));
+                            }
                         }
-                    }
-                });
+                    });
 
 
-                et_repeat_pwd_in_change_pwd_dialog.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    }
+                    et_repeat_pwd_in_change_pwd_dialog.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        }
 
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        if (!(et_repeat_pwd_in_change_pwd_dialog.getText().toString().length() == 0)) {
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            if (!(et_repeat_pwd_in_change_pwd_dialog.getText().toString().length() == 0)) {
 //                            Toast.makeText(getContext(), "zero", Toast.LENGTH_SHORT).show();
-                            btn_show_hide_repeat.setVisibility(View.VISIBLE);
-                            btn_show_hide_repeat.setBackgroundResource((R.drawable.eye_open));
-                        } else {
+                                btn_show_hide_repeat.setVisibility(View.VISIBLE);
+                                btn_show_hide_repeat.setBackgroundResource((R.drawable.eye_open));
+                            } else {
 //                            Toast.makeText(getContext(), "not_zero", Toast.LENGTH_SHORT).show();
-                            btn_show_hide_repeat.setVisibility(View.GONE);
+                                btn_show_hide_repeat.setVisibility(View.GONE);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                    }
-                });
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                        }
+                    });
 
-                btn_show_hide_repeat.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (btn_show_hide_repeat.getText().toString().equals("Show")) {
-                            btn_show_hide_repeat.setText("Hide");
-                            et_repeat_pwd_in_change_pwd_dialog.setTransformationMethod(null);
-                            et_repeat_pwd_in_change_pwd_dialog.setSelection(et_repeat_pwd_in_change_pwd_dialog.getText().toString().length());
+                    btn_show_hide_repeat.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (btn_show_hide_repeat.getText().toString().equals("Show")) {
+                                btn_show_hide_repeat.setText("Hide");
+                                et_repeat_pwd_in_change_pwd_dialog.setTransformationMethod(null);
+                                et_repeat_pwd_in_change_pwd_dialog.setSelection(et_repeat_pwd_in_change_pwd_dialog.getText().toString().length());
 //                            Toast.makeText(getContext(), "show", Toast.LENGTH_SHORT).show();
-                            btn_show_hide_repeat.setBackgroundResource((R.drawable.eye_hide));
-                        } else {
-                            btn_show_hide_repeat.setText("Show");
-                            et_repeat_pwd_in_change_pwd_dialog.setTransformationMethod(new PasswordTransformationMethod());
-                            et_repeat_pwd_in_change_pwd_dialog.setSelection(et_repeat_pwd_in_change_pwd_dialog.getText().toString().length());
+                                btn_show_hide_repeat.setBackgroundResource((R.drawable.eye_hide));
+                            } else {
+                                btn_show_hide_repeat.setText("Show");
+                                et_repeat_pwd_in_change_pwd_dialog.setTransformationMethod(new PasswordTransformationMethod());
+                                et_repeat_pwd_in_change_pwd_dialog.setSelection(et_repeat_pwd_in_change_pwd_dialog.getText().toString().length());
 //                            Toast.makeText(getContext(), "hide", Toast.LENGTH_SHORT).show();
-                            btn_show_hide_repeat.setBackgroundResource((R.drawable.eye_open));
+                                btn_show_hide_repeat.setBackgroundResource((R.drawable.eye_open));
+                            }
                         }
-                    }
-                });
-                dialog.show();
+                    });
+                    dialog.show();
+                }
                 break;
         }
     }
@@ -324,33 +376,49 @@ public class My_Profile_Fragment extends Fragment implements View.OnClickListene
                 @TargetApi(Build.VERSION_CODES.KITKAT)
                 @Override
                 public void onResponse(Call<Category_Model> call, Response<Category_Model> response) {
-                    if (response.code() == 200) {
-                        if (response.isSuccessful()) {
-                            pd.dismiss();
-                            dialog.dismiss();
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put("SOURCEDETAILS", "email");
-                            contentValues.put("EMAIL", str_email);
-                            contentValues.put("SIGNUPSTATUS", "6");
-                            contentValues.put("PASSWORD", str_repeat_pwd);
-                            db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
-                            DBEXPORT();
+                    if (Objects.requireNonNull(response.body()).data != null) {
+                        if (response.code() == 200) {
+                            str_code = Objects.requireNonNull(response.body()).status;
+                            str_message = response.body().message;
+                            if (response.isSuccessful()) {
+                                if (str_code.equalsIgnoreCase("success")) {
+                                    pd.dismiss();
+                                    dialog.dismiss();
+                                    ContentValues contentValues = new ContentValues();
+                                    contentValues.put("SOURCEDETAILS", "email");
+                                    contentValues.put("EMAIL", str_email);
+                                    contentValues.put("SIGNUPSTATUS", "6");
+                                    contentValues.put("PASSWORD", str_repeat_pwd);
+                                    db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
+                                    DBEXPORT();
 //                        Log.e("profile_cntn_values", contentValues.toString());
-                            assert response.body() != null;
-                            Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.body().message);
+                                    assert response.body() != null;
+                                    Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.body().message);
 
-                            /*This is for refreshing current activity*/
-                            // Reload current fragment
-                            FragmentTransaction ft = null;
-                            if (getFragmentManager() != null) {
-                                ft = getFragmentManager().beginTransaction();
-                                ft.detach(My_Profile_Fragment.this).attach(My_Profile_Fragment.this).commit();
+                                    /*This is for refreshing current activity*/
+                                    // Reload current fragment
+                                    FragmentTransaction ft = null;
+                                    if (getFragmentManager() != null) {
+                                        ft = getFragmentManager().beginTransaction();
+                                        ft.detach(My_Profile_Fragment.this).attach(My_Profile_Fragment.this).commit();
+                                    }
+                                } else if (str_code.equalsIgnoreCase("error")) {
+                                    pd.dismiss();
+                                    assert response.body() != null;
+                                    Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.body().message);
+                                    if (str_message.equalsIgnoreCase("Old password doesn't match.")) {
+                                        dialog.show();
+                                        dialog.setCancelable(true);
+                                    }
+                                }
                             }
+                        } else if (response.code() == 401) {
+                            Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
+                        } else if (response.code() == 500) {
+                            Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
                         }
-                    } else if (response.code() == 401) {
-                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
-                    } else if (response.code() == 500) {
-                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
+                    } else {
+                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), "Something went wrong try again :)");
                     }
                 }
 
@@ -438,7 +506,7 @@ public class My_Profile_Fragment extends Fragment implements View.OnClickListene
         if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
             internetStatus = getResources().getString(R.string.back_online_txt);
             snackbar = Snackbar.make(Objects.requireNonNull(getView()).findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_LONG);
-            snackbar.getView().setBackgroundResource(R.color.sign_up_txt);
+            snackbar.getView().setBackgroundResource(R.color.timer_bg_color);
         } else {
             internetStatus = getResources().getString(R.string.check_internet_conn_txt);
             snackbar = Snackbar.make(Objects.requireNonNull(getView()).findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_INDEFINITE);
@@ -464,6 +532,7 @@ public class My_Profile_Fragment extends Fragment implements View.OnClickListene
             if (!internetConnected) {
                 internetConnected = true;
                 snackbar.show();
+                Get_User_Wallet_Details();
             }
         }
     }

@@ -1,0 +1,871 @@
+package com.app.freewin;
+
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.GridView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.adcolony.sdk.AdColony;
+import com.app.freewin.Fragment.BottomSheetFragment;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.ironsource.mediationsdk.IronSource;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Objects;
+import java.util.TimeZone;
+
+public class Main2Activity extends AppCompatActivity implements View.OnClickListener {
+    private int mYear,
+            mMonth,
+            mDay;
+    DatePickerDialog datePickerDialog;
+    Calendar c;
+    Button btn_select;
+    TextView textView, textView2;
+    ConstraintLayout constraintLayout_game_rules_details_lay;
+
+
+    ConstraintLayout constraintLayout_gridview_layout,
+            constraintLayout_showcase_onclicked_values,
+            constraintLayout_rewarded_video,
+            constraintLayout_fianl_result_winner_layout,
+            constraintLayout_result_layout,
+            constraintLayout_winners_layout,
+            constraintLayout_inside_winners_list;
+
+    Button btn_next,
+            btn_lucky_pick,
+            btn_watch_video_to_submit,
+            btn_result,
+            btn_winners;
+
+    TextView tv_game_game_name,
+            tv_game_date_time,
+            tv_game_onclick_value_01,
+            tv_game_onclick_value_02,
+            tv_game_onclick_value_03,
+            tv_game_onclick_value_04,
+            tv_game_onclick_value_05,
+            tv_game_onclick_value_06,
+            tv_game_onclick_value_07,
+            tv_game_onclick_value_08,
+            tv_no_data_available,
+            tv_date_picker,
+            tv_date_picker_02;
+
+
+    TextView tv_game_name_lay_02,
+            tv_game_date_time_lay_02,
+            tv_game_onclick_value_01_lay_02,
+            tv_game_onclick_value_02_lay_02,
+            tv_game_onclick_value_03_lay_02,
+            tv_game_onclick_value_04_lay_02,
+            tv_game_onclick_value_05_lay_02,
+            tv_game_onclick_value_06_lay_02,
+            tv_game_onclick_value_07_lay_02,
+            tv_game_onclick_value_08_lay_02,
+            tv_up_arrow,
+            tv_loading_txt;
+    Typeface typeface,
+            typeface_01,
+            typeface1;
+    GridView grid_view_number_click;
+    int int_grid_view_value = 36;
+    ArrayList<String> integerArrayList = new ArrayList<>();
+    ArrayList<String> selectedStrings;
+    String str_onclick_remove_value,
+            str_onclick_add_value;
+
+    /*This components are used for Rewarded video*/
+    private static final String TIME_REMAINING_KEY = "TIME_REMAINING";
+    private static final String COIN_COUNT_KEY = "COIN_COUNT";
+    private static final String GAME_PAUSE_KEY = "IS_GAME_PAUSED";
+    private static final String GAME_OVER_KEY = "IS_GAME_OVER";
+    private int mCoinCount;
+    private TextView mCoinCountText;
+    private boolean mGameOver;
+    private boolean mGamePaused;
+    private RewardedVideoAd mRewardedVideoAd;
+    private long mTimeRemaining;
+    ProgressBar progress_bar_in_reward_video;
+    Bundle savedInstanceState;
+    int int_rewarded_coins_point;
+
+    TextView tv_game_name_rule_page, tv_back_arrow_rule_page, tv_back_arrow_game_page, tv_select_ticket;
+    RecyclerView rv_rules_list;
+    String str_remaining_value = "";
+    int int_remaining_value = 0;
+    int int__inside_remaining_value = 0;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.card_01_layout);
+        getSupportActionBar().hide();
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+        btn_select = findViewById(R.id.btn_select);
+        textView = findViewById(R.id.textView);
+        textView2 = findViewById(R.id.textView2);
+        constraintLayout_game_rules_details_lay = findViewById(R.id.constraintLayout_game_rules_details_lay);
+
+
+        constraintLayout_gridview_layout = findViewById(R.id.constraintLayout_gridview_layout);
+        constraintLayout_showcase_onclicked_values = findViewById(R.id.constraintLayout_showcase_onclicked_values);
+        btn_next = findViewById(R.id.btn_next);
+        grid_view_number_click = findViewById(R.id.grid_view_number_click);
+        btn_lucky_pick = findViewById(R.id.btn_lucky_pick);
+        btn_watch_video_to_submit = findViewById(R.id.btn_watch_video_to_submit);
+        btn_result = findViewById(R.id.btn_result);
+        btn_winners = findViewById(R.id.btn_winners);
+        tv_up_arrow = findViewById(R.id.tv_up_arrow);
+        tv_loading_txt = findViewById(R.id.tv_loading_txt);
+        tv_game_game_name = findViewById(R.id.tv_game_game_name);
+        tv_game_name_lay_02 = findViewById(R.id.tv_game_name_lay_02);
+        tv_game_date_time = findViewById(R.id.tv_game_date_time);
+        tv_game_date_time_lay_02 = findViewById(R.id.tv_game_date_time_lay_02);
+        tv_game_onclick_value_01 = findViewById(R.id.tv_game_onclick_value_01);
+
+        tv_game_onclick_value_02 = findViewById(R.id.tv_game_onclick_value_02);
+        tv_game_onclick_value_03 = findViewById(R.id.tv_game_onclick_value_03);
+        tv_game_onclick_value_04 = findViewById(R.id.tv_game_onclick_value_04);
+        tv_game_onclick_value_05 = findViewById(R.id.tv_game_onclick_value_05);
+        tv_game_onclick_value_06 = findViewById(R.id.tv_game_onclick_value_06);
+        tv_game_onclick_value_07 = findViewById(R.id.tv_game_onclick_value_07);
+        tv_game_onclick_value_08 = findViewById(R.id.tv_game_onclick_value_08);
+        tv_no_data_available = findViewById(R.id.tv_no_data_available);
+        tv_date_picker = findViewById(R.id.tv_date_picker);
+        tv_date_picker_02 = findViewById(R.id.tv_date_picker_02);
+
+        tv_game_onclick_value_01_lay_02 = findViewById(R.id.tv_game_onclick_value_01_lay_02);
+        tv_game_onclick_value_02_lay_02 = findViewById(R.id.tv_game_onclick_value_02_lay_02);
+        tv_game_onclick_value_03_lay_02 = findViewById(R.id.tv_game_onclick_value_03_lay_02);
+        tv_game_onclick_value_04_lay_02 = findViewById(R.id.tv_game_onclick_value_04_lay_02);
+        tv_game_onclick_value_05_lay_02 = findViewById(R.id.tv_game_onclick_value_05_lay_02);
+        tv_game_onclick_value_06_lay_02 = findViewById(R.id.tv_game_onclick_value_06_lay_02);
+        tv_game_onclick_value_07_lay_02 = findViewById(R.id.tv_game_onclick_value_07_lay_02);
+        tv_game_onclick_value_08_lay_02 = findViewById(R.id.tv_game_onclick_value_08_lay_02);
+        constraintLayout_rewarded_video = findViewById(R.id.constraintLayout_rewarded_video);
+        constraintLayout_fianl_result_winner_layout = findViewById(R.id.constraintLayout_fianl_result_winner_layout);
+        constraintLayout_result_layout = findViewById(R.id.constraintLayout_result_layout);
+        constraintLayout_winners_layout = findViewById(R.id.constraintLayout_winners_layout);
+        constraintLayout_inside_winners_list = findViewById(R.id.constraintLayout_inside_winners_list);
+
+        tv_game_name_rule_page = findViewById(R.id.tv_game_name_rule_page);
+        rv_rules_list = findViewById(R.id.rv_rules_list);
+        tv_back_arrow_rule_page = findViewById(R.id.tv_back_arrow_rule_page);
+        tv_back_arrow_game_page = findViewById(R.id.tv_back_arrow_game_page);
+        tv_select_ticket = findViewById(R.id.tv_select_ticket);
+        //Ironsource_code
+        IronSource.setConsent(true);
+        //This is for ad colony
+        AdColony.configure(this, "appd9b3bb873a744248bd", "vz09df69e0202642b88a");
+        MobileAds.initialize(this, getString(R.string.admob_app_id));
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        mCoinCountText = findViewById(R.id.coin_count_text);
+        str_remaining_value = SessionSave.getSession("remaining_tickets", Main2Activity.this);
+        Log.e("top_str_remaining_value", str_remaining_value);
+        if (str_remaining_value.equalsIgnoreCase("No data")) {
+            constraintLayout_game_rules_details_lay.setVisibility(View.VISIBLE);
+        } else {
+            int_remaining_value = Integer.parseInt(str_remaining_value);
+            if (int_remaining_value == 0) {
+                Toast.makeText(this, "Oncreate_Toast", Toast.LENGTH_SHORT).show();
+                Log.e("aaaaaa_zero", "" + int_remaining_value);
+                constraintLayout_rewarded_video.setVisibility(View.VISIBLE);
+                Get_Rewarded_Video_Method(savedInstanceState);
+            }
+        }
+
+        typeface = ResourcesCompat.getFont(Main2Activity.this, R.font.segoeui);
+        typeface1 = ResourcesCompat.getFont(Main2Activity.this, R.font.segoe_ui_bold);
+        textView.setTypeface(typeface1);
+        textView2.setTypeface(typeface1);
+        btn_select.setTypeface(typeface);
+
+        typeface = ResourcesCompat.getFont(Main2Activity.this, R.font.fakereceipt_regular);
+        typeface = ResourcesCompat.getFont(Main2Activity.this, R.font.fakereceipt_regular);
+        tv_game_game_name.setTypeface(typeface);
+        tv_game_date_time.setTypeface(typeface);
+        tv_game_onclick_value_01.setTypeface(typeface);
+        tv_game_onclick_value_02.setTypeface(typeface);
+        tv_game_onclick_value_03.setTypeface(typeface);
+        tv_game_onclick_value_04.setTypeface(typeface);
+        tv_game_onclick_value_05.setTypeface(typeface);
+        tv_game_onclick_value_06.setTypeface(typeface);
+        tv_game_onclick_value_07.setTypeface(typeface);
+        tv_game_onclick_value_08.setTypeface(typeface);
+
+
+        tv_game_name_lay_02.setTypeface(typeface);
+        tv_game_date_time_lay_02.setTypeface(typeface);
+        tv_game_onclick_value_01_lay_02.setTypeface(typeface);
+        tv_game_onclick_value_02_lay_02.setTypeface(typeface);
+        tv_game_onclick_value_03_lay_02.setTypeface(typeface);
+        tv_game_onclick_value_04_lay_02.setTypeface(typeface);
+        tv_game_onclick_value_05_lay_02.setTypeface(typeface);
+        tv_game_onclick_value_06_lay_02.setTypeface(typeface);
+        tv_game_onclick_value_07_lay_02.setTypeface(typeface);
+        tv_game_onclick_value_08_lay_02.setTypeface(typeface);
+
+//        typeface_01 = ResourcesCompat.getFont(Main2Activity.this, R.font.segoeui);
+//        btn_next.setTypeface(typeface_01);
+        btn_lucky_pick.setTypeface(typeface_01);
+        btn_watch_video_to_submit.setTypeface(typeface_01);
+        btn_result.setTypeface(typeface_01);
+        btn_winners.setTypeface(typeface_01);
+
+        /*this following lines are used for setting current date and time*/
+        final Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+5:30"));
+        SimpleDateFormat formatter_01 = new SimpleDateFormat("dd-MM-yyyy'*'h:mm a");
+        formatter_01.setTimeZone(c.getTimeZone());
+        Date date = new Date(System.currentTimeMillis());
+        tv_game_date_time.setText(formatter_01.format(date));
+        tv_game_date_time_lay_02.setText(formatter_01.format(date));
+
+        btn_select.setOnClickListener(this);
+        btn_next.setOnClickListener(this);
+        btn_watch_video_to_submit.setOnClickListener(this);
+        tv_up_arrow.setOnClickListener(this);
+        btn_result.setOnClickListener(this);
+        btn_winners.setOnClickListener(this);
+        tv_date_picker.setOnClickListener(this);
+        tv_date_picker_02.setOnClickListener(this);
+
+        tv_back_arrow_rule_page.setOnClickListener(this);
+        tv_select_ticket.setOnClickListener(this);
+        tv_back_arrow_game_page.setOnClickListener(this);
+
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        Full_Screen_Window();
+
+
+        selectedStrings = new ArrayList<>();
+        /*This for loop is used for setting values for gridview*/
+        for (int i = 1; i <= int_grid_view_value; i++) {
+            integerArrayList.add(String.valueOf(i));
+        }
+        final GridViewAdapter adapter = new GridViewAdapter(integerArrayList, this);
+        grid_view_number_click.setAdapter(adapter);
+        grid_view_number_click.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                int selectedIndex = adapter.selectedPositions.indexOf(position);
+//                Log.e("selectedIndex_log", "" + selectedIndex);
+                str_onclick_remove_value = (String) parent.getItemAtPosition(position);
+//                Log.e("selectedStrings_sizeee", "" + selectedStrings.size());
+//                Log.e("str_onclk_remove_value", str_onclick_remove_value);
+//                Log.e("if_selectedIndex", "" + selectedIndex);
+                if (selectedIndex == -1) {
+                    if (tv_game_onclick_value_01.getText().toString().matches("") || tv_game_onclick_value_02.getText().toString().matches("")
+                            || tv_game_onclick_value_03.getText().toString().matches("") || tv_game_onclick_value_04.getText().toString().matches("")
+                            || tv_game_onclick_value_05.getText().toString().matches("") || tv_game_onclick_value_06.getText().toString().matches("")) {
+                        //    Toast.makeText(Main3Activity.this, "minus-1", Toast.LENGTH_SHORT).show();
+                        adapter.selectedPositions.add(position);
+                        ((GridItemView) v).display(true);
+                        selectedStrings.add((String) parent.getItemAtPosition(position));
+                        str_onclick_add_value = (String) parent.getItemAtPosition(position);
+//                        Log.e("str_onclick_value_add", str_onclick_add_value);
+                        try {
+                            if (tv_game_onclick_value_01.getText().toString().matches("")) {
+                                tv_game_onclick_value_01.setText(str_onclick_add_value);
+                            } else if (tv_game_onclick_value_02.getText().toString().matches("")) {
+                                tv_game_onclick_value_02.setText(str_onclick_add_value);
+                            } else if (tv_game_onclick_value_03.getText().toString().matches("")) {
+//                                Toast.makeText(Main3Activity.this, "empty_03", Toast.LENGTH_SHORT).show();
+                                tv_game_onclick_value_03.setText(str_onclick_add_value);
+                            } else if (tv_game_onclick_value_04.getText().toString().matches("")) {
+                                tv_game_onclick_value_04.setText(str_onclick_add_value);
+                            } else if (tv_game_onclick_value_05.getText().toString().matches("")) {
+                                tv_game_onclick_value_05.setText(str_onclick_add_value);
+                            } else if (tv_game_onclick_value_06.getText().toString().matches("")) {
+                                tv_game_onclick_value_06.setText(str_onclick_add_value);
+                            }
+                        } catch (IndexOutOfBoundsException ibe) {
+                            ibe.printStackTrace();
+                        }
+                    }
+                } else {
+//                    Toast.makeText(Main3Activity.this, "plus+1", Toast.LENGTH_SHORT).show();
+                    adapter.selectedPositions.remove(selectedIndex);
+//                    Log.e("selectedIndex", "" + selectedIndex);
+                    ((GridItemView) v).display(false);
+                    int n1;
+                    try {
+                        if ((tv_game_onclick_value_01.getText().toString().equals(str_onclick_remove_value))) {
+                            tv_game_onclick_value_01.setText("");
+                        } else if ((tv_game_onclick_value_02.getText().toString().equals(str_onclick_remove_value))) {
+                            tv_game_onclick_value_02.setText("");
+                        } else if ((tv_game_onclick_value_03.getText().toString().equals(str_onclick_remove_value))) {
+                            tv_game_onclick_value_03.setText("");
+                        } else if ((tv_game_onclick_value_04.getText().toString().equals(str_onclick_remove_value))) {
+                            tv_game_onclick_value_04.setText("");
+                        } else if ((tv_game_onclick_value_05.getText().toString().equals(str_onclick_remove_value))) {
+                            tv_game_onclick_value_05.setText("");
+                        } else if ((tv_game_onclick_value_06.getText().toString().equals(str_onclick_remove_value))) {
+                            tv_game_onclick_value_06.setText("");
+                        }
+                    } catch (IndexOutOfBoundsException e) {
+                        e.printStackTrace();
+                    }
+                }
+//                Log.e("tv_01", tv_game_onclick_value_01.getText().toString());
+//                Log.e("tv_02", tv_game_onclick_value_02.getText().toString());
+//                Log.e("tv_03", tv_game_onclick_value_03.getText().toString());
+//                Log.e("tv_04", tv_game_onclick_value_04.getText().toString());
+//                Log.e("tv_05", tv_game_onclick_value_05.getText().toString());
+//                Log.e("tv_06", tv_game_onclick_value_06.getText().toString());
+            }
+        });
+    }
+
+    private void Full_Screen_Window() {
+        int currentApiVersion = android.os.Build.VERSION.SDK_INT;
+
+        final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+
+        // This work only for android 4.4+
+        if (currentApiVersion >= Build.VERSION_CODES.KITKAT) {
+
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+
+            // Code below is to handle presses of Volume up or Volume down.
+            // Without this, after pressing volume buttons, the navigation bar will
+            // show up and won't hide
+            final View decorView = getWindow().getDecorView();
+            decorView
+                    .setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+
+                        @Override
+                        public void onSystemUiVisibilityChange(int visibility) {
+                            if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                                decorView.setSystemUiVisibility(flags);
+                            }
+                        }
+                    });
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_back_arrow_rule_page:
+                Intent intent = new Intent(Main2Activity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                break;
+            case R.id.tv_select_ticket:
+                constraintLayout_game_rules_details_lay.setVisibility(View.GONE);
+                constraintLayout_gridview_layout.setVisibility(View.VISIBLE);
+                break;
+            case R.id.tv_back_arrow_game_page:
+                constraintLayout_game_rules_details_lay.setVisibility(View.VISIBLE);
+                constraintLayout_gridview_layout.setVisibility(View.GONE);
+                break;
+            case R.id.btn_select:
+                constraintLayout_game_rules_details_lay.setVisibility(View.GONE);
+                constraintLayout_gridview_layout.setVisibility(View.VISIBLE);
+               /* Intent intent = new Intent(Main2Activity.this, Main3Activity.class);
+                startActivity(intent);*/
+                break;
+
+            case R.id.btn_watch_video_to_submit:
+                constraintLayout_rewarded_video.setVisibility(View.VISIBLE);
+                Get_Rewarded_Video_Method(savedInstanceState);
+                /*Intent intent = new Intent(Main2Activity.this, Main4Activity.class);
+                startActivity(intent);*/
+                break;
+            case R.id.tv_up_arrow:
+                Full_Screen_Window();
+                showBottomSheetDialogFragment();
+                break;
+            case R.id.btn_next:
+                if (selectedStrings.size() < 6) {
+                    Toast.makeText(this, "Select 6 numbers", Toast.LENGTH_SHORT).show();
+                } else {
+                    str_remaining_value = SessionSave.getSession("remaining_tickets", Main2Activity.this);
+                    Log.e("str_remaining_valueeeeeeee_first", str_remaining_value);
+                    if (str_remaining_value.equalsIgnoreCase("No data")) {
+                        final Dialog dialog = new Dialog(Main2Activity.this);
+                        dialog.setContentView(R.layout.ticket_alert);
+                        TextView tv_into_mark, tv_ticket_success_msg, tv_my_tickets, tv_submit_more;
+                        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.show();
+
+                        tv_into_mark = dialog.findViewById(R.id.tv_into_mark);
+                        tv_submit_more = dialog.findViewById(R.id.tv_submit_more);
+                        tv_ticket_success_msg = dialog.findViewById(R.id.tv_ticket_success_msg);
+                        tv_my_tickets = dialog.findViewById(R.id.tv_my_tickets);
+
+                        tv_into_mark.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+                        tv_submit_more.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(Main2Activity.this, "Toast_From_No_Data", Toast.LENGTH_SHORT).show();
+                                Log.e("str_remaining_value_dialog_first", str_remaining_value);
+                                Log.e("int_remaining_value_dialog_first", "" + int_remaining_value);
+
+                                int__inside_remaining_value = 3 - 1;
+                                Log.e("aaaaaa_nodata_first", "" + int__inside_remaining_value);
+                                SessionSave.SaveSession("remaining_tickets", String.valueOf(int__inside_remaining_value), Main2Activity.this);
+                                String ss = SessionSave.getSession("remaining_tickets", Main2Activity.this);
+                                Log.e("ssss_ifff", ss);
+
+
+                                dialog.dismiss();
+                                if (int__inside_remaining_value == 0) {
+                                    recreate();
+                                    Full_Screen_Window();
+                                    Log.e("aaaaaa_zero_dialog_first", "" + int_remaining_value);
+                                    constraintLayout_rewarded_video.setVisibility(View.VISIBLE);
+                                    Get_Rewarded_Video_Method(savedInstanceState);
+                                    constraintLayout_game_rules_details_lay.setVisibility(View.GONE);
+                                    constraintLayout_gridview_layout.setVisibility(View.GONE);
+                                    constraintLayout_showcase_onclicked_values.setVisibility(View.GONE);
+                                } else {
+//                                    int a = int__inside_remaining_value - 1;
+//                                    Log.e("aaaaaa_else_dialog_first", "" + a);
+//                                    SessionSave.SaveSession("remaining_tickets", String.valueOf(a), Main2Activity.this);
+                                    String ss1 = SessionSave.getSession("remaining_tickets", Main2Activity.this);
+                                    Log.e("ssss_else", ss1);
+                                    if (int__inside_remaining_value == 0) {
+                                        constraintLayout_rewarded_video.setVisibility(View.VISIBLE);
+                                        Get_Rewarded_Video_Method(savedInstanceState);
+                                        constraintLayout_game_rules_details_lay.setVisibility(View.GONE);
+                                        constraintLayout_gridview_layout.setVisibility(View.GONE);
+                                        constraintLayout_showcase_onclicked_values.setVisibility(View.GONE);
+
+                                        tv_game_onclick_value_01.setText("");
+                                        tv_game_onclick_value_02.setText("");
+                                        tv_game_onclick_value_03.setText("");
+                                        tv_game_onclick_value_04.setText("");
+                                        tv_game_onclick_value_05.setText("");
+                                        tv_game_onclick_value_06.setText("");
+                                        recreate();
+                                        Full_Screen_Window();
+                                    } else {
+                                        constraintLayout_game_rules_details_lay.setVisibility(View.VISIBLE);
+                                        constraintLayout_gridview_layout.setVisibility(View.GONE);
+                                        constraintLayout_showcase_onclicked_values.setVisibility(View.GONE);
+
+                                        tv_game_onclick_value_01.setText("");
+                                        tv_game_onclick_value_02.setText("");
+                                        tv_game_onclick_value_03.setText("");
+                                        tv_game_onclick_value_04.setText("");
+                                        tv_game_onclick_value_05.setText("");
+                                        tv_game_onclick_value_06.setText("");
+
+                                        tv_game_onclick_value_01_lay_02.setText(tv_game_onclick_value_01.getText().toString());
+                                        tv_game_onclick_value_02_lay_02.setText(tv_game_onclick_value_02.getText().toString());
+                                        tv_game_onclick_value_03_lay_02.setText(tv_game_onclick_value_03.getText().toString());
+                                        tv_game_onclick_value_04_lay_02.setText(tv_game_onclick_value_04.getText().toString());
+                                        tv_game_onclick_value_05_lay_02.setText(tv_game_onclick_value_05.getText().toString());
+                                        tv_game_onclick_value_06_lay_02.setText(tv_game_onclick_value_06.getText().toString());
+                                        recreate();
+                                        Full_Screen_Window();
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        int_remaining_value = Integer.parseInt(str_remaining_value);
+                        if (int_remaining_value == 0) {
+                            Log.e("aaaaaa_zero", "" + int_remaining_value);
+                            constraintLayout_rewarded_video.setVisibility(View.VISIBLE);
+                            Get_Rewarded_Video_Method(savedInstanceState);
+                        } else {
+                            /*Intent intent1 = new Intent(Main2Activity.this, Alert_Act.class);
+                            intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent1);*/
+                            Show_Dialog();
+                        }
+                    }
+                }
+                break;
+            case R.id.btn_result:
+                constraintLayout_result_layout.setVisibility(View.VISIBLE);
+                constraintLayout_winners_layout.setVisibility(View.GONE);
+                constraintLayout_inside_winners_list.setVisibility(View.GONE);
+                btn_result.setBackground(getResources().getDrawable(R.drawable.result_btn_bg));
+                btn_winners.setBackground(getResources().getDrawable(R.drawable.black_border_bg_normal));
+                btn_result.setTextColor(getResources().getColor(R.color.black_color));
+                btn_winners.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                break;
+            case R.id.btn_winners:
+                constraintLayout_winners_layout.setVisibility(View.VISIBLE);
+                constraintLayout_result_layout.setVisibility(View.GONE);
+                constraintLayout_inside_winners_list.setVisibility(View.GONE);
+                tv_no_data_available.setVisibility(View.VISIBLE);
+                btn_winners.setBackground(getResources().getDrawable(R.drawable.result_winners_bg));
+                btn_result.setBackground(getResources().getDrawable(R.drawable.black_border_bg_normal));
+                btn_winners.setTextColor(getResources().getColor(R.color.black_color));
+                btn_result.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                break;
+            case R.id.tv_date_picker:
+                Full_Screen_Window();
+                // Get Current Date
+                c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+                datePickerDialog = new DatePickerDialog(this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @SuppressLint("SetTextI18n")
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+                                constraintLayout_inside_winners_list.setVisibility(View.GONE);
+                                tv_no_data_available.setVisibility(View.GONE);
+                                tv_date_picker.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+                break;
+
+            case R.id.tv_date_picker_02:
+                constraintLayout_winners_layout.setVisibility(View.VISIBLE);
+                constraintLayout_result_layout.setVisibility(View.GONE);
+                btn_winners.setBackground(getResources().getDrawable(R.drawable.result_winners_bg));
+                btn_result.setBackground(getResources().getDrawable(R.drawable.black_border_bg_normal));
+                btn_winners.setTextColor(getResources().getColor(R.color.black_color));
+                btn_result.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                Full_Screen_Window();
+                // Get Current Date
+                c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+                datePickerDialog = new DatePickerDialog(this,
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @SuppressLint("SetTextI18n")
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+                                constraintLayout_inside_winners_list.setVisibility(View.VISIBLE);
+                                tv_no_data_available.setVisibility(View.GONE);
+                                tv_date_picker_02.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+                break;
+        }
+    }
+
+    private void Show_Dialog() {
+        Toast.makeText(this, "Toast_From_Dialog", Toast.LENGTH_SHORT).show();
+        final Dialog dialog = new Dialog(Main2Activity.this);
+        dialog.setContentView(R.layout.ticket_alert);
+        TextView tv_into_mark, tv_ticket_success_msg, tv_my_tickets, tv_submit_more;
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+
+        tv_into_mark = dialog.findViewById(R.id.tv_into_mark);
+        tv_submit_more = dialog.findViewById(R.id.tv_submit_more);
+        tv_ticket_success_msg = dialog.findViewById(R.id.tv_ticket_success_msg);
+        tv_my_tickets = dialog.findViewById(R.id.tv_my_tickets);
+
+        tv_into_mark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        tv_submit_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("str_remaining_value_dialog", str_remaining_value);
+                Log.e("int_remaining_value_dialog", "" + int_remaining_value);
+                dialog.dismiss();
+                if (int_remaining_value == 0) {
+                    recreate();
+                    Full_Screen_Window();
+                    Log.e("aaaaaa_zero_dialog", "" + int_remaining_value);
+                    constraintLayout_rewarded_video.setVisibility(View.VISIBLE);
+                    Get_Rewarded_Video_Method(savedInstanceState);
+                    constraintLayout_game_rules_details_lay.setVisibility(View.GONE);
+                    constraintLayout_gridview_layout.setVisibility(View.GONE);
+                    constraintLayout_showcase_onclicked_values.setVisibility(View.GONE);
+                } else {
+                    int a = int_remaining_value - 1;
+                    Log.e("aaaaaa_else_dialog", "" + a);
+                    SessionSave.SaveSession("remaining_tickets", String.valueOf(a), Main2Activity.this);
+                    if (int_remaining_value == 0) {
+                        recreate();
+                        Full_Screen_Window();
+                        constraintLayout_rewarded_video.setVisibility(View.VISIBLE);
+                        Get_Rewarded_Video_Method(savedInstanceState);
+                        constraintLayout_game_rules_details_lay.setVisibility(View.GONE);
+                        constraintLayout_gridview_layout.setVisibility(View.GONE);
+                        constraintLayout_showcase_onclicked_values.setVisibility(View.GONE);
+
+                        tv_game_onclick_value_01.setText("");
+                        tv_game_onclick_value_02.setText("");
+                        tv_game_onclick_value_03.setText("");
+                        tv_game_onclick_value_04.setText("");
+                        tv_game_onclick_value_05.setText("");
+                        tv_game_onclick_value_06.setText("");
+                    } else {
+                        recreate();
+                        Full_Screen_Window();
+                        constraintLayout_game_rules_details_lay.setVisibility(View.VISIBLE);
+                        constraintLayout_gridview_layout.setVisibility(View.GONE);
+                        constraintLayout_showcase_onclicked_values.setVisibility(View.GONE);
+
+                        tv_game_onclick_value_01.setText("");
+                        tv_game_onclick_value_02.setText("");
+                        tv_game_onclick_value_03.setText("");
+                        tv_game_onclick_value_04.setText("");
+                        tv_game_onclick_value_05.setText("");
+                        tv_game_onclick_value_06.setText("");
+
+                        tv_game_onclick_value_01_lay_02.setText(tv_game_onclick_value_01.getText().toString());
+                        tv_game_onclick_value_02_lay_02.setText(tv_game_onclick_value_02.getText().toString());
+                        tv_game_onclick_value_03_lay_02.setText(tv_game_onclick_value_03.getText().toString());
+                        tv_game_onclick_value_04_lay_02.setText(tv_game_onclick_value_04.getText().toString());
+                        tv_game_onclick_value_05_lay_02.setText(tv_game_onclick_value_05.getText().toString());
+                        tv_game_onclick_value_06_lay_02.setText(tv_game_onclick_value_06.getText().toString());
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * showing bottom sheet dialog fragment
+     * same layout is used in both dialog and dialog fragment
+     */
+
+    public void showBottomSheetDialogFragment() {
+        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+        bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+    }
+
+    /*This components are used for showing Rewarded video*/
+    private void Get_Rewarded_Video_Method(Bundle savedInstanceState) {
+        mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
+            @Override
+            public void onRewarded(RewardItem rewardItem) {
+//                Toast.makeText(getBaseContext(), "Ad triggered reward.", Toast.LENGTH_SHORT).show();
+                addCoins(10);
+            }
+
+            @Override
+            public void onRewardedVideoAdLoaded() {
+//                Toast.makeText(getBaseContext(), "Ad loaded.", Toast.LENGTH_SHORT).show();
+                showRewardedVideo_New();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+//                        Toast.makeText(getBaseContext(), "Ad loaded handler.", Toast.LENGTH_SHORT).show();
+                    }
+                }, 500);
+
+                tv_loading_txt.setVisibility(View.GONE);
+                progress_bar_in_reward_video.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onRewardedVideoAdOpened() {
+//                Toast.makeText(getBaseContext(), "Ad opened.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onRewardedVideoStarted() {
+//                Toast.makeText(getBaseContext(), "Ad started.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onRewardedVideoAdClosed() {
+                constraintLayout_rewarded_video.setVisibility(View.GONE);
+//                Toast.makeText(getBaseContext(), "Ad closeddddd.", Toast.LENGTH_SHORT).show();
+                AD_Closed_Method();
+            }
+
+            @Override
+            public void onRewardedVideoAdLeftApplication() {
+//                Toast.makeText(getBaseContext(), "Ad left application.", Toast.LENGTH_SHORT).show();
+//                Log.e("ad_left_log", "Ad left application");
+            }
+
+            @Override
+            public void onRewardedVideoAdFailedToLoad(int i) {
+//                Toast.makeText(getBaseContext(), "Ad failed to load.", Toast.LENGTH_SHORT).show();
+//                Log.e("Failed_log", "Ad failed to load.");
+            }
+
+            @Override
+            public void onRewardedVideoCompleted() {
+            }
+        });
+
+        if (savedInstanceState == null) {
+            mCoinCount = 0;
+            mCoinCountText.setText(String.valueOf(mCoinCount));
+            startGame_Rewarded_Video();
+        }
+    }
+
+
+    /*This components are used for Rewarded video*/
+    private void startGame_Rewarded_Video() {
+        mGamePaused = false;
+        mGameOver = false;
+        mRewardedVideoAd.loadAd(getString(R.string.ad_unit_id), new AdRequest.Builder().build());
+    }
+
+    /*This components are used for Rewarded video*/
+    private void showRewardedVideo_New() {
+        if (mRewardedVideoAd.isLoaded()) {
+            mRewardedVideoAd.show();
+        }
+    }
+
+    /*This components are used for Rewarded video*/
+    private void addCoins(int coins) {
+        mCoinCount = mCoinCount + coins;
+        mCoinCountText.setText(String.valueOf(mCoinCount));
+    }
+
+    private void AD_Closed_Method() {
+        int_rewarded_coins_point = Integer.parseInt(mCoinCountText.getText().toString());
+        Log.e("int_rewarded_coins_point", "" + int_rewarded_coins_point);
+        if (int_rewarded_coins_point != 10) {
+            constraintLayout_rewarded_video.setVisibility(View.GONE);
+            constraintLayout_game_rules_details_lay.setVisibility(View.GONE);
+            constraintLayout_gridview_layout.setVisibility(View.GONE);
+            constraintLayout_showcase_onclicked_values.setVisibility(View.GONE);
+        } else {
+            Full_Screen_Window();
+            str_remaining_value = SessionSave.getSession("remaining_tickets", Main2Activity.this);
+            int_remaining_value = Integer.parseInt(str_remaining_value);
+
+            int a = int_remaining_value + 1;
+            Log.e("ad_cls_a_val", "" + a);
+            SessionSave.SaveSession("remaining_tickets", String.valueOf(a), Main2Activity.this);
+            constraintLayout_game_rules_details_lay.setVisibility(View.VISIBLE);
+
+            constraintLayout_fianl_result_winner_layout.setVisibility(View.GONE);
+            constraintLayout_rewarded_video.setVisibility(View.GONE);
+            constraintLayout_gridview_layout.setVisibility(View.GONE);
+            constraintLayout_showcase_onclicked_values.setVisibility(View.GONE);
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /*This components are used for Rewarded video*/
+        if (!mGameOver && mGamePaused) {
+            resumeGame();
+        }
+        IronSource.onResume(Main2Activity.this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        /*This components are used for Rewarded video*/
+        pauseGame();
+        IronSource.onPause(this);
+        mRewardedVideoAd.pause(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        /*This components are used for Rewarded video*/
+        mRewardedVideoAd.destroy(this);
+    }
+
+
+    /*This components are used for Rewarded video*/
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        mGamePaused = savedInstanceState.getBoolean(GAME_PAUSE_KEY);
+        mGameOver = savedInstanceState.getBoolean(GAME_OVER_KEY);
+        mTimeRemaining = savedInstanceState.getLong(TIME_REMAINING_KEY);
+        mCoinCount = savedInstanceState.getInt(COIN_COUNT_KEY);
+        mCoinCountText.setText(String.valueOf(mCoinCount));
+    }
+
+    /*This components are used for Rewarded video*/
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(GAME_PAUSE_KEY, mGamePaused);
+        outState.putBoolean(GAME_OVER_KEY, mGameOver);
+        outState.putLong(TIME_REMAINING_KEY, mTimeRemaining);
+        outState.putInt(COIN_COUNT_KEY, mCoinCount);
+        super.onSaveInstanceState(outState);
+    }
+
+    /*This components are used for Rewarded video*/
+    private void pauseGame() {
+        mGamePaused = true;
+    }
+
+    /*This components are used for Rewarded video*/
+    private void resumeGame() {
+        mGamePaused = false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Main2Activity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+    }
+}

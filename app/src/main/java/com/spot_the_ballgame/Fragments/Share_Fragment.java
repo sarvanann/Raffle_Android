@@ -5,7 +5,6 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +38,7 @@ public class Share_Fragment extends Fragment implements View.OnClickListener {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void onBackPressed() {
         int backStackEntryCount = Objects.requireNonNull(getActivity()).getSupportFragmentManager().getBackStackEntryCount();
-        Log.e("backStackCnt_share", "" + backStackEntryCount);
+//        Log.e("backStackCnt_share", "" + backStackEntryCount);
         if (backStackEntryCount == 1) {
             Intent intent = new Intent(getContext(), Navigation_Drawer_Act.class);
             startActivity(intent);
@@ -67,7 +66,7 @@ public class Share_Fragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.btn_share:
                 FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(Objects.requireNonNull(getActivity()));
-                Intent i = new Intent(android.content.Intent.ACTION_SEND);
+                /*Intent i = new Intent(android.content.Intent.ACTION_SEND);
                 Bundle bundle = new Bundle();
                 i.putExtra(android.content.Intent.EXTRA_TEXT, "extra text that you want to put");
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "extra text that you want to put");
@@ -76,7 +75,9 @@ public class Share_Fragment extends Fragment implements View.OnClickListener {
 //                i.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject test");
                 mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SHARE, bundle);
                 i.putExtras(bundle);
-                startActivity(Intent.createChooser(i, "Share via"));
+                startActivity(Intent.createChooser(i, "Share via"));*/
+
+
 
                 /*  FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(Objects.requireNonNull(getActivity()));
                 Intent i = new Intent(android.content.Intent.ACTION_SEND);
@@ -87,6 +88,23 @@ public class Share_Fragment extends Fragment implements View.OnClickListener {
                 mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SHARE, bundle);
                 i.putExtras(bundle);
                 startActivity(Intent.createChooser(i, "Share via"));*/
+
+                Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Insert Subject here");
+                String app_url = "https://image.winudf.com/v2/image1/aW4uenVwZWUuenVwZWVfaWNvbl8xNTUxNDE0OTU0XzA4Nw/icon.png?w=170&fakeurl=1";
+                shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, app_url);
+                startActivity(Intent.createChooser(shareIntent, "Share via"));
+
+            /*    String text = "Look at my awesome picture";
+                Uri pictureUri = Uri.parse("https://image.winudf.com/v2/image1/aW4uenVwZWUuenVwZWVfaWNvbl8xNTUxNDE0OTU0XzA4Nw/icon.png?w=170&fakeurl=1");
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, text);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, pictureUri);
+                shareIntent.setType("image/*");
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startActivity(Intent.createChooser(shareIntent, "Share images..."));*/
                 break;
         }
     }

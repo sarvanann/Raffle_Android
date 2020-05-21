@@ -24,6 +24,7 @@ import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -38,12 +39,16 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.material.snackbar.Snackbar;
 import com.spot_the_ballgame.Interface.APIInterface;
 import com.spot_the_ballgame.Interface.Factory;
@@ -51,7 +56,6 @@ import com.spot_the_ballgame.Model.UserModel;
 import com.spot_the_ballgame.R;
 import com.spot_the_ballgame.Registration.Mobile_Num_Registration;
 import com.spot_the_ballgame.Registration.SignIn.All_Btn_Onclick_Sign_In_Act;
-import com.spot_the_ballgame.Registration.SignIn.Email_Sign_In_Act;
 import com.spot_the_ballgame.SessionSave;
 import com.spot_the_ballgame.Splash_Screen_Act;
 import com.spot_the_ballgame.Toast_Message;
@@ -75,7 +79,8 @@ import retrofit2.Response;
 
 import static android.provider.Telephony.Carriers.AUTH_TYPE;
 
-public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements View.OnClickListener {
+public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements
+        View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
     SQLiteDatabase db;
     ConstraintLayout constraintLayout_google_signup_in_signup,
             constraintLayout_facebook_signup_in_signup,
@@ -97,6 +102,7 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
             str_given_name,
             str_family_name,
             str_email,
+            str_status,
             str_id,
             str_code,
             str_message,
@@ -106,6 +112,7 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
             str_app_id,
             str_image,
             str_username,
+            str_referral_code,
             fbUserId,
             fbUserFirstName,
             fbUserEmail,
@@ -116,13 +123,16 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
     Uri int_profile_picture,
             str_photourl;
     int int_selection_value = 0;
+    int int_api_checkbox_selection_value = 0;
     int RC_SIGN_IN = 0;
     //This is for Internet alert using snackbar status
     public static int TYPE_WIFI = 1;
     public static int TYPE_MOBILE = 2;
     public static int TYPE_NOT_CONNECTED = 0;
     private boolean internetConnected = true;
-    public String str_token;
+//    public String str_token;
+
+    private GoogleApiClient mGoogleApiClient;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -150,7 +160,15 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
         constraintLayout_facebook_signup_in_signup.setOnClickListener(this);
         constraintLayout_email_signup_in_signup.setOnClickListener(this);
 
-
+        /*
+        * This is used for showing signup layout while back press the button and user logout
+        * */
+        String s1 = SessionSave.getSession("layout_visible_value", All_Btn_OnClick_Sign_Up_Act.this);
+        if (s1.equals("No data")) {
+//            Toast.makeText(this, "Nodata", Toast.LENGTH_SHORT).show();
+        } else {
+//            Toast.makeText(this, "Value is" + s1, Toast.LENGTH_SHORT).show();
+        }
         callbackManager = CallbackManager.Factory.create();
         // Set the initial permissions to request from the user while logging in
         mLoginButton.setReadPermissions(Arrays.asList(EMAIL));
@@ -161,6 +179,16 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
+        /*
+         * This codes are added for revoke access-13-04-2020 7.55 PM
+         *
+         * */
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         // Callback registration
@@ -182,15 +210,18 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
     /*This metod is used registering fb values and send those values to api.*/
     private void Get_Facebook_SignUp_Details() {
         try {
+
+            str_intent_source_details = "facebook";
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("source_detail", "facebook");
+            jsonObject.put("source_detail", str_intent_source_details);
             jsonObject.put("first_name", fbUserFirstName);
             jsonObject.put("last_name", fbUserFirstName);
             jsonObject.put("email", fbUserEmail);
             jsonObject.put("app_id", fbUserId);
             jsonObject.put("image", String.valueOf(int_profile_picture));
+            jsonObject.put("is_termed", String.valueOf(int_api_checkbox_selection_value));
 
-
+            Log.e("fb_json_value", jsonObject.toString());
           /*  jsonObject.put("source_detail", "facebook");
             jsonObject.put("first_name", "test");
             jsonObject.put("last_name", "user");
@@ -222,10 +253,9 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
                         str_app_id = response.body().datum.app_id;
                         str_image = response.body().datum.image;
                         str_username = response.body().datum.username;
+                        str_referral_code = response.body().datum.referral_code;
+                        SessionSave.SaveSession("Referral_Code_Value", str_referral_code, All_Btn_OnClick_Sign_Up_Act.this);
 
-                        str_token = response.body().api_token;
-                        SessionSave.SaveSession("Token_value", str_token, All_Btn_OnClick_Sign_Up_Act.this);
-//                        Log.e("str_token_signup", str_token);
 //                        Log.e("str_source_detail", str_source_detail);
 //                        Log.e("str_first_name", str_first_name);
 //                        Log.e("str_last_name", str_last_name);
@@ -282,7 +312,11 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
                 break;
 
             case R.id.tv_sign_in_in_signup:
+                /*
+                 * This is used for showing signup layout while back press the button and user logout
+                 * */
                 Intent intent = new Intent(All_Btn_OnClick_Sign_Up_Act.this, All_Btn_Onclick_Sign_In_Act.class);
+                SessionSave.SaveSession("layout_visible_value", "1", All_Btn_OnClick_Sign_Up_Act.this);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
@@ -293,9 +327,10 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
                 } else {
                     if (checkBox.isChecked()) {
                         int_selection_value = 1;
+                        int_api_checkbox_selection_value = 1;
                         signIn();
                     } else {
-                        Toast_Message.showToastMessage(All_Btn_OnClick_Sign_Up_Act.this, "Please accept terms and condition");
+                        Toast_Message.showToastMessage(All_Btn_OnClick_Sign_Up_Act.this, getResources().getString(R.string.pls_accept_terms_nd_condition_txt));
                     }
 
                 }
@@ -306,8 +341,9 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
                 } else {
                     if (checkBox.isChecked()) {
                         int_selection_value = 2;
+                        int_api_checkbox_selection_value = 1;
 //                    Get_Facebook_SignUp_Details();
-
+//                        FB_Revoke_Method();
                         ArrayList<String> list = new ArrayList<String>();
                         list.add("email");
 // LoginManager.getInstance().logInWithReadPermissions(this, list);
@@ -363,7 +399,7 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
                             }
                         });
                     } else {
-                        Toast_Message.showToastMessage(All_Btn_OnClick_Sign_Up_Act.this, "Please accept terms and condition");
+                        Toast_Message.showToastMessage(All_Btn_OnClick_Sign_Up_Act.this, getResources().getString(R.string.pls_accept_terms_nd_condition_txt));
                     }
                 }
 
@@ -374,24 +410,34 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
                 } else {
                     if (checkBox.isChecked()) {
                         int_selection_value = 3;
-                        if (int_selection_value == 3) {
-                            str_intent_source_details = "email";
-                            Intent intent_01 = new Intent(All_Btn_OnClick_Sign_Up_Act.this, Email_Sign_Up_Act.class);
-                            intent_01.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent_01.putExtra("source_details", str_intent_source_details);
-                            startActivity(intent_01);
-                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                        }
+                        int_api_checkbox_selection_value = 1;
+                        str_intent_source_details = "email";
+                        Intent intent_01 = new Intent(All_Btn_OnClick_Sign_Up_Act.this, Email_Sign_Up_Act.class);
+                        intent_01.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent_01.putExtra("source_details", str_intent_source_details);
+                        intent_01.putExtra("int_api_checkbox_selection_value", String.valueOf(int_api_checkbox_selection_value));
+                        startActivity(intent_01);
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     } else {
-                        Toast_Message.showToastMessage(All_Btn_OnClick_Sign_Up_Act.this, "Please accept terms and condition");
+                        Toast_Message.showToastMessage(All_Btn_OnClick_Sign_Up_Act.this, getResources().getString(R.string.pls_accept_terms_nd_condition_txt));
                     }
                 }
                 break;
         }
     }
 
+    private void FB_Revoke_Method() {
+    }
+
     private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+//        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+//        startActivityForResult(signInIntent, RC_SIGN_IN);
+        /*
+         * This codes are added for revoke access-13-04-2020 7.55 PM
+         *
+         * */
+        Revoke_Access_Method();
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
@@ -399,9 +445,19 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
+       /* if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
+        }*/
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+
+        /*
+         * This codes are added for revoke access-13-04-2020 7.55 PM
+         *
+         * */
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -466,8 +522,10 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
         }
     }
 
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
+
+    //    private void Handle_SignIn_Result_For_Sign_In_Method(Task<GoogleSignInAccount> completedTask) {
+    private void handleSignInResult(GoogleSignInResult result) {
+        /*try {
             GoogleSignInAccount account1 = completedTask.getResult(ApiException.class);
             GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(All_Btn_OnClick_Sign_Up_Act.this);
             if (account != null) {
@@ -492,6 +550,37 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w("Google Sign In Error", "signInResult:failed code=" + e.getStatusCode());
 //            Toast.makeText(All_Btn_OnClick_Sign_Up_Act.this, "Failed", Toast.LENGTH_LONG).show();
+        }*/
+
+        /*
+         * This codes are added for revoke access-13-04-2020 7.55 PM
+         *
+         * */
+        try {
+            Log.d("handleSignInResult:", "" + result.isSuccess());
+            if (result.isSuccess()) {
+                // Signed in successfully, show authenticated UI.
+                GoogleSignInAccount acct = result.getSignInAccount();
+                str_name = acct.getDisplayName();
+                str_given_name = acct.getGivenName();
+                str_family_name = acct.getFamilyName();
+                str_email = acct.getEmail();
+                str_id = acct.getId();
+                str_photourl = acct.getPhotoUrl();
+                Log.e("str_name", str_name);
+                Log.e("str_given_name", str_given_name);
+                Log.e("str_family_name", str_family_name);
+                Log.e("str_email", str_email);
+                Log.e("str_id", str_id);
+                Log.e("str_photourl", String.valueOf(str_photourl));
+                Get_Gmail_SignUp_Response_Method();
+                Splash_Screen_Act.str_global_mail_id = str_email;
+            } else {
+                // Signed out, show unauthenticated UI.
+//                Toast.makeText(All_Btn_OnClick_Sign_Up_Act.this, "ELSE", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -507,7 +596,8 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
             jsonObject.put("email", str_email);
             jsonObject.put("app_id", str_id);
             jsonObject.put("image", str_photourl);
-//            Log.e("json_Value_signup", jsonObject.toString());
+            jsonObject.put("is_termed", String.valueOf(int_api_checkbox_selection_value));
+            Log.e("json_Value_signup", jsonObject.toString());
 
 
             /*jsonObject.put("source_detail", str_intent_source_details);
@@ -535,8 +625,8 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
                             str_code = response.body().status;
                             str_message = response.body().message;
 
-//                        Log.e("str_code", str_code);
-//                        Log.e("str_message", str_message);
+                            Log.e("str_code", str_code);
+                            Log.e("str_message", str_message);
                             if (str_code.equalsIgnoreCase("success")) {
                                 pd.dismiss();
                                 str_source_detail = response.body().datum.source_detail;
@@ -546,11 +636,8 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
                                 str_app_id = response.body().datum.app_id;
                                 str_image = response.body().datum.image;
                                 str_username = response.body().datum.username;
-
-                                str_token = response.body().api_token;
-                                SessionSave.SaveSession("Token_value", str_token, All_Btn_OnClick_Sign_Up_Act.this);
-//                            Log.e("str_token_signup", str_token);
-
+                                str_referral_code = response.body().datum.referral_code;
+                                SessionSave.SaveSession("Referral_Code_Value", str_referral_code, All_Btn_OnClick_Sign_Up_Act.this);
 
 //                            Log.e("str_source_detail", str_source_detail);
 //                            Log.e("str_first_name", str_first_name);
@@ -568,6 +655,11 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
                             } else if (str_code.equalsIgnoreCase("error")) {
                                 pd.dismiss();
                                 Toast_Message.showToastMessage(All_Btn_OnClick_Sign_Up_Act.this, str_message);
+                                /*
+                                 * This codes are added for revoke access-13-04-2020 7.55 PM
+                                 *
+                                 * */
+                                Revoke_Access_Method();
                             } else {
                                 pd.dismiss();
                                 Toast_Message.showToastMessage(All_Btn_OnClick_Sign_Up_Act.this, str_message);
@@ -595,6 +687,19 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
         }
     }
 
+    /*
+     * This codes are added for revoke access-13-04-2020 7.55 PM
+     *
+     * */
+    private void Revoke_Access_Method() {
+        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                    }
+                });
+    }
+
     private void Get_Insert_DB_Sign_Up_Values() {
         String select = "Select * FROM LOGINDETAILS";
         Cursor cursor = db.rawQuery(select, null);
@@ -619,11 +724,12 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
     }
 
     private void Insert_Singup_Details() {
-        if (rowIDExistEmail(str_email) && rowIDExistApp_ID(str_app_id)) {
+        if (rowIDExistEmail(str_email)) {
+//        if (rowIDExistEmail(str_email) && rowIDExistApp_ID(str_app_id)) {
             ContentValues contentValues = new ContentValues();
             contentValues.put("SOURCEDETAILS", str_source_detail);
             contentValues.put("EMAIL", str_email);
-            contentValues.put("FIRSTNAME", str_first_name);
+//            contentValues.put("FIRSTNAME", str_first_name);
             contentValues.put("APPID", str_app_id);
             contentValues.put("STATUS", 1);
             contentValues.put("SIGNUPSTATUS", 1);
@@ -682,7 +788,7 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
         List<String> labels = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
-                String var = cursor.getString(1);
+                String var = cursor.getString(3);
                 labels.add(var);
             } while (cursor.moveToNext());
         }
@@ -782,7 +888,7 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
         if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
             internetStatus = getResources().getString(R.string.back_online_txt);
             snackbar = Snackbar.make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_LONG);
-            snackbar.getView().setBackgroundResource(R.color.sign_up_txt);
+            snackbar.getView().setBackgroundResource(R.color.timer_bg_color);
         } else {
             internetStatus = getResources().getString(R.string.check_internet_conn_txt);
             snackbar = Snackbar.make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_INDEFINITE);
@@ -824,13 +930,41 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements Vi
         unregisterReceiver(broadcastReceiver);
     }
 
-    /*@Override
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d("onConnectionFailed:", "" + connectionResult);
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent();
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        System.exit(0);
-        finish();
-    }*/
+//        Intent intent = new Intent();
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        System.exit(0);
+
+        String select = "select STATUS from LOGINDETAILS where STATUS ='" + 0 + "'";
+        Cursor cursor = db.rawQuery(select, null);
+        if (cursor.moveToFirst()) {
+            do {
+                str_status = cursor.getString(0);
+                Log.e("str_status_signup", str_status);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        if (str_status.equals("0")) {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            recreate();
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+            System.exit(0);
+        }
+        DBEXPORT();
+
+    }
 }

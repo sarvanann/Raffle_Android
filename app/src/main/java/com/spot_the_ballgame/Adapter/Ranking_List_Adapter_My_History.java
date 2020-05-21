@@ -27,16 +27,16 @@ public class Ranking_List_Adapter_My_History extends RecyclerView.Adapter<Rankin
 
     @NonNull
     @Override
-    public Ranking_List_Adapter_My_History.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view;
         view = inflater.inflate(R.layout.ranking_list_adapter_details_layout, parent, false);
-        return new Ranking_List_Adapter_My_History.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull Ranking_List_Adapter_My_History.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         /*String s = arrayList.get(position).first_name;
         String[] parts = s.split("@");
         String s1 = parts[0];*/

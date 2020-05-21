@@ -1,0 +1,1065 @@
+package com.manju_export.Fragments;
+
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.manju_export.Adapters.Sewing_Adapter;
+import com.manju_export.Entries.Sewing_Entry_Act;
+import com.manju_export.Home_Activity;
+import com.manju_export.Interface.APIInterface;
+import com.manju_export.Interface.Factory;
+import com.manju_export.Model.Full_App_Model_Class;
+import com.manju_export.Model.Operator_Model;
+import com.manju_export.Model.Sewing_Model;
+import com.manju_export.R;
+import com.manju_export.ScannedBarcodeActivity;
+import com.manju_export.SessionSave;
+import com.manju_export.Toast_Message;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class Sewing_Frag extends Fragment implements View.OnClickListener {
+    public static ConstraintLayout constraintLayout_recyclerview, constraintLayout_sewing_rv_layout,
+            constraintLayout_qr_code_scan;
+    private ConstraintLayout constraintLayout_operation_layout,
+            constraintLayout_select_shift,
+            constraintLayout_tailor_layout,
+            constraintLayout_select_no_of_operation;
+
+    ScrollView scroll_view_layout;
+    public static Button btn_save_new;
+
+    private Dialog
+            dialog_for_tailor,
+            dialog_for_shift_timing,
+            dialog_for_operation, dialog_for_pieces;
+
+    private Operation_Select_Adapter operation_select_adapter;
+    private Select_No_Pieces_Adapter select_no_pieces_adapter;
+    private Tailors_Select_Adapter tailors_select_adapter;
+    private Shift_Timing_Adapter shift_timing_adapter;
+    private Sewing_Adapter sewing_adapter;
+
+    public static FloatingActionButton fab;
+    private RecyclerView rv_sewing,
+            rv_select_operation,
+            rv_tailors_select,
+            rv_shift_timing,
+            rv_no_of_pieces;
+
+
+    ShimmerFrameLayout shimmer_for_sewing;
+    private TextView tv_io_number,
+            tv_art_number,
+            tv_date,
+            tv_color_code,
+            tv_bundle_number,
+            tv_size,
+            tv_lot_number,
+            tv_total_pieces,
+            textViewName,
+            textViewAddress,
+            tv_normal_tailor_txt,
+            tv_onclick_tailor_txt,
+            tv_select_no_of_operation,
+            tv_onclick_no_of_operation,
+            tv_scan_again,
+            tv_select_operation,
+            tv_onclick_operation,
+            tv_select_shift,
+            tv_onclick_shift,
+            tv_normal_select_piece_for_sewing,
+            tv_onclick_select_piece_for_sewing;
+
+    private String str_io_num,
+            str_art_num,
+            str_date,
+            str_color_code,
+            str_bundle_num,
+            str_size,
+            str_lot_num,
+            str_total_pieces;
+
+    private String str_session_username,
+            str_session_logintoken,
+            str_session_checking_person,
+            str_session_operation,
+            str_session_shift_timing,
+            str_bar_code_scan_value;
+
+    private String str_qrcode_value = "";
+    private String str_qrcode_value_others = "";
+
+    int int_fab_onlick_value = 0;
+
+
+    private EditText et_num_from_pieces_dialog;
+    private TextView tv_ok_from_pieces_dialog;
+    private String str_num_of_pieces;
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.sewing_frag_lay, container, false);
+        //This is used for Full screen
+//        Objects.requireNonNull(getActivity()).getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        Home_Activity.toolbar.setBackgroundColor(getResources().getColor(R.color.blue_color));
+        Home_Activity.tv_title_txt.setText(getResources().getString(R.string.sewing_txt));
+        fab = view.findViewById(R.id.fab);
+        shimmer_for_sewing = view.findViewById(R.id.shimmer_for_sewing);
+
+        constraintLayout_sewing_rv_layout = view.findViewById(R.id.constraintLayout_sewing_rv_layout);
+        constraintLayout_recyclerview = view.findViewById(R.id.constraintLayout_recyclerview);
+        constraintLayout_qr_code_scan = view.findViewById(R.id.constraintLayout_qr_code_scan);
+        scroll_view_layout = view.findViewById(R.id.scroll_view_layout);
+        btn_save_new = view.findViewById(R.id.btn_save_new);
+        rv_sewing = view.findViewById(R.id.rv_sewing);
+
+        tv_io_number = view.findViewById(R.id.tv_io_number);
+        tv_art_number = view.findViewById(R.id.tv_art_number);
+        tv_date = view.findViewById(R.id.tv_date);
+        tv_color_code = view.findViewById(R.id.tv_color_code);
+        tv_bundle_number = view.findViewById(R.id.tv_bundle_number);
+        tv_size = view.findViewById(R.id.tv_size);
+        tv_lot_number = view.findViewById(R.id.tv_lot_number);
+        tv_total_pieces = view.findViewById(R.id.tv_total_pieces);
+
+
+        rv_sewing.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        rv_sewing.setHasFixedSize(true);
+
+
+        shimmer_for_sewing.setVisibility(View.VISIBLE);
+        shimmer_for_sewing.startShimmerAnimation();
+        Home_Activity.tv_title_txt.setText(getResources().getString(R.string.sewing_txt));
+
+        tv_scan_again = view.findViewById(R.id.tv_scan_again);
+        textViewName = view.findViewById(R.id.textViewName);
+        textViewAddress = view.findViewById(R.id.textViewAddress);
+
+
+        tv_normal_tailor_txt = view.findViewById(R.id.tv_normal_tailor_txt);
+        tv_onclick_tailor_txt = view.findViewById(R.id.tv_onclick_tailor_txt);
+
+//        tv_select_no_of_operation = view.findViewById(R.id.tv_select_no_of_operation);
+//        tv_onclick_no_of_operation = view.findViewById(R.id.tv_onclick_no_of_operation);
+
+
+        constraintLayout_tailor_layout = view.findViewById(R.id.constraintLayout_tailor_layout);
+        constraintLayout_select_no_of_operation = view.findViewById(R.id.constraintLayout_select_no_of_operation);
+
+
+        tv_select_operation = view.findViewById(R.id.tv_select_operation);
+        tv_onclick_operation = view.findViewById(R.id.tv_onclick_operation);
+        constraintLayout_operation_layout = view.findViewById(R.id.constraintLayout_operation_layout);
+
+
+        tv_select_shift = view.findViewById(R.id.tv_select_shift);
+        tv_onclick_shift = view.findViewById(R.id.tv_onclick_shift);
+
+        tv_normal_select_piece_for_sewing = view.findViewById(R.id.tv_normal_select_piece_for_sewing);
+        tv_onclick_select_piece_for_sewing = view.findViewById(R.id.tv_onclick_select_piece_for_sewing);
+
+        constraintLayout_select_shift = view.findViewById(R.id.constraintLayout_select_shift);
+
+        //attaching onclick listener
+        constraintLayout_tailor_layout.setOnClickListener(this);
+        constraintLayout_select_no_of_operation.setOnClickListener(this);
+        constraintLayout_operation_layout.setOnClickListener(this);
+        constraintLayout_select_shift.setOnClickListener(this);
+        tv_scan_again.setOnClickListener(this);
+        btn_save_new.setOnClickListener(this);
+        fab.setOnClickListener(this);
+
+        str_session_username = SessionSave.getSession("Session_UserName", getActivity());
+        str_session_logintoken = SessionSave.getSession("Session_Logintoken", getActivity());
+        str_session_checking_person = SessionSave.getSession("Session_Checking_Person_Sewing", getActivity());
+        str_session_operation = SessionSave.getSession("Session_Operation_Sewing", getActivity());
+        str_session_shift_timing = SessionSave.getSession("Session_Shift_Timing_Sewing", getActivity());
+//        Log.e("session_logintoken_sew", str_session_logintoken);
+//        Log.e("session_username_sew", str_session_logintoken);
+
+        Get_Sewing_Details();
+
+        Bundle bundle = Objects.requireNonNull(getActivity()).getIntent().getExtras();
+        if (bundle == null) {
+            str_qrcode_value = null;
+        } else {
+            str_qrcode_value = bundle.getString("Barcode_value");
+            str_qrcode_value_others = bundle.getString("Barcode_value_Others");
+//            Log.e("main_bundle_value", str_qrcode_value);
+            Set<String> stringSet = new HashSet<>();
+            stringSet.add(str_qrcode_value);
+            JSONObject jsonObject = null;
+//            Log.e("main_stringSet", stringSet.toString());
+            try {
+                jsonObject = new JSONObject(str_qrcode_value);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            for (int i = 0; i < Objects.requireNonNull(jsonObject).length(); i++) {
+                try {
+                    str_bar_code_scan_value = jsonObject.getString("qr_no");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (str_qrcode_value != null) {
+                Get_Scan_Details();
+                rv_sewing.setVisibility(View.GONE);
+                constraintLayout_recyclerview.setVisibility(View.GONE);
+                constraintLayout_qr_code_scan.setVisibility(View.VISIBLE);
+                constraintLayout_sewing_rv_layout.setVisibility(View.GONE);
+                Sewing_Entry_Act.tv_exit_txt.setVisibility(View.VISIBLE);
+                scroll_view_layout.setVisibility(View.VISIBLE);
+            }
+        }
+        if (!(str_session_checking_person.equalsIgnoreCase("No data"))) {
+            if (str_qrcode_value_others != null && str_qrcode_value != null) {
+                tv_onclick_tailor_txt.setText(str_bar_code_scan_value);
+                tv_normal_tailor_txt.setText("");
+                SessionSave.SaveSession("Session_Checking_Person_Sewing", tv_onclick_tailor_txt.getText().toString(), getActivity());
+            } else if (str_qrcode_value != null) {
+                tv_onclick_tailor_txt.setText(str_session_checking_person);
+                tv_normal_tailor_txt.setText("");
+                SessionSave.SaveSession("Session_Checking_Person_Sewing", tv_onclick_tailor_txt.getText().toString(), getActivity());
+            }
+
+        }
+
+        if (!(str_session_operation.equalsIgnoreCase("No data"))) {
+            tv_onclick_operation.setText(str_session_operation);
+            tv_select_operation.setText("");
+        }
+
+        if (!(str_session_shift_timing.equalsIgnoreCase("No data"))) {
+            tv_onclick_shift.setText(str_session_shift_timing);
+            tv_select_shift.setText("");
+        }
+
+        if ((tv_onclick_tailor_txt.getText().toString().equals(""))
+                || (tv_onclick_operation.getText().toString().equals(""))
+                || (tv_onclick_shift.getText().toString().equals(""))) {
+            tv_select_shift.setText(R.string.select_operation_txt);
+            tv_onclick_shift.setText("");
+            btn_save_new.setEnabled(false);
+            btn_save_new.setBackground(getResources().getDrawable(R.drawable.disable_button_bg));
+        }
+
+        if (!(tv_onclick_tailor_txt.getText().toString().equals(""))
+                && !(tv_onclick_operation.getText().toString().equals(""))
+                && !(tv_onclick_shift.getText().toString().equals(""))
+                && !(tv_onclick_select_piece_for_sewing.getText().toString().equals(""))) {
+            btn_save_new.setEnabled(true);
+            btn_save_new.setBackground(getResources().getDrawable(R.drawable.sewing_entry_button_bg));
+        }
+        return view;
+    }
+
+    private void Get_Scan_Details() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("usname", str_session_username);
+            jsonObject.put("token", str_session_logintoken);
+            jsonObject.put("qr_no", str_bar_code_scan_value);
+//            Log.e("Scan_Details_Json", jsonObject.toString());
+            APIInterface apiInterface = Factory.getClient();
+            Call<Full_App_Model_Class> call = apiInterface.GET_BUNDLE_DATA_RESPONSE_CALL("application/json", jsonObject.toString());
+            call.enqueue(new Callback<Full_App_Model_Class>() {
+                @Override
+                public void onResponse(Call<Full_App_Model_Class> call, Response<Full_App_Model_Class> response) {
+                    if (response.code() == 200) {
+                        if (response.isSuccessful()) {
+                            scroll_view_layout.setVisibility(View.VISIBLE);
+                            constraintLayout_qr_code_scan.setVisibility(View.VISIBLE);
+                            btn_save_new.setVisibility(View.VISIBLE);
+
+                            rv_sewing.setVisibility(View.GONE);
+                            constraintLayout_recyclerview.setVisibility(View.GONE);
+                            constraintLayout_sewing_rv_layout.setVisibility(View.GONE);
+                            fab.setVisibility(View.GONE);
+
+                            str_io_num = response.body().data.io_no;
+//                            str_art_num = response.body().data.art_no;
+                            str_date = response.body().data.date;
+                            str_color_code = response.body().data.color_code;
+                            str_bundle_num = response.body().data.bundle_no;
+                            str_size = response.body().data.size;
+                            str_lot_num = response.body().data.lot_no;
+                            str_total_pieces = response.body().data.tot_pcs;
+
+                            tv_io_number.setText(str_io_num);
+//                            tv_art_number.setText(str_art_num);
+                            tv_date.setText(str_date);
+                            tv_color_code.setText(str_color_code);
+                            tv_bundle_number.setText(str_bundle_num);
+                            tv_size.setText(str_size);
+                            tv_lot_number.setText(str_lot_num);
+                            tv_total_pieces.setText(str_total_pieces);
+//                            Log.e("str_io_num", str_io_num);
+//                            Log.e("str_art_num", str_art_num);
+//                            Log.e("str_date", str_date);
+//                            Log.e("str_color_code", str_color_code);
+//                            Log.e("str_bundle_num", str_bundle_num);
+//                            Log.e("str_size", str_size);
+//                            Log.e("str_lot_num", str_lot_num);
+//                            Log.e("str_total_pieces", str_total_pieces);
+
+
+                            tv_normal_tailor_txt.setText("");
+                            tv_onclick_tailor_txt.setText("");
+                            tv_onclick_tailor_txt.setText(str_bar_code_scan_value);
+                            SessionSave.SaveSession("Session_Checking_Person_Sewing", tv_onclick_tailor_txt.getText().toString(), getActivity());
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Full_App_Model_Class> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void Get_Sewing_Details() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("usname", str_session_username);
+            jsonObject.put("token", str_session_logintoken);
+//            Log.e("json_obje", jsonObject.toString());
+            APIInterface apiInterface = Factory.getClient();
+            Call<Sewing_Model> call = apiInterface.SEWING_RESPONSE_CALL("application/json", jsonObject.toString());
+            call.enqueue(new Callback<Sewing_Model>() {
+                @Override
+                public void onResponse(Call<Sewing_Model> call, Response<Sewing_Model> response) {
+                    if (response.body().data != null) {
+                        if (response.code() == 200) {
+                            if (response.isSuccessful()) {
+                                if (constraintLayout_qr_code_scan.getVisibility() == View.VISIBLE) {
+                                    rv_sewing.setVisibility(View.GONE);
+                                    constraintLayout_recyclerview.setVisibility(View.GONE);
+                                } else {
+                                    rv_sewing.setVisibility(View.VISIBLE);
+                                    constraintLayout_recyclerview.setVisibility(View.VISIBLE);
+                                }
+                                shimmer_for_sewing.setVisibility(View.GONE);
+
+                                sewing_adapter = new Sewing_Adapter(getActivity(), response.body().data);
+                                rv_sewing.setAdapter(sewing_adapter);
+                            }
+                        } else if (response.code() == 401) {
+
+                        } else if (response.code() == 500) {
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Sewing_Model> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public void onBackPressed() {
+        int backStackEntryCount = Objects.requireNonNull(getActivity()).getSupportFragmentManager().getBackStackEntryCount();
+//        Log.e("backStackCnt_wallet", "" + backStackEntryCount);
+        if (backStackEntryCount == 1) {
+            Intent intent = new Intent(getContext(), Home_Activity.class);
+            startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        } else {
+            Objects.requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();// write your code to switch between fragments.
+        }
+    }
+
+    @SuppressLint("WrongConstant")
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_scan_again:
+                final Dialog dialog = new Dialog(Objects.requireNonNull(getActivity()));
+                dialog.setContentView(R.layout.bar_code_alert);
+                TextView tv_scan, tv_list, tv_cancel;
+                tv_scan = dialog.findViewById(R.id.tv_scan);
+                tv_list = dialog.findViewById(R.id.tv_list);
+                tv_cancel = dialog.findViewById(R.id.tv_cancel);
+
+                tv_scan.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        scroll_view_layout.setVisibility(View.GONE);
+                        constraintLayout_recyclerview.setVisibility(View.GONE);
+                        rv_sewing.setVisibility(View.GONE);
+                        constraintLayout_qr_code_scan.setVisibility(View.GONE);
+                        btn_save_new.setVisibility(View.GONE);
+                        Intent intent = new Intent(getActivity(), ScannedBarcodeActivity.class);
+                        intent.putExtra("Entry_Point_Onclick_Value", "1");
+                        startActivity(intent);
+
+                    }
+                });
+                tv_cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setCancelable(false);
+                dialog.show();
+                break;
+            case R.id.constraintLayout_tailor_layout:
+                final Dialog dialog_01 = new Dialog(Objects.requireNonNull(getActivity()));
+                dialog_01.setContentView(R.layout.bar_code_alert);
+                TextView tv_scan_01, tv_list_01, tv_cancel_01;
+                tv_scan_01 = dialog_01.findViewById(R.id.tv_scan);
+                tv_list_01 = dialog_01.findViewById(R.id.tv_list);
+                tv_cancel_01 = dialog_01.findViewById(R.id.tv_cancel);
+                tv_list_01.setText("List");
+
+                tv_list_01.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog_01.dismiss();
+                        dialog_for_tailor = new Dialog(Objects.requireNonNull(getActivity()));
+                        dialog_for_tailor.setContentView(R.layout.select_tailors_alert);
+                        rv_tailors_select = dialog_for_tailor.findViewById(R.id.rv_tailors_select);
+                        rv_tailors_select.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+                        rv_tailors_select.setHasFixedSize(true);
+                        Get_Operator_Call();
+                        dialog_for_tailor.setCancelable(true);
+                        dialog_for_tailor.show();
+                    }
+                });
+                tv_scan_01.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), ScannedBarcodeActivity.class);
+//                        intent.putExtra("Entry_Point_Onclick_Value", "1");
+                        intent.putExtra("Entry_Point_Onclick_Value_Others", "1");
+                        startActivity(intent);
+                        scroll_view_layout.setVisibility(View.GONE);
+                        constraintLayout_qr_code_scan.setVisibility(View.GONE);
+                        btn_save_new.setVisibility(View.GONE);
+                    }
+                });
+                tv_cancel_01.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog_01.dismiss();
+                    }
+                });
+                dialog_01.setCancelable(false);
+                dialog_01.show();
+                break;
+
+            case R.id.constraintLayout_operation_layout:
+                dialog_for_operation = new Dialog(Objects.requireNonNull(getActivity()));
+                dialog_for_operation.setContentView(R.layout.operation_select_alert);
+                rv_select_operation = dialog_for_operation.findViewById(R.id.rv_select_operation);
+                rv_select_operation.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+                rv_select_operation.setHasFixedSize(true);
+                Get_Operation_Call();
+                dialog_for_operation.setCancelable(true);
+                dialog_for_operation.show();
+                break;
+
+            case R.id.constraintLayout_select_shift:
+                dialog_for_shift_timing = new Dialog(Objects.requireNonNull(getActivity()));
+                dialog_for_shift_timing.setContentView(R.layout.select_shift_alert);
+                rv_shift_timing = dialog_for_shift_timing.findViewById(R.id.rv_shift_timing);
+                rv_shift_timing.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+                rv_shift_timing.setHasFixedSize(true);
+                Get_Shift_Timing();
+                dialog_for_shift_timing.setCancelable(true);
+                dialog_for_shift_timing.show();
+
+                break;
+            case R.id.constraintLayout_select_no_of_operation:
+                if (tv_onclick_tailor_txt.getText().toString().isEmpty()) {
+                    Toast.makeText(getActivity(), "Please Select Tailor", Toast.LENGTH_SHORT).show();
+                } else if (tv_onclick_operation.getText().toString().isEmpty()) {
+                    Toast.makeText(getActivity(), "Please Select Operation", Toast.LENGTH_SHORT).show();
+                } else if (tv_onclick_shift.getText().toString().isEmpty()) {
+                    Toast.makeText(getActivity(), "Please Select Shift Timings", Toast.LENGTH_SHORT).show();
+                } else {
+                    /*dialog_for_operation = new Dialog(Objects.requireNonNull(getActivity()));
+                    dialog_for_operation.setContentView(R.layout.no_pieces_select_alert);
+                    rv_no_of_pieces = dialog_for_operation.findViewById(R.id.rv_no_of_pieces);
+                    rv_no_of_pieces.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+                    rv_no_of_pieces.setHasFixedSize(true);
+//                    Get_No_pieces_Call();
+                    dialog_for_operation.setCancelable(true);
+                    dialog_for_operation.show();*/
+
+
+                    dialog_for_pieces = new Dialog(Objects.requireNonNull(getActivity()));
+                    dialog_for_pieces.setContentView(R.layout.select_pieces_alert_for_sewing);
+                    et_num_from_pieces_dialog = dialog_for_pieces.findViewById(R.id.et_num_from_pieces_dialog);
+                    tv_ok_from_pieces_dialog = dialog_for_pieces.findViewById(R.id.tv_ok_from_pieces_dialog);
+                    tv_ok_from_pieces_dialog.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            str_num_of_pieces = et_num_from_pieces_dialog.getText().toString();
+                            if (str_num_of_pieces.isEmpty()) {
+                                Toast.makeText(getActivity(), "Please enter piece value", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Log.e("inside", str_num_of_pieces);
+                                dialog_for_pieces.dismiss();
+                                tv_normal_select_piece_for_sewing.setText("");
+                                SessionSave.SaveSession("Session_Total_Pieces_Ironing", str_num_of_pieces, getActivity());
+                                tv_onclick_select_piece_for_sewing.setText(str_num_of_pieces);
+                            }
+                        }
+                    });
+                    dialog_for_pieces.setCancelable(true);
+                    dialog_for_pieces.show();
+                }
+                break;
+            case R.id.btn_save_new:
+                String str_operator_name, str_operation_name, str_shifttime, str_no_of_operation;
+                str_operator_name = tv_onclick_tailor_txt.getText().toString();
+                str_operation_name = tv_onclick_operation.getText().toString();
+                str_shifttime = tv_onclick_shift.getText().toString();
+                str_no_of_operation = tv_onclick_no_of_operation.getText().toString();
+
+//                Log.e("str_operator_name", str_operator_name);
+//                Log.e("str_operation_name", str_operation_name);
+//                Log.e("str_shifttime", str_shifttime);
+//                Log.e("str_no_of_operation", str_no_of_operation);
+
+                Get_Save_Sewing_Details();
+
+                if (constraintLayout_recyclerview.getVisibility() == View.VISIBLE) {
+                    Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), getResources().getString(R.string.successfully_submitted_txt), 1);
+                    Sewing_Entry_Act.tv_exit_txt.setVisibility(View.GONE);
+                }
+
+//                Toast.makeText(getActivity(), "on_click_value" + String.valueOf(int_fab_onlick_value), Toast.LENGTH_SHORT).show();
+                scroll_view_layout.setVisibility(View.GONE);
+                constraintLayout_qr_code_scan.setVisibility(View.GONE);
+                btn_save_new.setVisibility(View.GONE);
+
+                constraintLayout_sewing_rv_layout.setVisibility(View.VISIBLE);
+                constraintLayout_recyclerview.setVisibility(View.VISIBLE);
+                rv_sewing.setVisibility(View.VISIBLE);
+                fab.setVisibility(View.VISIBLE);
+
+
+//                Log.e("int_fab_onlick_value", "" + int_fab_onlick_value);
+                if (int_fab_onlick_value == 0) {
+                    if (constraintLayout_recyclerview.getVisibility() == View.VISIBLE) {
+                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), getResources().getString(R.string.successfully_submitted_txt), 1);
+                        Sewing_Entry_Act.tv_exit_txt.setVisibility(View.GONE);
+                    }
+                }
+                if (int_fab_onlick_value == 2) {
+                    Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), getResources().getString(R.string.successfully_submitted_txt), 1);
+                }
+                break;
+            case R.id.fab:
+                final Dialog dialog_fab = new Dialog(Objects.requireNonNull(getActivity()));
+                dialog_fab.setContentView(R.layout.bar_code_alert);
+                TextView tv_scan_fab, tv_manual, tv_cancel_fab;
+                tv_scan_fab = dialog_fab.findViewById(R.id.tv_scan);
+                tv_manual = dialog_fab.findViewById(R.id.tv_list);
+                tv_cancel_fab = dialog_fab.findViewById(R.id.tv_cancel);
+
+                tv_scan_fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int_fab_onlick_value = 0;
+//                        Toast.makeText(getActivity(), "on_click_value" + String.valueOf(int_fab_onlick_value), Toast.LENGTH_SHORT).show();
+                        dialog_fab.dismiss();
+
+                        scroll_view_layout.setVisibility(View.VISIBLE);
+                        constraintLayout_qr_code_scan.setVisibility(View.VISIBLE);
+                        btn_save_new.setVisibility(View.VISIBLE);
+
+                        constraintLayout_qr_code_scan.setVisibility(View.GONE);
+                        btn_save_new.setVisibility(View.GONE);
+                        fab.setVisibility(View.GONE);
+
+                        Intent intent = new Intent(getActivity(), ScannedBarcodeActivity.class);
+                        intent.putExtra("Entry_Point_Onclick_Value", "1");
+                        startActivity(intent);
+                    }
+                });
+
+                /*tv_manual.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int_fab_onlick_value = 2;
+                        Toast.makeText(getActivity(), "on_click_value" + String.valueOf(int_fab_onlick_value), Toast.LENGTH_SHORT).show();
+                        dialog_fab.dismiss();
+
+                        constraintLayout_qr_code_scan.setVisibility(View.VISIBLE);
+                        scroll_view_layout.setVisibility(View.VISIBLE);
+                        btn_save_new.setVisibility(View.VISIBLE);
+
+                        constraintLayout_sewing_rv_layout.setVisibility(View.GONE);
+                        constraintLayout_recyclerview.setVisibility(View.GONE);
+                        fab.setVisibility(View.GONE);
+                        rv_sewing.setVisibility(View.GONE);
+                    }
+                });*/
+                tv_cancel_fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog_fab.dismiss();
+                    }
+                });
+                dialog_fab.setCancelable(false);
+                dialog_fab.show();
+                break;
+        }
+    }
+
+    private void Get_No_pieces_Call() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("usname", str_session_username);
+            jsonObject.put("token", str_session_logintoken);
+//            Log.e("json_operation", jsonObject.toString());
+            APIInterface apiInterface = Factory.getClient();
+            Call<Operator_Model> call = apiInterface.OPERATION_RESPONSE_CALL("application/json", jsonObject.toString());
+            call.enqueue(new Callback<Operator_Model>() {
+                @Override
+                public void onResponse(Call<Operator_Model> call, Response<Operator_Model> response) {
+                    if (response.code() == 200) {
+                        if (response.isSuccessful()) {
+                            rv_no_of_pieces.setVisibility(View.VISIBLE);
+                            select_no_pieces_adapter = new Select_No_Pieces_Adapter(getActivity(), response.body().data);
+                            rv_no_of_pieces.setAdapter(select_no_pieces_adapter);
+                        }
+                    } else if (response.code() == 401) {
+
+                    } else if (response.code() == 500) {
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Operator_Model> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void Get_Save_Sewing_Details() {
+        try {
+            String str_operator_id = SessionSave.getSession("Session_Onclick_id_value", getActivity());
+            String str_operation_id = SessionSave.getSession("Session_Onclick_id_value", getActivity());
+            String str_shift_id = SessionSave.getSession("Session_Onclick_id_value", getActivity());
+            String str_opeartor_name = SessionSave.getSession("Session_Checking_Person_Sewing", getActivity());
+            String str_operation_name = SessionSave.getSession("Session_Operation_Sewing", getActivity());
+            String str_shift_name = SessionSave.getSession("Session_Shift_Timing_Sewing", getActivity());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("usname", str_session_username);
+            jsonObject.put("token", str_session_logintoken);
+            jsonObject.put("bundle_no", str_bundle_num);
+            jsonObject.put("io_no", str_io_num);
+            jsonObject.put("operator_id", str_operator_id);
+            jsonObject.put("operator_name", str_opeartor_name);
+            jsonObject.put("operation_id", str_operation_id);
+            jsonObject.put("operation_name", str_operation_name);
+            jsonObject.put("shift_id", str_shift_id);
+            jsonObject.put("shift_name", str_shift_name);
+//            Log.e("Get_assign_json", jsonObject.toString());
+            APIInterface apiInterface = Factory.getClient();
+            Call<Full_App_Model_Class> call = apiInterface.GET_ASSIGN_SEWING_RESPONSE_CALL("application/json", jsonObject.toString());
+            call.enqueue(new Callback<Full_App_Model_Class>() {
+                @Override
+                public void onResponse(Call<Full_App_Model_Class> call, Response<Full_App_Model_Class> response) {
+                    if (response.isSuccessful()) {
+//                        Toast.makeText(getActivity(), "" + response.body().message, Toast.LENGTH_SHORT).show();
+                        Log.e("Responsee", String.valueOf(Objects.requireNonNull(response.body()).message));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Full_App_Model_Class> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void Get_Shift_Timing() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("usname", str_session_username);
+            jsonObject.put("token", str_session_logintoken);
+            APIInterface apiInterface = Factory.getClient();
+            Call<Operator_Model> call = apiInterface.SHIFT_TIMING_RESPONSE_CALL("application/json", jsonObject.toString());
+            call.enqueue(new Callback<Operator_Model>() {
+                @Override
+                public void onResponse(Call<Operator_Model> call, Response<Operator_Model> response) {
+                    if (response.code() == 200) {
+                        if (response.isSuccessful()) {
+                            rv_shift_timing.setVisibility(View.VISIBLE);
+                            shift_timing_adapter = new Shift_Timing_Adapter(getActivity(), response.body().data);
+                            rv_shift_timing.setAdapter(shift_timing_adapter);
+                        }
+                    } else if (response.code() == 401) {
+
+                    } else if (response.code() == 500) {
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Operator_Model> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void Get_Operator_Call() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("usname", str_session_username);
+            jsonObject.put("token", str_session_logintoken);
+            jsonObject.put("role", "sewing");
+            APIInterface apiInterface = Factory.getClient();
+            Call<Operator_Model> call = apiInterface.OPERATOR_RESPONSE_CALL("application/json", jsonObject.toString());
+            call.enqueue(new Callback<Operator_Model>() {
+                @Override
+                public void onResponse(Call<Operator_Model> call, Response<Operator_Model> response) {
+                    if (response.code() == 200) {
+                        rv_tailors_select.setVisibility(View.VISIBLE);
+                        tailors_select_adapter = new Tailors_Select_Adapter(getActivity(), response.body().data);
+                        rv_tailors_select.setAdapter(tailors_select_adapter);
+                    } else if (response.code() == 401) {
+
+                    } else if (response.code() == 500) {
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Operator_Model> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void Get_Operation_Call() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("usname", str_session_username);
+            jsonObject.put("token", str_session_logintoken);
+            jsonObject.put("io_no", str_io_num);
+            jsonObject.put("type", "sewing");
+            Log.e("json_operation", jsonObject.toString());
+            APIInterface apiInterface = Factory.getClient();
+            Call<Operator_Model> call = apiInterface.OPERATION_RESPONSE_CALL("application/json", jsonObject.toString());
+            call.enqueue(new Callback<Operator_Model>() {
+                @Override
+                public void onResponse(Call<Operator_Model> call, Response<Operator_Model> response) {
+                    if (response.code() == 200) {
+                        if (response.isSuccessful()) {
+                            rv_select_operation.setVisibility(View.VISIBLE);
+                            operation_select_adapter = new Operation_Select_Adapter(getActivity(), response.body().data);
+                            rv_select_operation.setAdapter(operation_select_adapter);
+                        }
+                    } else if (response.code() == 401) {
+
+                    } else if (response.code() == 500) {
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Operator_Model> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /*This adapter class used for Operators*/
+    private class Tailors_Select_Adapter extends RecyclerView.Adapter<Tailors_Select_Adapter.ViewHolder> {
+        ArrayList<Operator_Model.Data> stringArrayList;
+        Context mContext;
+
+
+        public Tailors_Select_Adapter(FragmentActivity activity, ArrayList<Operator_Model.Data> data) {
+            this.mContext = activity;
+            this.stringArrayList = data;
+        }
+
+        @NonNull
+        @Override
+        public Tailors_Select_Adapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            View view;
+            view = inflater.inflate(R.layout.tailors_select_details_layout, parent, false);
+            return new Tailors_Select_Adapter.ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull final Tailors_Select_Adapter.ViewHolder holder, int position) {
+            holder.tv_tailors_select.setText(stringArrayList.get(position).name);
+
+            holder.tv_tailors_select.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.tv_tailors_select.getText().toString();
+                    tv_normal_tailor_txt.setText("");
+                    String s1 = stringArrayList.get(position).id;
+//                    Log.e("s1111q21", s1);
+                    SessionSave.SaveSession("Session_Onclick_id_value", s1, getActivity());
+                    SessionSave.SaveSession("Session_Checking_Person_Sewing", holder.tv_tailors_select.getText().toString(), getActivity());
+                    tv_onclick_tailor_txt.setText(holder.tv_tailors_select.getText().toString());
+                    dialog_for_tailor.dismiss();
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return stringArrayList.size();
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            TextView tv_tailors_select;
+
+            public ViewHolder(@NonNull View itemView) {
+                super(itemView);
+                tv_tailors_select = itemView.findViewById(R.id.tv_tailors_select);
+
+            }
+        }
+    }
+
+    private class Operation_Select_Adapter extends RecyclerView.Adapter<Operation_Select_Adapter.ViewHolder> {
+        ArrayList<Operator_Model.Data> stringArrayList;
+        Context mContext;
+
+        public Operation_Select_Adapter(FragmentActivity activity, ArrayList<Operator_Model.Data> data) {
+            this.mContext = activity;
+            this.stringArrayList = data;
+        }
+
+        @NonNull
+        @Override
+        public Operation_Select_Adapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            View view;
+            view = inflater.inflate(R.layout.operation_select_details_layout, parent, false);
+            return new Operation_Select_Adapter.ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull final Operation_Select_Adapter.ViewHolder holder, int position) {
+            holder.tv_operation_select.setText(stringArrayList.get(position).name);
+
+            holder.tv_operation_select.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.tv_operation_select.getText().toString();
+                    tv_select_operation.setText("");
+                    String s1 = stringArrayList.get(position).id;
+                    SessionSave.SaveSession("Session_Onclick_id_value", s1, getActivity());
+                    SessionSave.SaveSession("Session_Operation_Sewing", holder.tv_operation_select.getText().toString(), getActivity());
+                    tv_onclick_operation.setText(holder.tv_operation_select.getText().toString());
+                    dialog_for_operation.dismiss();
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return stringArrayList.size();
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            TextView tv_operation_select;
+
+            public ViewHolder(@NonNull View itemView) {
+                super(itemView);
+                tv_operation_select = itemView.findViewById(R.id.tv_operation_select);
+            }
+        }
+    }
+
+    private class Shift_Timing_Adapter extends RecyclerView.Adapter<Shift_Timing_Adapter.ViewHolder> {
+        ArrayList<Operator_Model.Data> stringArrayList;
+        Context mContext;
+
+        public Shift_Timing_Adapter(FragmentActivity activity, ArrayList<Operator_Model.Data> data) {
+            this.mContext = activity;
+            this.stringArrayList = data;
+        }
+
+        @NonNull
+        @Override
+        public Shift_Timing_Adapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            View view;
+            view = inflater.inflate(R.layout.select_shift_details_layout, parent, false);
+            return new Shift_Timing_Adapter.ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull final Shift_Timing_Adapter.ViewHolder holder, int position) {
+            String str_from_time = stringArrayList.get(position).from_time;
+            String str_to_time = stringArrayList.get(position).to_time;
+            String str_merge_timings = str_from_time + "  to  " + str_to_time;
+
+            holder.tv_from_shift_timing.setText(str_merge_timings);
+            holder.tv_from_shift_timing.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tv_select_shift.setText("");
+//                    Log.e("str_merge_timings", str_merge_timings);
+                    tv_onclick_shift.setText(holder.tv_from_shift_timing.getText().toString());
+                    String s1 = stringArrayList.get(position).id;
+                    SessionSave.SaveSession("Session_Onclick_id_value", s1, getActivity());
+                    SessionSave.SaveSession("Session_Shift_Timing_Sewing", holder.tv_from_shift_timing.getText().toString(), getActivity());
+                    dialog_for_shift_timing.dismiss();
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return stringArrayList.size();
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            TextView tv_from_shift_timing;
+
+            public ViewHolder(@NonNull View itemView) {
+                super(itemView);
+                tv_from_shift_timing = itemView.findViewById(R.id.tv_from_shift_timing);
+            }
+        }
+    }
+
+
+    private class Select_No_Pieces_Adapter extends RecyclerView.Adapter<Select_No_Pieces_Adapter.ViewHolder> {
+        ArrayList<Operator_Model.Data> stringArrayList;
+        Context mContext;
+
+        public Select_No_Pieces_Adapter(FragmentActivity activity, ArrayList<Operator_Model.Data> data) {
+            this.mContext = activity;
+            this.stringArrayList = data;
+        }
+
+        @NonNull
+        @Override
+        public Select_No_Pieces_Adapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            View view;
+            view = inflater.inflate(R.layout.select_no_pieces_details_layout, parent, false);
+            return new Select_No_Pieces_Adapter.ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull final Select_No_Pieces_Adapter.ViewHolder holder, int position) {
+            holder.tv_select_no_pieces.setText(stringArrayList.get(position).name);
+
+            holder.tv_select_no_pieces.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.tv_select_no_pieces.getText().toString();
+                    tv_select_no_of_operation.setText("");
+                    String s1 = stringArrayList.get(position).id;
+                    SessionSave.SaveSession("Session_Onclick_id_value", s1, getActivity());
+                    SessionSave.SaveSession("Session_No_Of_Pieces_Sewing", holder.tv_select_no_pieces.getText().toString(), getActivity());
+                    tv_onclick_no_of_operation.setText(holder.tv_select_no_pieces.getText().toString());
+                    dialog_for_operation.dismiss();
+
+                    if (!(tv_onclick_tailor_txt.getText().toString().isEmpty())
+                            && (!(tv_onclick_operation.getText().toString().isEmpty()))
+                            && (!(tv_onclick_shift.getText().toString().isEmpty()))
+                            && (!(tv_onclick_no_of_operation.getText().toString().isEmpty()))) {
+
+//                        Log.e("tv_onclick_tailor_txt", tv_onclick_tailor_txt.getText().toString());
+//                        Log.e("tv_onclick_operation", tv_onclick_operation.getText().toString());
+//                        Log.e("tv_onclick_shift", tv_onclick_shift.getText().toString());
+                        btn_save_new.setEnabled(true);
+                        btn_save_new.setBackground(mContext.getResources().getDrawable(R.drawable.sewing_entry_button_bg));
+                    }
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return stringArrayList.size();
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            TextView tv_select_no_pieces;
+
+            public ViewHolder(@NonNull View itemView) {
+                super(itemView);
+                tv_select_no_pieces = itemView.findViewById(R.id.tv_select_no_pieces);
+            }
+        }
+    }
+}

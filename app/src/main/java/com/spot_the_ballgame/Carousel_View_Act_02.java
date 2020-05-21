@@ -56,7 +56,7 @@ public class Carousel_View_Act_02 extends AppCompatActivity {
         addBottomDots(0);
         // making notification bar transparent
         changeStatusBarColor();
-        myViewPagerAdapter = new Carousel_View_Act_02.MyViewPagerAdapter();
+        myViewPagerAdapter = new MyViewPagerAdapter();
         carousel_viewPager.setAdapter(myViewPagerAdapter);
         carousel_viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
         btn_skip.setOnClickListener(v -> {

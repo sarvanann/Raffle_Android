@@ -29,17 +29,18 @@ public class Price_List_Adapter_My_History extends RecyclerView.Adapter<Price_Li
 
     @NonNull
     @Override
-    public Price_List_Adapter_My_History.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view;
         view = inflater.inflate(R.layout.prize_list_adapter_details_layout, parent, false);
-        return new Price_List_Adapter_My_History.ViewHolder(view);
+        return new ViewHolder(view);
 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Price_List_Adapter_My_History.ViewHolder holder, int position) {
-        holder.tv_rank_in_prize_list.setText(arrayList.get(position).getRank());
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+//        holder.tv_rank_in_prize_list.setText(arrayList.get(position).getRank_short());
+        holder.tv_rank_in_prize_list.setText(arrayList.get(position).getRank_short());
         holder.tv_prize_amount_prize_list.setText(arrayList.get(position).getPrize_amount());
     }
 

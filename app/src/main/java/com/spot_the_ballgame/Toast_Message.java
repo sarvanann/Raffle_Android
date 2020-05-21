@@ -11,15 +11,11 @@ import android.widget.Toast;
 
 public class Toast_Message {
     public static void showToastMessage(Context context, String message) {
-
         LayoutInflater inflater = LayoutInflater.from(context.getApplicationContext());
-
-        View layout = inflater.inflate(R.layout.custom_toast,
-                (ViewGroup) ((Activity) context).findViewById(R.id.customToast));
+        View layout = inflater.inflate(R.layout.custom_toast, (ViewGroup) ((Activity) context).findViewById(R.id.customToast));
         // set a message
         TextView text = (TextView) layout.findViewById(R.id.text);
         text.setText(message);
-
         // Toast...
         Toast toast = new Toast(context);
         toast.setGravity(Gravity.TOP, 0, 0);

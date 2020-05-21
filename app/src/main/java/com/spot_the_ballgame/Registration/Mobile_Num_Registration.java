@@ -15,7 +15,6 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -33,8 +32,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.spot_the_ballgame.Interface.APIInterface;
 import com.spot_the_ballgame.Interface.Factory;
 import com.spot_the_ballgame.Model.UserModel;
-import com.spot_the_ballgame.Navigation_Drawer_Act;
 import com.spot_the_ballgame.R;
+import com.spot_the_ballgame.Referral_Code_Act;
 import com.spot_the_ballgame.SessionSave;
 import com.spot_the_ballgame.Toast_Message;
 
@@ -103,7 +102,9 @@ public class Mobile_Num_Registration extends AppCompatActivity implements View.O
             } while (cursor.moveToNext());
         }
         cursor.close();
-        Log.e("str_source_details", String.valueOf(str_intent_source_details));
+//        Log.e("str_source_details", String.valueOf(str_intent_source_details));
+//        Log.e("str_email", String.valueOf(str_email));
+       /*
         if (str_status.equalsIgnoreCase("2")) {
             Bundle bundle = getIntent().getExtras();
             if (bundle == null) {
@@ -115,10 +116,9 @@ public class Mobile_Num_Registration extends AppCompatActivity implements View.O
             et_mobile_number.setSelection(et_mobile_number.getText().toString().length());
         } else {
             et_mobile_number.setText("");
-        }
-        str_auth_token = SessionSave.getSession("Token_value", Mobile_Num_Registration.this);
-
-        Log.e("str_auth_token_reg", str_auth_token);
+        }*/
+//        str_auth_token = SessionSave.getSession("Token_value", Mobile_Num_Registration.this);
+//        Log.e("str_auth_token_reg", str_auth_token);
     }
 
     @Override
@@ -158,12 +158,12 @@ public class Mobile_Num_Registration extends AppCompatActivity implements View.O
             progressbar.getIndeterminateDrawable().setColorFilter(Color.parseColor("#000000"), android.graphics.PorterDuff.Mode.SRC_IN);
 
             APIInterface apiInterface = Factory.getClient();
-            Log.e("Json_Value_mob_reg", jsonObject.toString());
-            Call<UserModel> call = apiInterface.MOBILE_NUM_REGISTER_RESPONSE_CALL("application/json", jsonObject.toString(), str_auth_token);
+//            Log.e("Json_Value_mob_reg", jsonObject.toString());
+            Call<UserModel> call = apiInterface.MOBILE_NUM_REGISTER_RESPONSE_CALL("application/json", jsonObject.toString());
             call.enqueue(new Callback<UserModel>() {
                 @Override
                 public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                    if (response.code()==200) {
+                    if (response.code() == 200) {
                         if (response.isSuccessful()) {
                             str_code = response.body().status;
                             str_message = response.body().message;
@@ -178,22 +178,26 @@ public class Mobile_Num_Registration extends AppCompatActivity implements View.O
                                 str_image = response.body().datum.image;
                                 str_walet = response.body().datum.walet;
                                 str_money = response.body().datum.money;
-                                str_token = response.body().datum.token;
+//                                str_token = response.body().datum.token;
                                 str_username = response.body().datum.username;
                                 str_password = response.body().datum.password;
                                 str_active = response.body().datum.active;
                                 str_verified = response.body().datum.verified;
-                                Log.e("emailll", str_email);
+//                                Log.e("emailll", str_email);
 
+                                str_token = response.body().api_token;
+                                SessionSave.SaveSession("Token_value", str_token, Mobile_Num_Registration.this);
 
                                 ContentValues contentValues = new ContentValues();
                                 contentValues.put("PHONENO", str_phoneno);
-                                contentValues.put("TOKEN", str_token);
+                                contentValues.put("EMAIL", str_email);
+//                                contentValues.put("TOKEN", str_token);
                                 contentValues.put("SIGNUPSTATUS", 2);
-                                Log.e("Content_Values_mob_reg", contentValues.toString());
+//                                Log.e("Content_Values_mob_reg", contentValues.toString());
                                 db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
                                 DBEXPORT();
-                                Intent intent = new Intent(Mobile_Num_Registration.this, Navigation_Drawer_Act.class);
+//                                Intent intent = new Intent(Mobile_Num_Registration.this, Navigation_Drawer_Act.class);
+                                Intent intent = new Intent(Mobile_Num_Registration.this, Referral_Code_Act.class);
 //                            Intent intent = new Intent(Mobile_Num_Registration.this, Mobile_Num_Verification_Otp_Act.class);
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -213,12 +217,12 @@ public class Mobile_Num_Registration extends AppCompatActivity implements View.O
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                                 Toast.makeText(Mobile_Num_Registration.this, "Message" + response.body().message, Toast.LENGTH_SHORT).show();
                             }*/
-                            } else {
+                            } else if (str_code.equalsIgnoreCase("error")) {
                                 pd.dismiss();
                                 Toast_Message.showToastMessage(Mobile_Num_Registration.this, str_message);
                             }
                         }
-                    }else if (response.code() == 401) {
+                    } else if (response.code() == 401) {
                         pd.dismiss();
                         Toast_Message.showToastMessage(Mobile_Num_Registration.this, response.message());
                     } else if (response.code() == 500) {
@@ -287,7 +291,7 @@ public class Mobile_Num_Registration extends AppCompatActivity implements View.O
         if (cursor.moveToFirst()) {
             do {
                 String var = cursor.getString(3);
-                Log.e("Login_Details_email", var);
+//                Log.e("Login_Details_email", var);
                 labels.add(var);
             } while (cursor.moveToNext());
         }
@@ -382,7 +386,7 @@ public class Mobile_Num_Registration extends AppCompatActivity implements View.O
         if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
             internetStatus = getResources().getString(R.string.back_online_txt);
             snackbar = Snackbar.make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_LONG);
-            snackbar.getView().setBackgroundResource(R.color.sign_up_txt);
+            snackbar.getView().setBackgroundResource(R.color.timer_bg_color);
         } else {
             internetStatus = getResources().getString(R.string.check_internet_conn_txt);
             snackbar = Snackbar.make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_INDEFINITE);

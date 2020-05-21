@@ -18,7 +18,6 @@ import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.Gravity;
 import android.view.View;
@@ -77,6 +76,7 @@ public class Email_Sign_Up_Act extends AppCompatActivity implements View.OnClick
             str_email_id,
             str_repeat_pwd,
             str_username,
+            str_referral_code,
             str_pwd,
             str_status,
             str_message;
@@ -88,6 +88,8 @@ public class Email_Sign_Up_Act extends AppCompatActivity implements View.OnClick
     public static int TYPE_MOBILE = 2;
     public static int TYPE_NOT_CONNECTED = 0;
     private boolean internetConnected = true;
+    Bundle bundle;
+    String str_api_checkbox_selection_value;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -97,8 +99,15 @@ public class Email_Sign_Up_Act extends AppCompatActivity implements View.OnClick
         getSupportActionBar().hide();
         db = Objects.requireNonNull(getApplicationContext()).openOrCreateDatabase("Spottheball.db", Context.MODE_PRIVATE, null);
         pd = new ProgressDialog(Email_Sign_Up_Act.this);
-        Bundle bundle = getIntent().getExtras();
-        str_source_detail = bundle.getString("source_details");
+        bundle = getIntent().getExtras();
+        if (bundle == null) {
+            str_source_detail = null;
+            str_api_checkbox_selection_value = null;
+        } else {
+            str_source_detail = bundle.getString("source_details");
+            str_api_checkbox_selection_value = bundle.getString("int_api_checkbox_selection_value");
+        }
+//        Log.e("check_box_terms", str_api_checkbox_selection_value);
         et_name_id_in_name_signin = findViewById(R.id.et_name_id_in_name_signin);
         et_email_id_in_email_signin = findViewById(R.id.et_email_id_in_email_signin);
         et_pwd_in_signin = findViewById(R.id.et_pwd_in_signin);
@@ -250,7 +259,7 @@ public class Email_Sign_Up_Act extends AppCompatActivity implements View.OnClick
             str_pwd = et_pwd_in_signin.getText().toString();
 
             Splash_Screen_Act.str_global_mail_id = str_email_id;
-            Log.e("Email_str_global_mail_id", Splash_Screen_Act.str_global_mail_id);
+//            Log.e("Email_str_global_mail_id", Splash_Screen_Act.str_global_mail_id);
 
             str_firstname = str_email_id.substring(0, 5);
             str_lastname = str_email_id.substring(5, 8);
@@ -261,14 +270,15 @@ public class Email_Sign_Up_Act extends AppCompatActivity implements View.OnClick
             jsonObject.put("email", str_email_id);
             jsonObject.put("username", str_firstname);
             jsonObject.put("password", str_pwd);
-            Log.e("email_json_value", jsonObject.toString());
+            jsonObject.put("is_termed", String.valueOf(str_api_checkbox_selection_value));
+//            Log.e("email_json_value", jsonObject.toString());
 
             pd.setMessage("Loading...");
             pd.show();
             pd.setCancelable(false);
             ProgressBar progressbar = pd.findViewById(android.R.id.progress);
             progressbar.getIndeterminateDrawable().setColorFilter(Color.parseColor("#000000"), android.graphics.PorterDuff.Mode.SRC_IN);
-
+//            Log.e("email_signup_json", jsonObject.toString());
             APIInterface apiInterface = Factory.getClient();
             Call<UserModel> call = apiInterface.EMAIL_SIGNIN_RESPONSE_CALL("application/json", jsonObject.toString());
             call.enqueue(new Callback<UserModel>() {
@@ -277,10 +287,7 @@ public class Email_Sign_Up_Act extends AppCompatActivity implements View.OnClick
                     if (response.isSuccessful()) {
                         str_status = response.body().status;
                         str_message = response.body().message;
-                        Log.e("str_message", str_message);
-                        str_token = response.body().api_token;
-                        SessionSave.SaveSession("Token_value", str_token, Email_Sign_Up_Act.this);
-//                        Log.e("str_token_signup", str_token);
+//                        Log.e("str_message", str_message);
                         if (str_status.equalsIgnoreCase("success")) {
                             pd.dismiss();
                             str_source_detail = response.body().datum.source_detail;
@@ -288,13 +295,14 @@ public class Email_Sign_Up_Act extends AppCompatActivity implements View.OnClick
                             str_lastname = response.body().datum.last_name;
                             str_email_id = response.body().datum.email;
                             str_username = response.body().datum.username;
-                            Log.e("str_source_detail", str_source_detail);
-                            Log.e("str_first_name", str_firstname);
-                            Log.e("str_last_name", str_lastname);
-                            Log.e("str_email", str_email_id);
-                            Log.e("str_username", str_username);
-                            Log.e("str_pwd", str_pwd);
-//                            Log.e("str_token", str_token);
+                            str_referral_code = response.body().datum.referral_code;
+                            SessionSave.SaveSession("Referral_Code_Value", str_referral_code, Email_Sign_Up_Act.this);
+//                            Log.e("str_source_detail", str_source_detail);
+//                            Log.e("str_first_name", str_firstname);
+//                            Log.e("str_last_name", str_lastname);
+//                            Log.e("str_email", str_email_id);
+//                            Log.e("str_username", str_username);
+//                            Log.e("str_pwd", str_pwd);
                             /*if (rowIDExistEmail(str_email_id) && rowIDExistFirst_Name(str_firstname)) {
                                 ContentValues contentValues = new ContentValues();
                                 contentValues.put("SOURCEDETAILS", str_source_detail);
@@ -353,16 +361,17 @@ public class Email_Sign_Up_Act extends AppCompatActivity implements View.OnClick
     }
 
     private void Insert_Singup_Details() {
-        if (rowIDExistEmail(str_email_id) && rowIDExistFirst_Name(str_firstname)) {
+        if (rowIDExistEmail(str_email_id)) {
+//        if (rowIDExistEmail(str_email_id) && rowIDExistFirst_Name(str_firstname)) {
             ContentValues contentValues = new ContentValues();
             contentValues.put("SOURCEDETAILS", str_source_detail);
             contentValues.put("EMAIL", str_email_id);
-            contentValues.put("FIRSTNAME", str_firstname);
+//            contentValues.put("FIRSTNAME", str_firstname);
             contentValues.put("STATUS", 1);
             contentValues.put("SIGNUPSTATUS", 1);
 //            contentValues.put("BALANCE", 1000);
             contentValues.put("PASSWORD", str_pwd);
-            Log.e("CntValuesemailsignup", contentValues.toString());
+//            Log.e("CntValuesemailsignup", contentValues.toString());
             db.insert("LOGINDETAILS", null, contentValues);
             DBEXPORT();
         }
@@ -515,7 +524,7 @@ public class Email_Sign_Up_Act extends AppCompatActivity implements View.OnClick
         if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
             internetStatus = getResources().getString(R.string.back_online_txt);
             snackbar = Snackbar.make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_LONG);
-            snackbar.getView().setBackgroundResource(R.color.sign_up_txt);
+            snackbar.getView().setBackgroundResource(R.color.timer_bg_color);
         } else {
             internetStatus = getResources().getString(R.string.check_internet_conn_txt);
             snackbar = Snackbar.make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_INDEFINITE);

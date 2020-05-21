@@ -51,6 +51,12 @@
     <string name="facebook_app_id">2414117928874005</string>
     <string name="fb_login_protocol_scheme">fb2414117928874005</string>
 
+    <!--Contactskyrand@gmail.com-->
+    <!--
+        <string name="facebook_app_id">1558474510960902</string>
+        <string name="fb_login_protocol_scheme">fb1558474510960902</string>
+    -->
+
 
     <!--Email_Sign_up-->
     <string name="pls_enter_valid_email_address">Please Enter Valid Email Address</string>
@@ -82,6 +88,7 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+    <string name="menu_refer_and_earn">Refer &amp; Earn</string>
 
 
     <string name="my_profile_txt">My Profile</string>
@@ -99,6 +106,7 @@
     <string name="update_txt">Update</string>
     <string name="change_password_txt">Change Password</string>
     <string name="wallet_txt">Wallet</string>
+
     <string name="contest_txt">Contest</string>
     <string name="contests_txt">Contests</string>
     <string name="home_txt">Home</string>
@@ -130,6 +138,8 @@
     <string name="impossible_game">Impossible Game</string>
     <string name="retry_button_text">Retry</string>
     <string name="default_coin_text">Coins:  </string>
+    <string name="no_internet_txt">No internet</string>
+    <string name="check_connection_txt">Check Connection</string>
     <string name="watch_video_button_text">Watch Video for additional coins</string>
     <!--This details using saravanan-->
     <!--<string name="admob_app_id"> ca-app-pub-4391593775482560~1367072357</string>
@@ -181,6 +191,7 @@
     </string-array>
 
     <string name="skip_txt">Skip</string>
+    <string name="skip_under_line_txt"><u>Skip</u></string>
     <string name="transactions_txt">Transactions</string>
     <string name="earn_more_txt">Earn More</string>
     <!--<string name="earn_more_txt"><u>Earn More</u></string>-->
@@ -223,5 +234,33 @@
     <string name="play_another_contest_txt">Play another contest</string>
     <string name="get_txt">Get</string>
     <string name="no_data_found_txt">No Data Found</string>
+    <string name="to_play_txt">to play</string>
+    <string name="pls_accept_terms_nd_condition_txt">Please accept terms and condition</string>
+    <string name="transaction_history_txt">Transaction History</string>
+    <string name="redeem_history_txt">Redeem History</string>
+    <string name="points_txt">Points</string>
+    <string name="action_txt">Action</string>
+    <string name="date_txt">Date</string>
+    <string name="status_txt">Status</string>
+    <string name="rs_txt">Rs</string>
+    <string name="coins_txt">Coins</string>
+    <string name="live_txt">Live</string>
+    <string name="history_txt">History</string>
+
+
+    <string name="initializing">Initializing</string>
+    <string name="show">Show</string>
+    <string name="load">Load</string>
+    <string name="rv">Rewarded Video</string>
+    <string name="ow">Offerwall</string>
+    <string name="is">Interstitial</string>
+    <string name="version">sdk version</string>
+    <string name="rewarded_dialog_header">Video Rewarded</string>
+    <string name="rewarded_dialog_message">You have been rewarded</string>
+    <string name="rvButtonState">rvButtonState</string>
+    <string name="isButtonState">isButtonState</string>
+    <string name="owButtonState">owButtonState</string>
+
+    <string name="new_terms_and_condition_txt">I am over 18, and I agree to all\n<u>terms &amp;conditions</u> and <u>privacy policies</u></string>
 
 </resources>

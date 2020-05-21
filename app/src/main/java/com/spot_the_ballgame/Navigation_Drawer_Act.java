@@ -2,14 +2,18 @@ package com.spot_the_ballgame;
 
 import android.annotation.TargetApi;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -33,6 +37,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.nex3z.notificationbadge.NotificationBadge;
 import com.spot_the_ballgame.Fragments.BottomSheetFragment;
 import com.spot_the_ballgame.Fragments.Dashboard;
@@ -41,6 +46,7 @@ import com.spot_the_ballgame.Fragments.How_To_Play_Fragment;
 import com.spot_the_ballgame.Fragments.My_Contest_Fragment;
 import com.spot_the_ballgame.Fragments.My_Profile_Fragment;
 import com.spot_the_ballgame.Fragments.My_Wallet_Fragment;
+import com.spot_the_ballgame.Fragments.Refer_and_Earn_Fragment;
 import com.spot_the_ballgame.Fragments.Share_Fragment;
 import com.spot_the_ballgame.Fragments.Terms_and_Condition_Fragment;
 import com.spot_the_ballgame.Interface.APIInterface;
@@ -77,8 +83,18 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
     TextView slideshow, gallery;
     public static TextView tv_toolbar_left_arrow;
     SQLiteDatabase db;
-    String str_balance_points, str_session_carousel_values;
+    String str_session_carousel_values;
     String str_auth_token, str_email;
+    public static DrawerLayout drawer;
+
+
+    //This is used for Internet alert using snackbar status
+    public static int TYPE_WIFI = 1;
+    public static int TYPE_MOBILE = 2;
+    public static int TYPE_NOT_CONNECTED = 0;
+    private boolean internetConnected = true;
+    private Snackbar snackbar;
+
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -87,7 +103,7 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_navigation__drawer_);
         db = Objects.requireNonNull(getApplicationContext()).openOrCreateDatabase("Spottheball.db", Context.MODE_PRIVATE, null);
-        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         ImageButton menuRight = findViewById(R.id.menuRight);
         tv_title_txt = findViewById(R.id.tv_title_txt);
         iv_points_img = findViewById(R.id.iv_points_img);
@@ -96,13 +112,12 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
         tv_toolbar_left_arrow.setVisibility(View.GONE);
         notification_badge = findViewById(R.id.notification_badge);
         notification_badge.setNumber(1);
-
         str_auth_token = SessionSave.getSession("Token_value", Navigation_Drawer_Act.this);
-        Log.e("str_auth_token_nav", str_auth_token);
+//        Log.e("str_auth_token_nav", str_auth_token);
 
 
         str_session_carousel_values = SessionSave.getSession("carousel_value", Navigation_Drawer_Act.this);
-        Log.e("session_carousel_values", str_session_carousel_values);
+//        Log.e("session_carousel_values", str_session_carousel_values);
 
         if (str_session_carousel_values.equals("1")) {
             Show_Carousel_Layout();
@@ -125,18 +140,22 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
         navigationView2.setNavigationItemSelectedListener(this);
         db.execSQL("create table if not exists LOGINDETAILS(USERNAME varchar,PASSWORD varchar,STATUS int,IMEI varchar);");
 
-        String select = "select BALANCE,EMAIL from LOGINDETAILS where STATUS ='" + 1 + "'";
+        String select = "select EMAIL from LOGINDETAILS where STATUS ='" + 1 + "'";
         Cursor cursor = db.rawQuery(select, null);
         if (cursor.moveToFirst()) {
             do {
-                str_balance_points = cursor.getString(0);
-                str_email = cursor.getString(1);
+                str_email = cursor.getString(0);
             } while (cursor.moveToNext());
         }
         cursor.close();
         DBEXPORT();
         ///
-        Get_Wallet_Balance_Details();
+        if (!isNetworkAvaliable()) {
+            registerInternetCheckReceiver();
+        } else {
+            Get_Wallet_Balance_Details();
+        }
+
 //        showBottomSheetDialogFragment();
         tv_points.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,7 +187,7 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
 //                Navigation_Drawer_Act.this.getSupportFragmentManager().popBackStack();
 
                 int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
-                Log.e("backStackCnt_howptolay", "" + backStackEntryCount);
+//                Log.e("backStackCnt_howptolay", "" + backStackEntryCount);
                 if (backStackEntryCount == 1) {
                     Intent intent = new Intent(Navigation_Drawer_Act.this, Navigation_Drawer_Act.class);
                     startActivity(intent);
@@ -195,7 +214,6 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
                         if (response.isSuccessful()) {
                             String str_amount = response.body().current_amt;
                             tv_points.setText(str_amount);
-                            Log.e("str_amount_nav", str_amount);
                         }
                     } else if (response.code() == 401) {
                         Toast_Message.showToastMessage(Navigation_Drawer_Act.this, response.message());
@@ -243,7 +261,7 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
     }
 
     private void ShowDashboard() {
-        fragment = new Dashboard();
+        fragment = new Dashboard(getSupportFragmentManager());
         if (fragment != null) {
             ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, fragment);
@@ -275,6 +293,10 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
             }
             if (ff instanceof Share_Fragment) {
                 ((Share_Fragment) ff).onBackPressed();
+            }
+
+            if (ff instanceof Refer_and_Earn_Fragment) {
+                ((Refer_and_Earn_Fragment) ff).onBackPressed();
             }
 
             if (ff instanceof Terms_and_Condition_Fragment) {
@@ -392,36 +414,48 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
             fragment = new Terms_and_Condition_Fragment();
             getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, fragment).commit();
         } else if (id == R.id.nav_share) {
-            fragment = new Share_Fragment();
+            if (!isNetworkAvaliable()) {
+                registerInternetCheckReceiver();
+            } else {
+                Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Insert Subject here");
+                String app_url = "https://play.google.com/store/apps/details?id=com.miniclip.carrom";
+                shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, app_url);
+                startActivity(Intent.createChooser(shareIntent, "Share via"));
+            }
+//            fragment = new Share_Fragment();
+//            getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, fragment).commit();
+        } else if (id == R.id.nav_refer_and_earn) {
+            fragment = new Refer_and_Earn_Fragment();
             getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, fragment).commit();
         } else if (id == R.id.nav_logout) {
-            final Dialog dialog = new Dialog(Navigation_Drawer_Act.this);
-            dialog.setContentView(R.layout.logout_alert);
-            TextView tv_yes, tv_no;
-            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.show();
+            if (!isNetworkAvaliable()) {
+                registerInternetCheckReceiver();
+            } else {
+                final Dialog dialog = new Dialog(Navigation_Drawer_Act.this);
+                dialog.setContentView(R.layout.logout_alert);
+                TextView tv_yes, tv_no;
+                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
 
-            tv_yes = dialog.findViewById(R.id.tv_yes);
-            tv_no = dialog.findViewById(R.id.tv_cancel);
-            tv_yes.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ContentValues cv = new ContentValues();
-                    cv.put("SIGNUPSTATUS", 0);
-                    cv.put("STATUS", 0);
-                    db.update("LOGINDETAILS", cv, null, null);
-                    Splash_Screen_Act.str_global_mail_id = "";
-                    DBEXPORT();
-                    Get_Logout_Details();
-                    dialog.dismiss();
-                }
-            });
-            tv_no.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
+                tv_yes = dialog.findViewById(R.id.tv_yes);
+                tv_no = dialog.findViewById(R.id.tv_cancel);
+                tv_yes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Get_Logout_Details();
+                        dialog.dismiss();
+                    }
+                });
+                tv_no.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+            }
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.END);
@@ -440,13 +474,21 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
                 public void onResponse(Call<Category_Model> call, Response<Category_Model> response) {
                     if (response.code() == 200) {
                         if (response.isSuccessful()) {
+                            ContentValues cv = new ContentValues();
+                            cv.put("SIGNUPSTATUS", 0);
+                            cv.put("STATUS", 0);
+                            db.update("LOGINDETAILS", cv, null, null);
+                            Splash_Screen_Act.str_global_mail_id = "";
+                            DBEXPORT();
                             Intent intent = new Intent(Navigation_Drawer_Act.this, All_Btn_OnClick_Sign_Up_Act.class);
-                            intent.addCategory(Intent.CATEGORY_HOME);
+//                            intent.addCategory(Intent.CATEGORY_HOME);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                             startActivity(intent);
                             finish();
-                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-//                        System.exit(0);
+//                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+//                            System.exit(0);
                         } else {
                             Toast_Message.showToastMessage(Navigation_Drawer_Act.this, response.message());
                         }
@@ -487,4 +529,113 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerInternetCheckReceiver();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(broadcastReceiver);
+    }
+
+    /*This method is used for network connectivity*/
+    private boolean isNetworkAvaliable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        assert connectivityManager != null;
+        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+        return info != null;
+    }
+
+    /*This method automatically detect whether the internet is available or not
+     * if internet in not available GetDrawTiming,GetBalanceDetails will get stop
+     * */
+    private void registerInternetCheckReceiver() {
+        IntentFilter internetFilter = new IntentFilter();
+        internetFilter.addAction("android.net.wifi.STATE_CHANGE");
+        internetFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(broadcastReceiver, internetFilter);
+    }
+
+    /**
+     * Runtime Broadcast receiver inner class to capture internet connectivity events
+     */
+    public BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String status = getConnectivityStatusString(context);
+            setSnackbarMessage(status);
+        }
+    };
+
+    public static int getConnectivityStatus(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        assert cm != null;
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (null != activeNetwork) {
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
+                return TYPE_WIFI;
+
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
+                return TYPE_MOBILE;
+        }
+        return TYPE_NOT_CONNECTED;
+    }
+
+    public static String getConnectivityStatusString(Context context) {
+        int conn = getConnectivityStatus(context);
+        String status = null;
+        if (conn == TYPE_WIFI) {
+            status = "Wifi enabled";
+        } else if (conn == TYPE_MOBILE) {
+            status = "Mobile data enabled";
+        } else if (conn == TYPE_NOT_CONNECTED) {
+            status = "Not connected to Internet";
+        }
+        return status;
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private void setSnackbarMessage(String status) {
+        String internetStatus;
+        if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
+            internetStatus = getResources().getString(R.string.back_online_txt);
+            snackbar = Snackbar.make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_LONG);
+            snackbar.getView().setBackgroundResource(R.color.timer_bg_color);
+            snackbar.setActionTextColor(Color.BLACK);
+        } else {
+            internetStatus = getResources().getString(R.string.check_internet_conn_txt);
+            snackbar = Snackbar
+                    .make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_INDEFINITE);
+            snackbar.getView().setBackgroundResource(R.color.red_color_new);
+            snackbar.setActionTextColor(Color.WHITE);
+        }
+        // Changing message text color
+
+        // Changing action button text color
+        View sbView = snackbar.getView();
+        TextView textView = sbView.findViewById(R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        } else {
+            textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        }
+        if (internetStatus.equalsIgnoreCase(getResources().getString(R.string.check_internet_conn_txt))) {
+            if (internetConnected) {
+                Log.e("internetStatus_else", internetStatus);
+                snackbar.show();
+                internetConnected = false;
+            }
+        } else {
+            if (!internetConnected) {
+                Log.e("internetStatus_if", internetStatus);
+                internetConnected = true;
+                snackbar.show();
+            }
+        }
+    }
 }

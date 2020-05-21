@@ -1,69 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/activity_padding">
+    android:layout_height="wrap_content">
 
     <View
-        android:id="@+id/thumbnail"
-        android:layout_width="@dimen/placeholder_image"
-        android:layout_height="@dimen/placeholder_image"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="@dimen/activity_padding"
-        android:layout_marginRight="@dimen/activity_padding"
-        android:background="@color/placeholder_bg" />
-
-    <View
-        android:id="@+id/name"
+        android:id="@+id/shimmer_avatar_1"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_toStartOf="@id/thumbnail"
-        android:layout_toLeftOf="@id/thumbnail"
-        android:background="@color/placeholder_bg" />
-
-    <View
-        android:layout_width="100dp"
-        android:layout_height="@dimen/placeholder_text_height"
-        android:layout_below="@id/name"
-        android:layout_toRightOf="@id/thumbnail"
-        android:background="@color/placeholder_bg"
-        android:layout_toEndOf="@id/thumbnail" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/thumbnail"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="40dp"
-        android:orientation="vertical">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/placeholder_text_height"
-            android:layout_marginEnd="100dp"
-            android:layout_marginRight="100dp"
-            android:background="@color/placeholder_bg" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/placeholder_text_height"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="50dp"
-            android:layout_marginRight="50dp"
-            android:background="@color/placeholder_bg" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/placeholder_text_height"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="160dp"
-            android:layout_marginRight="160dp"
-            android:background="@color/placeholder_bg" />
-
-    </LinearLayout>
-
+        android:layout_height="110dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:background="@drawable/dashboard_card_placeholder_bg" />
 </RelativeLayout>

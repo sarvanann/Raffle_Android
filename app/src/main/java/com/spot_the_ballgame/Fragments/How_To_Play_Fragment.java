@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -125,10 +123,10 @@ public class How_To_Play_Fragment extends Fragment {
             // changing the next button text 'NEXT' / 'GOT IT'
             if (position == layouts.length - 1) {
                 // last page. make button text to GOT IT
-                btn_skip.setVisibility(View.VISIBLE);
+                btn_skip.setVisibility(View.GONE);
             } else {
                 // still pages are left
-                btn_skip.setVisibility(View.VISIBLE);
+                btn_skip.setVisibility(View.GONE);
                 btn_skip.setText(getString(R.string.skip_txt));
             }
         }
@@ -140,7 +138,7 @@ public class How_To_Play_Fragment extends Fragment {
         @Override
         public void onPageScrollStateChanged(int arg0) {
             if (arg0 == 3) {
-                Toast.makeText(getContext(), "position" + layouts.length, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "position" + layouts.length, Toast.LENGTH_SHORT).show();
                 btn_skip.setText(R.string.sign_up_txt);
             }
         }
@@ -192,7 +190,7 @@ public class How_To_Play_Fragment extends Fragment {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void onBackPressed() {
         int backStackEntryCount = Objects.requireNonNull(getActivity()).getSupportFragmentManager().getBackStackEntryCount();
-        Log.e("backStackCnt_howptolay", "" + backStackEntryCount);
+//        Log.e("backStackCnt_howptolay", "" + backStackEntryCount);
         if (backStackEntryCount == 1) {
             Intent intent = new Intent(getContext(), Navigation_Drawer_Act.class);
             startActivity(intent);

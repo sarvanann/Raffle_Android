@@ -569,7 +569,7 @@
                         android:layout_marginLeft="1dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
-                        android:text="Ind"
+                        android:text=""
                         android:textColor="@color/white_color"
                         android:textSize="12sp"
                         android:textStyle="bold"
@@ -582,11 +582,11 @@
                         style="@style/sign_up_txt_style_medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginLeft="4dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
-                        android:text="Vs"
+                        android:text="V"
                         android:textColor="@color/white_color"
                         android:textSize="15sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -618,7 +618,7 @@
                         android:layout_marginEnd="8dp"
                         android:layout_marginRight="8dp"
                         android:layout_marginBottom="8dp"
-                        android:text="Pak"
+                        android:text=""
                         android:textColor="@color/white_color"
                         android:textSize="12sp"
                         android:textStyle="bold"
@@ -1520,7 +1520,9 @@
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.765" />
+                app:layout_constraintVertical_bias="0.765"
+                android:layout_alignRight="@+id/textview"
+                tools:ignore="RtlCompat" />
 
             <Button
                 android:id="@+id/btn_rewind"

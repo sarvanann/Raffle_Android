@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -50,8 +51,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:text="A-Bonn"
+            android:layout_marginTop="14dp"
+            android:gravity="start"
+            android:text="A"
             android:textColor="@color/black_color"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -60,21 +62,21 @@
         <TextView
             android:id="@+id/tv_option_b"
             style="@style/sign_up_txt_style_medium"
-            android:layout_width="120dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="14dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:gravity="start"
-            android:text="B-Delhi"
+            android:text="B"
             android:textColor="@color/black_color"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.85"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_questions" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_option_a" />
 
         <TextView
             android:id="@+id/tv_option_c"
@@ -83,33 +85,34 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="16dp"
-            android:text="C-January"
+            android:layout_marginTop="14dp"
+            android:gravity="start"
+            android:text="C"
             android:textColor="@color/black_color"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_option_a" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_option_b" />
 
         <TextView
             android:id="@+id/tv_option_d"
             style="@style/sign_up_txt_style_medium"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="14dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:gravity="start"
-            android:text="D-Aprilsdbfkdsf"
+            android:text="D"
             android:textColor="@color/black_color"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.759"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_questions"
-            app:layout_constraintVertical_bias="0.098" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_option_c"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/textView49"
@@ -119,11 +122,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="14dp"
-            android:text="Your Answer :"
+            android:gravity="start"
+            android:text="Your Answer"
             android:textColor="@color/black_color"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_option_c" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_option_d" />
 
         <TextView
             android:id="@+id/textView50"
@@ -134,6 +138,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
+            android:gravity="start"
             android:text="Points           :"
             android:textColor="@color/black_color"
             android:textSize="12sp"
@@ -146,40 +151,65 @@
         <TextView
             android:id="@+id/textView501"
             style="@style/sign_up_txt_style_medium"
-            android:layout_width="wrap_content"
+            android:layout_width="71dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="14dp"
             android:layout_marginBottom="8dp"
-            android:text="Time             :"
+            android:gravity="start"
+            android:text="Time"
             android:textColor="@color/black_color"
             android:textSize="12sp"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView50"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/tv_your_crct_ans"
+            android:id="@+id/tv_your_crct_ans_semi_colon"
             style="@style/sign_up_txt_style_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginTop="14dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:text=""
+            android:layout_marginBottom="8dp"
+            android:text=":"
             android:textColor="@color/black_color"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/textView49"
-            app:layout_constraintTop_toBottomOf="@+id/tv_questions"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_option_d"
+            app:layout_constraintVertical_bias="0.0" />
+
+
+        <TextView
+            android:id="@+id/tv_your_crct_ans"
+            style="@style/sign_up_txt_style_medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="start"
+            android:text=""
+            android:textColor="@color/black_color"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/tv_your_crct_ans_semi_colon"
+            app:layout_constraintTop_toBottomOf="@+id/tv_option_d"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/tv_point"
@@ -205,25 +235,49 @@
 
 
         <TextView
+            android:id="@+id/tv_time_semicolon"
+            style="@style/sign_up_txt_style_medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:text=":"
+            android:textColor="@color/black_color"
+            android:textSize="12sp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/textView501"
+            app:layout_constraintTop_toBottomOf="@+id/textView49"
+            app:layout_constraintVertical_bias="0.00999999" />
+
+
+        <TextView
             android:id="@+id/tv_time"
             style="@style/sign_up_txt_style_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginTop="14dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
+            android:gravity="start"
             android:text=""
             android:textColor="@color/black_color"
             android:textSize="12sp"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.003"
-            app:layout_constraintStart_toEndOf="@+id/textView501"
-            app:layout_constraintTop_toBottomOf="@+id/tv_point"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/tv_time_semicolon"
+            app:layout_constraintTop_toBottomOf="@+id/textView49"
+            app:layout_constraintVertical_bias="0.00999999" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

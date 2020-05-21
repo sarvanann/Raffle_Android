@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:shimmer="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout_game_two_top_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/sign_up_txt"
@@ -25,6 +25,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.974"
         app:layout_constraintStart_toStartOf="parent" />
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout_just_a_moment_game_two"
@@ -79,10 +80,9 @@
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.543"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.174">
+            app:layout_constraintVertical_bias="0.113">
 
             <ImageView
                 android:id="@+id/iv_ready_steady_go_state"
@@ -106,11 +106,12 @@
                 android:id="@+id/tv_just_a_moment"
                 style="@style/sign_up_txt_style_bold"
                 android:layout_width="200dp"
-                android:layout_height="100dp"
-                android:layout_marginBottom="16dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:fontFamily="@font/quicksand_bold"
                 android:gravity="center"
-                android:textColor="@color/white_color"
+                android:textColor="#FBD56F"
                 android:textSize="82sp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -193,16 +194,17 @@
             android:layout_height="100dp"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/end_game_black_bg_round_edge"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.688"
+            app:layout_constraintHorizontal_bias="0.578"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout_tv_just_a_moment_contest_one_txt"
-            app:layout_constraintVertical_bias="0.232">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.541">
 
             <TextView
                 android:id="@+id/tv_correct_ans_icon"
@@ -220,8 +222,8 @@
                 style="@style/sign_up_txt_style_bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="12dp"
                 android:text="@string/correct_answer_txt"
@@ -254,8 +256,8 @@
                 style="@style/sign_up_txt_style_bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="12dp"
                 android:text="@string/wrong_answer_txt"
@@ -263,7 +265,8 @@
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tv_correct_ans_txr"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_cross_mark_icon"
                 app:layout_constraintVertical_bias="0.0" />
 
@@ -288,11 +291,11 @@
                 style="@style/sign_up_txt_style_bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="47dp"
-                android:layout_marginLeft="47dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_marginBottom="12dp"
                 android:text="Skip Question"
                 android:textColor="@color/white_color"
@@ -300,7 +303,7 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintHorizontal_bias="0.8"
                 app:layout_constraintStart_toEndOf="@+id/tv_cross_txt"
                 app:layout_constraintTop_toBottomOf="@+id/tv_skip_icon"
                 app:layout_constraintVertical_bias="0.0" />
@@ -311,11 +314,14 @@
                 style="@style/sign_up_txt_style_bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
                 android:textColor="@color/white_color"
                 android:textSize="12sp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.115"
                 app:layout_constraintStart_toStartOf="parent"
@@ -328,9 +334,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="8dp"
                 android:text=""
                 android:textColor="@color/white_color"
                 android:textSize="12sp"
@@ -347,6 +354,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="8dp"
@@ -373,7 +381,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout20">
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout20"
+            app:layout_constraintVertical_bias="0.721">
 
             <TextView
                 android:id="@+id/textView45"
@@ -639,10 +648,14 @@
             android:id="@+id/imageView5"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:layout_marginStart="176dp"
-            android:layout_marginLeft="176dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/path_127"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0" />
@@ -692,13 +705,13 @@
             android:gravity="center"
             android:text=""
             android:textColor="@color/white_color"
-            android:textSize="28dp"
+            android:textSize="28sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.493"
+            app:layout_constraintHorizontal_bias="0.452"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.202" />
+            app:layout_constraintVertical_bias="0.224" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout23"
@@ -765,16 +778,17 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_single_card_end_game"
-            android:layout_width="300dp"
-            android:layout_height="125dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:scrollbarSize="5dp"
             android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
             android:scrollbars="vertical"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView69" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_play_anoter_contest" />
 
         <TextView
             android:id="@+id/tv_close_end_game"
@@ -793,7 +807,7 @@
             android:textColor="@color/white_color"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
@@ -802,7 +816,7 @@
             app:layout_constraintVertical_bias="0.146" />
 
         <TextView
-            android:id="@+id/textView69"
+            android:id="@+id/tv_play_anoter_contest"
             style="@style/sign_up_txt_style_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -813,8 +827,9 @@
             android:layout_marginRight="8dp"
             android:text="@string/play_another_contest_txt"
             android:textColor="@color/black_color"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.43"
+            app:layout_constraintHorizontal_bias="0.52"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_end_game_sucess_message_gif" />
 
@@ -897,6 +912,101 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout_country_flag_layout"
+                    android:layout_width="288dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/black_border_bg_new"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/iv_first_country_flag"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="start|center_vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_first_country_txt"
+                        style="@style/sign_up_txt_style_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text=""
+                        android:textAllCaps="true"
+                        android:textColor="@color/white_color"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/iv_first_country_flag"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textView58"
+                        style="@style/sign_up_txt_style_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="V"
+                        android:textColor="@color/white_color"
+                        android:textSize="15sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/tv_first_country_txt"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.25" />
+
+                    <ImageView
+                        android:id="@+id/iv_second_country_flag"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/textView58"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_second_country_txt"
+                        style="@style/sign_up_txt_style_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text=""
+                        android:textAllCaps="true"
+                        android:textColor="@color/white_color"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/iv_second_country_flag"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.571" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <TextView
                     android:id="@+id/tv_game_name"
                     style="@style/sign_up_txt_style_medium"
@@ -936,12 +1046,12 @@
 
                 <ImageView
                     android:id="@+id/iv_categoires_image_game_two_act"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="18dp"
-                    android:layout_marginRight="18dp"
-                    android:layout_marginBottom="4dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginBottom="8dp"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_game_name"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -1028,13 +1138,12 @@
                 app:layout_constraintVertical_bias="0.357" />
 
             <TextView
-                android:id="@+id/tv_entry_fee_details_coin_icon"
+                android:id="@+id/tv_prize_pool_details_icon"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_marginStart="2dp"
                 android:layout_marginLeft="2dp"
                 android:layout_marginTop="4dp"
-                android:background="@drawable/coin_new"
                 android:textColor="@color/white_color"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -1065,13 +1174,12 @@
 
 
             <TextView
-                android:id="@+id/textView46"
+                android:id="@+id/tv_entry_fee_details_icon"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_marginStart="2dp"
                 android:layout_marginLeft="2dp"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/coin_new"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -1171,7 +1279,8 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <com.facebook.shimmer.ShimmerFrameLayout
+            <!--This is for winnings layout-->
+            <io.supercharge.shimmerlayout.ShimmerLayout
                 android:id="@+id/shimmer_view_container_winning_list_game_two"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -1184,8 +1293,7 @@
                 app:layout_constraintHorizontal_bias="0.416"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                app:layout_constraintVertical_bias="0.0"
-                shimmer:duration="800">
+                app:layout_constraintVertical_bias="0.0">
 
                 <!-- Adding 3 rows of placeholders -->
                 <LinearLayout
@@ -1193,19 +1301,27 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+                    <include layout="@layout/winnings_list_placeholder_item" />
 
-                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+                    <include layout="@layout/winnings_list_placeholder_item" />
 
-                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+                    <include layout="@layout/winnings_list_placeholder_item" />
 
-                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+                    <include layout="@layout/winnings_list_placeholder_item" />
 
-                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+                    <include layout="@layout/winnings_list_placeholder_item" />
+
+                    <include layout="@layout/winnings_list_placeholder_item" />
+
+                    <include layout="@layout/winnings_list_placeholder_item" />
+
+                    <include layout="@layout/winnings_list_placeholder_item" />
+
+                    <include layout="@layout/winnings_list_placeholder_item" />
 
                 </LinearLayout>
 
-            </com.facebook.shimmer.ShimmerFrameLayout>
+            </io.supercharge.shimmerlayout.ShimmerLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_price_list_game_two"
@@ -1224,107 +1340,130 @@
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout"
                 app:layout_constraintVertical_bias="1.0" />
 
-            <!-- <include
-                 layout="@layout/include_prize_layout"
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent"
-                 android:layout_marginTop="40dp"
-                 android:layout_marginBottom="4dp"
-                 android:background="@drawable/recyclerview_black_border_bg"
-                 android:visibility="gone"
-                 app:layout_constraintBottom_toBottomOf="parent"
-                 app:layout_constraintEnd_toEndOf="parent"
-                 app:layout_constraintHorizontal_bias="0.333"
-                 app:layout_constraintStart_toStartOf="parent"
-                 app:layout_constraintTop_toBottomOf="@+id/linearLayout" />-->
-
-            <include
-                layout="@layout/include_score_board_layout"
+            <!--This is for Rules layout-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_rules_list_game_two"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="40dp"
                 android:layout_marginBottom="4dp"
-                android:background="@drawable/recyclerview_black_border_bg"
+                android:scrollbarSize="5dp"
+                android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
+                android:scrollbars="vertical"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.333"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout_rules_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <io.supercharge.shimmerlayout.ShimmerLayout
+                android:id="@+id/shimmer_view_container_for_rules"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="48dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginBottom="4dp"
-                android:background="@drawable/game_list_bg_for_game_details_screen_round_edge"
+                android:layout_marginBottom="68dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout_score_board_top_layout"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.01999998">
+
+                <!-- Adding 3 rows of placeholders -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+
+                    <include layout="@layout/rules_placeholder_item" />
+                </LinearLayout>
+            </io.supercharge.shimmerlayout.ShimmerLayout>
+
+            <!--This is for Scorebaord layout-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout_score_board_top_layout"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="48dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/game_list_bg_for_game_details_screen_round_edge_player_result"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.416"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0">
 
-
-                <com.facebook.shimmer.ShimmerFrameLayout
-                    android:id="@+id/shimmer_view_container_for_rules"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="4dp"
-                    android:orientation="vertical"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.416"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0"
-                    shimmer:duration="800">
-
-                    <!-- Adding 3 rows of placeholders -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <include layout="@layout/rules_placeholder_item" />
-
-                        <include layout="@layout/rules_placeholder_item" />
-
-                        <include layout="@layout/rules_placeholder_item" />
-
-                        <include layout="@layout/rules_placeholder_item" />
-
-                    </LinearLayout>
-
-                </com.facebook.shimmer.ShimmerFrameLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_rules_list_game_two"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="4dp"
-                    android:scrollbarSize="5dp"
-                    android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
-                    android:scrollbars="vertical"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.416"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
-
                 <TextView
-                    android:id="@+id/textView35"
+                    android:id="@+id/tv_current_user_rank"
                     style="@style/sign_up_txt_style_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -1333,179 +1472,169 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
-                    android:gravity="start"
-                    android:text="1.Move or remove any content that is available."
-                    android:textSize="12sp"
-                    android:visibility="gone"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:text=""
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/textView36"
                     style="@style/sign_up_txt_style_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
-                    android:gravity="start"
-                    android:text="2.Establish general practices and limits concerning use."
-                    android:textSize="12sp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:text="Testuser1"
+                    android:textSize="14sp"
                     android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.025"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView35" />
-
-
-                <TextView
-                    android:id="@+id/textView37"
-                    style="@style/sign_up_txt_style_medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:gravity="start"
-                    android:text="3.Assign its rights and liabilities to all User accounts hereunder."
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.024"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView36" />
-
-
-                <TextView
-                    android:id="@+id/textView38"
-                    style="@style/sign_up_txt_style_medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:gravity="start"
-                    android:text="4.Persons who wish to register an Account must have a valid\n e-mail address, paytm mobile number"
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.026"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView37" />
-
-                <TextView
-                    android:id="@+id/textView39"
-                    style="@style/sign_up_txt_style_medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="4dp"
-                    android:gravity="start"
-                    android:text="5. You agree to update and keep updated all information provided for the purposes of registration."
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView38" />
-
-                <TextView
-                    android:id="@+id/textView40"
-                    style="@style/sign_up_txt_style_medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginTop="4dp"
-                    android:gravity="start"
-                    android:text="6.You acknowledge that your participation in any Game(s) available on the Platform is purely voluntary and at your sole discretion and risk."
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView39" />
-
-                <TextView
-                    style="@style/sign_up_txt_style_medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:gravity="start"
-                    android:text="9.You agree and acknowledge that decision of STB in this regard shall be final."
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView42" />
-
-                <TextView
-                    android:id="@+id/textView42"
-                    style="@style/sign_up_txt_style_medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:gravity="start"
-                    android:text="8.You agree and acknowledge that decision of STB in this regard shall be final."
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView41" />
-
-                <TextView
-                    android:id="@+id/textView41"
-                    style="@style/sign_up_txt_style_medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:gravity="start"
-                    android:text="7.You can also register or log in through your Google or personal e-mail address. You may also be required to provide your mobile number for verification purposes, and verify such mobile number using a one-time passcode sent to your mobile number."
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.004"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView40" />
+                    app:layout_constraintHorizontal_bias="0.856"
+                    app:layout_constraintStart_toEndOf="@+id/tv_current_user_rank"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.571" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <io.supercharge.shimmerlayout.ShimmerLayout
+                android:id="@+id/shimmer_view_container_for_scoreboard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="68dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout_score_board_top_layout"
+                app:layout_constraintVertical_bias="0.01999998">
+
+                <!-- Adding 3 rows of placeholders -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                    <include layout="@layout/scroeboard_list_for_game_two_placeholder_item" />
+
+                </LinearLayout>
+
+            </io.supercharge.shimmerlayout.ShimmerLayout>
+
+            <TextView
+                android:id="@+id/tv_no_data_available_fr_ranking_game_two"
+                style="@style/sign_up_txt_style_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/no_data_found_txt"
+                android:textColor="@color/black_color"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_score_board_list_game_two"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="68dp"
+                android:scrollbarSize="5dp"
+                android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
+                android:scrollbars="vertical"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout_score_board_top_layout"
+                app:layout_constraintVertical_bias="0.015" />
+
+            <TextView
+                android:id="@+id/tv_no_data_available_fr_score_board"
+                style="@style/sign_up_txt_style_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/no_data_found_txt"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.504"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout_score_board_top_layout"
+                app:layout_constraintVertical_bias="0.464" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout_watch_ads_btn"
             android:layout_width="170dp"
             android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="14dp"
             android:background="@drawable/game_list_bg_play_50"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.516"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout66"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout66">
 
             <TextView
                 android:id="@+id/tv_play_btn"
@@ -1533,7 +1662,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="12dp"
                 android:background="@drawable/game_list_bg_play_50"
                 android:visibility="gone">
 
@@ -1598,7 +1727,7 @@
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:text="to play"
+                    android:text="@string/to_play_txt"
                     android:textColor="@color/white_color"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -1610,37 +1739,14 @@
         <TextView
             android:id="@+id/tv_enter_contest_btn"
             style="@style/sign_up_txt_style_bold"
-            android:layout_width="135dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/game_list_bg_free_btn"
-            android:text="@string/play_for_free_txt"
-            android:textColor="@color/white_color"
-            android:textSize="14sp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/constraintLayout_watch_ads_btn"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout66"
-            app:layout_constraintVertical_bias="0.306" />
-
-
-        <TextView
-            android:id="@+id/tv_enter_contest_btn_for_free"
-            style="@style/sign_up_txt_style_bold"
-            android:layout_width="150dp"
+            android:layout_width="170dp"
             android:layout_height="40dp"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="12dp"
             android:background="@drawable/game_list_bg_free_btn"
             android:text="@string/play_for_free_txt"
             android:textColor="@color/white_color"
@@ -1648,10 +1754,30 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.516"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout66"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout66" />
+
+
+        <TextView
+            android:id="@+id/tv_enter_contest_btn_for_free"
+            style="@style/sign_up_txt_style_bold"
+            android:layout_width="170dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/game_list_bg_free_btn"
+            android:text="@string/play_for_free_txt"
+            android:textColor="@color/white_color"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout66" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -1705,446 +1831,527 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout17"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="26dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/circle_game_two_count"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.022"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/tv_remaing_count_value_in_game_two"
-                style="@style/sign_up_txt_style"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:text="1"
-                android:textColor="@color/black_color"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textView23"
-                style="@style/sign_up_txt_style"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="/"
-                android:textColor="@color/black_color"
-                android:textSize="16sp"
-                android:visibility="gone"
-                app:layout_constraintStart_toEndOf="@+id/tv_remaing_count_value_in_game_two"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <View
-                android:id="@+id/textView244"
-                style="@style/sign_up_txt_style"
-                android:layout_width="20dp"
-                android:layout_height="1dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:background="@color/black_color"
-                android:padding="5dp"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_remaing_count_value_in_game_two" />
-
-            <TextView
-                android:id="@+id/tv_number_of_questions_in_api"
-                style="@style/sign_up_txt_style"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:text="10"
-                android:textColor="@color/black_color"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_remaing_count_value_in_game_two" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout_count_down_timer"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="26dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:background="@drawable/timer_circle_bg"
-            app:layout_constraintBottom_toTopOf="@+id/imageView7"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
-            app:layout_constraintVertical_bias="0.0">
-
-            <TextView
-                android:id="@+id/tv_timer_seconds_count_game_two"
-                style="@style/sign_up_txt_style_bold"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout17"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="00"
-                android:textColor="@color/white_color"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/circle_game_two_count"
+                app:layout_constraintBottom_toBottomOf="@+id/constraintLayout_count_down_timer"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.048"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@+id/constraintLayout_count_down_timer"
+                app:layout_constraintVertical_bias="0.6">
 
-            <TextView
-                android:id="@+id/tv_timer_left_txt_game_two"
-                style="@style/sign_in_txt_style"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
+                <TextView
+                    android:id="@+id/tv_remaing_count_value_in_game_two"
+                    style="@style/sign_up_txt_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:gravity="bottom"
+                    android:text="1"
+                    android:textColor="@color/black_color"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_number_of_questions_in_api"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <TextView
+                    android:id="@+id/textView23"
+                    style="@style/sign_up_txt_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="/"
+                    android:textColor="@color/black_color"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toEndOf="@+id/tv_remaing_count_value_in_game_two"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <View
+                    android:id="@+id/textView244"
+                    style="@style/sign_up_txt_style"
+                    android:layout_width="20dp"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@color/black_color"
+                    android:padding="5dp"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_remaing_count_value_in_game_two" />
+
+                <TextView
+                    android:id="@+id/tv_number_of_questions_in_api"
+                    style="@style/sign_up_txt_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:gravity="bottom"
+                    android:text="10"
+                    android:textColor="@color/black_color"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView244" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout_count_down_timer"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:text="@string/left_txt"
-                android:textColor="@color/black_color"
-                android:textSize="14sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.461"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_timer_seconds_count_game_two"
-                app:layout_constraintVertical_bias="0.363" />
-
-            <TextView
-                android:id="@+id/tv_timer_seconds_txt_game_two"
-                style="@style/sign_in_txt_style"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="s"
-                android:textColor="@color/black_color"
-                android:textSize="12sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/timer_circle_bg"
+                app:layout_constraintBottom_toTopOf="@+id/constraintLayout_answer_set_01"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/tv_timer_seconds_count_game_two"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.333" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
-            android:id="@+id/tv_two_x_game_two"
-            style="@style/sign_up_txt_style_bold"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="26dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/two_x_onclick_bg"
-            android:gravity="center_vertical|center"
-            android:text="@string/_2x_txt"
-            android:textColor="@color/new_game_scrn_2x_color"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.932"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout4"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/normal_rectangle_effect"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.015">
-
-            <TextView
-                android:id="@+id/tv_remaing_count_value_in_game_two_01"
-                style="@style/sign_up_txt_style_bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="1"
-                android:textColor="@color/white_color"
-                android:textSize="22sp"
-                android:visibility="gone"
-                app:layout_constraintStart_toEndOf="@+id/textView25"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-            <TextView
-                android:id="@+id/textView25"
-                style="@style/sign_up_txt_style_bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:padding="3dp"
-                android:text="Q"
-                android:textColor="@color/white_color"
-                android:textSize="22sp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.462"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
+                app:layout_constraintVertical_bias="0.107">
 
-            <ImageView
-                android:id="@+id/iv_changing_image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:background="@color/black_color"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.494"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/tv_timer_seconds_count_game_two"
+                    style="@style/sign_up_txt_style_bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="00"
+                    android:textColor="@color/white_color"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_timer_left_txt_game_two"
+                    style="@style/sign_in_txt_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:text="@string/left_txt"
+                    android:textColor="@color/black_color"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.461"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_timer_seconds_count_game_two"
+                    app:layout_constraintVertical_bias="0.363" />
+
+                <TextView
+                    android:id="@+id/tv_timer_seconds_txt_game_two"
+                    style="@style/sign_in_txt_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="s"
+                    android:textColor="@color/black_color"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/tv_timer_seconds_count_game_two"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
-                android:id="@+id/tv_questions_in_game_two"
+                android:id="@+id/tv_two_x_game_two"
                 style="@style/sign_up_txt_style_bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="8dp"
-                android:gravity="center"
-                android:isScrollContainer="true"
-                android:scrollbarSize="2dp"
-                android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
-                android:scrollbars="vertical"
-                android:text=""
-                android:textColor="@color/white_color"
+                android:background="@drawable/two_x_onclick_bg"
+                android:gravity="center_vertical|center"
+                android:text="@string/_2x_txt"
+                android:textColor="@color/colorAmber_900"
+                app:layout_constraintBottom_toBottomOf="@+id/constraintLayout_count_down_timer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.93"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/constraintLayout_count_down_timer"
+                app:layout_constraintVertical_bias="0.6" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout4"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/normal_rectangle_effect"
+                app:layout_constraintBottom_toTopOf="@+id/constraintLayout_count_down_timer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tv_remaing_count_value_in_game_two_01"
+                    style="@style/sign_up_txt_style_bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="1"
+                    android:textColor="@color/white_color"
+                    android:textSize="22sp"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toEndOf="@+id/textView25"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/textView25"
+                    style="@style/sign_up_txt_style_bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:padding="3dp"
+                    android:text="Q"
+                    android:textColor="@color/white_color"
+                    android:textSize="22sp"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.462"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout_image_plus_text_contest"
+                    android:layout_width="match_parent"
+                    android:layout_height="210dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.makeramen.roundedimageview.RoundedImageView
+                        android:id="@+id/iv_changing_image"
+                        android:layout_width="300dp"
+                        android:layout_height="130dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:scaleType="fitCenter"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0"
+                        app:riv_border_color="#333333"
+                        app:riv_border_width="2dip"
+                        app:riv_corner_radius="10dip"
+                        app:riv_mutate_background="true"
+                        app:riv_oval="false"
+                        app:riv_tile_mode="repeat" />
+
+                    <TextView
+                        android:id="@+id/tv_questions_in_image_plus_txt"
+                        style="@style/sign_up_txt_style_bold"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="start"
+                        android:isScrollContainer="true"
+                        android:scrollbarSize="2dp"
+                        android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
+                        android:scrollbars="vertical"
+                        android:text=""
+                        android:textColor="@color/white_color"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/iv_changing_image"
+                        app:layout_constraintVertical_bias="0.166" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout_trivia_text__plus_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="210dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/tv_questions_in_game_two"
+                        style="@style/sign_up_txt_style_bold"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center"
+                        android:isScrollContainer="true"
+                        android:scrollbarSize="2dp"
+                        android:scrollbarThumbVertical="@drawable/recycler_view_side_thumbnails"
+                        android:scrollbars="vertical"
+                        android:text=""
+                        android:textColor="@color/white_color"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.511" />
+
+                    <ImageView
+                        android:id="@+id/iv_hint_icon"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="6dp"
+                        android:background="@drawable/idea_tool_tip"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="1.0" />
+
+                    <TextView
+                        android:id="@+id/tv_hint_text"
+                        style="@style/sign_up_txt_style_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="4dp"
+                        android:gravity="start"
+                        android:text="Hint1Hint1Hint1"
+                        android:textColor="@color/golden_yellow_color"
+                        android:textSize="14sp"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/iv_hint_icon"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="1.0" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout_answer_set_01"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.511" />
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout_count_down_timer">
 
-            <ImageView
-                android:id="@+id/iv_hint_icon"
+
+                <TextView
+                    android:id="@+id/tv_ans_0_game_two"
+                    style="@style/sign_up_txt_style_medium_answers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/normal_rectangle_effect"
+                    android:gravity="center"
+                    android:padding="15dp"
+                    android:text=""
+                    android:textAllCaps="false"
+                    android:textColor="@color/white_color"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_ans_1_game_two"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/tv_ans_1_game_two"
+                    style="@style/sign_up_txt_style_medium_answers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="13dp"
+                    android:background="@drawable/normal_rectangle_effect"
+                    android:padding="15dp"
+                    android:text=""
+                    android:textAllCaps="false"
+                    android:textColor="@color/white_color"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_ans_2_game_two"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_ans_0_game_two" />
+
+                <TextView
+                    android:id="@+id/tv_ans_2_game_two"
+                    style="@style/sign_up_txt_style_medium_answers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="13dp"
+                    android:background="@drawable/normal_rectangle_effect"
+                    android:padding="15dp"
+                    android:text=""
+                    android:textAllCaps="false"
+                    android:textColor="@color/white_color"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_ans_3_game_two"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_ans_1_game_two" />
+
+                <TextView
+                    android:id="@+id/tv_ans_3_game_two"
+                    style="@style/sign_up_txt_style_medium_answers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="13dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/normal_rectangle_effect"
+                    android:padding="15dp"
+                    android:text=""
+                    android:textAllCaps="false"
+                    android:textColor="@color/white_color"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_ans_2_game_two"
+                    app:layout_constraintVertical_bias="0.0" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout_tv_2x_power_up"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="6dp"
-                android:background="@drawable/idea_tool_tip"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
-
-            <TextView
-                android:id="@+id/tv_hint_text"
-                style="@style/sign_up_txt_style_medium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginBottom="4dp"
-                android:text="Hint1Hint1Hint1"
-                android:textColor="@color/golden_yellow_color"
-                android:textSize="14sp"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/circle_game_two_count"
+                app:layout_constraintBottom_toBottomOf="@+id/constraintLayout_count_down_timer"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/iv_hint_icon"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintHorizontal_bias="0.84"
+                app:layout_constraintStart_toEndOf="@+id/constraintLayout_count_down_timer"
+                app:layout_constraintTop_toTopOf="@+id/constraintLayout_count_down_timer"
+                app:layout_constraintVertical_bias="0.0">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout_answer_set_01"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout_count_down_timer"
-            app:layout_constraintVertical_bias="0.211">
-
-
-            <TextView
-                android:id="@+id/tv_ans_0_game_two"
-                style="@style/sign_up_txt_style_medium_answers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/normal_rectangle_effect"
-                android:gravity="center"
-                android:padding="15dp"
-                android:text=""
-                android:textAllCaps="false"
-                android:textColor="@color/white_color"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-            <TextView
-                android:id="@+id/tv_ans_1_game_two"
-                style="@style/sign_up_txt_style_medium_answers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="13dp"
-                android:background="@drawable/normal_rectangle_effect"
-                android:padding="15dp"
-                android:text=""
-                android:textAllCaps="false"
-                android:textColor="@color/white_color"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.507"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_ans_0_game_two" />
-
-            <TextView
-                android:id="@+id/tv_ans_2_game_two"
-                style="@style/sign_up_txt_style_medium_answers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="13dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/normal_rectangle_effect"
-                android:padding="15dp"
-                android:text=""
-                android:textAllCaps="false"
-                android:textColor="@color/white_color"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.492"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_ans_1_game_two"
-                app:layout_constraintVertical_bias="0.0" />
-
-            <TextView
-                android:id="@+id/tv_ans_3_game_two"
-                style="@style/sign_up_txt_style_medium_answers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="13dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/normal_rectangle_effect"
-                android:padding="15dp"
-                android:text=""
-                android:textAllCaps="false"
-                android:textColor="@color/white_color"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.492"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_ans_2_game_two"
-                app:layout_constraintVertical_bias="0.0" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout_tv_2x_power_up"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="26dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/circle_game_two_count"
-            app:layout_constraintBottom_toTopOf="@+id/constraintLayout_answer_set_01"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.838"
-            app:layout_constraintStart_toEndOf="@+id/constraintLayout_count_down_timer"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
-            app:layout_constraintVertical_bias="0.0">
-
-            <TextView
-                android:id="@+id/tv_2x_power_up"
-                style="@style/sign_up_txt_style_medium"
-                android:layout_width="wrap_content"
-                android:layout_height="15dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginRight="4dp"
-                android:layout_marginBottom="8dp"
-                android:gravity="center"
-                android:text="8"
-                android:textColor="@color/red_color"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.333" />
+                <TextView
+                    android:id="@+id/tv_2x_power_up"
+                    style="@style/sign_up_txt_style_medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="15dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:text="8"
+                    android:textColor="@color/red_color"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -2237,7 +2444,8 @@
             android:layout_below="@+id/tv_loading_txt"
             android:layout_centerHorizontal="true"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:ignore="MissingConstraints" />
 
         <Button
             android:id="@+id/retry_button"
@@ -2254,7 +2462,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/retry_button"
             android:layout_centerHorizontal="true"
-            android:onClick="showRewardedVideo"
             android:text="@string/watch_video_button_text"
             android:visibility="gone" />
 
@@ -2262,6 +2469,7 @@
             android:id="@+id/coin_count_textttt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="8dp"
@@ -2285,6 +2493,7 @@
             android:id="@+id/coin_count_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="8dp"
@@ -2322,6 +2531,8 @@
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_loading_txt"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            tools:ignore="UnusedAttribute"
+            tools:targetApi="lollipop" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

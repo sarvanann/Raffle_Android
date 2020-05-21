@@ -57,9 +57,9 @@ public class Splash_Screen_Act extends AppCompatActivity {
                 Log.i(TAG, "printHashKey() Hash Key: " + hashKey);
             }
         } catch (NoSuchAlgorithmException e) {
-            Log.e(TAG, "printHashKey()", e);
+//            Log.e(TAG, "printHashKey()", e);
         } catch (Exception e) {
-            Log.e(TAG, "printHashKey()", e);
+//            Log.e(TAG, "printHashKey()", e);
         }
     }
 
@@ -84,8 +84,10 @@ public class Splash_Screen_Act extends AppCompatActivity {
             } else {
                 int_normal_status = 0;
             }
+            SessionSave.ClearSession("Contest_Value", Splash_Screen_Act.this);
+            SessionSave.ClearSession("Banner_Contest_Value", Splash_Screen_Act.this);
             str_carosel_status = (SessionSave.getSession("Carosel_Status", Splash_Screen_Act.this));
-            Log.e("str_carosel_status", "" + str_carosel_status);
+//            Log.e("str_carosel_status", "" + str_carosel_status);
             Log.e("int_normal_status", "" + int_normal_status);
 //            if (int_normal_status == 0 && str_carosel_status.equalsIgnoreCase("No data")) {
             if (str_carosel_status.equalsIgnoreCase("No data")) {
@@ -100,6 +102,10 @@ public class Splash_Screen_Act extends AppCompatActivity {
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             } else if (int_normal_status == 2) {
+                Intent intent = new Intent(Splash_Screen_Act.this, Referral_Code_Act.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            } else if (int_normal_status == 8) {
                 Intent intent = new Intent(Splash_Screen_Act.this, Navigation_Drawer_Act.class);
 //                Intent intent = new Intent(Splash_Screen_Act.this, Mobile_Num_Verification_Otp_Act.class);
                 startActivity(intent);
@@ -118,6 +124,10 @@ public class Splash_Screen_Act extends AppCompatActivity {
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             } else if (str_carosel_status.equalsIgnoreCase("1")) {
+                Intent intent = new Intent(Splash_Screen_Act.this, All_Btn_OnClick_Sign_Up_Act.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            } else if (str_carosel_status.equalsIgnoreCase("0")) {
                 Intent intent = new Intent(Splash_Screen_Act.this, All_Btn_OnClick_Sign_Up_Act.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);

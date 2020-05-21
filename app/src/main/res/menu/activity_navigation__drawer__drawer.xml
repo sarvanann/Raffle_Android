@@ -44,8 +44,13 @@
 
         <item
             android:id="@+id/nav_share"
-            android:icon="@drawable/icon_ionic_ios_information_circle"
+            android:icon="@drawable/share_icon"
             android:title="@string/menu_share" />
+
+        <item
+            android:id="@+id/nav_refer_and_earn"
+            android:icon="@drawable/refer"
+            android:title="@string/menu_refer_and_earn" />
 
         <!--<item
             android:id="@+id/nav_privacy_policy"
@@ -54,8 +59,5 @@
             android:id="@+id/nav_logout"
             android:icon="@drawable/subtraction_51"
             android:title="@string/menu_logout_txt" />
-
     </group>
-
-
 </menu>

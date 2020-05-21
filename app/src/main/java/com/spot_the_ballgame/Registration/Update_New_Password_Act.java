@@ -18,7 +18,6 @@ import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -96,7 +95,7 @@ public class Update_New_Password_Act extends AppCompatActivity implements View.O
         btn_show_hide_repeat_pwd.setOnClickListener(this);
 
         str_auth_token = SessionSave.getSession("Token_value", Update_New_Password_Act.this);
-        Log.e("authtoken_updt_nw_pw", str_auth_token);
+//        Log.e("authtoken_updt_nw_pw", str_auth_token);
 
 
         String select = "select SOURCEDETAILS,EMAIL,PASSWORD from LOGINDETAILS where STATUS ='" + 1 + "'";
@@ -109,9 +108,9 @@ public class Update_New_Password_Act extends AppCompatActivity implements View.O
             } while (cursor.moveToNext());
         }
         cursor.close();
-        Log.e("update_str_src", str_source_details);
-        Log.e("update_str_email", str_email);
-        Log.e("update_str_email_pwd", str_email_password);
+//        Log.e("update_str_src", str_source_details);
+//        Log.e("update_str_email", str_email);
+//        Log.e("update_str_email_pwd", str_email_password);
         ContentValues contentValues = new ContentValues();
         contentValues.put("SIGNUPSTATUS", "5");
         db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
@@ -275,7 +274,7 @@ public class Update_New_Password_Act extends AppCompatActivity implements View.O
 
             APIInterface apiInterface = Factory.getClient();
             Call<Category_Model> call = apiInterface.GET_NEW_PWD_UPDATE_CALL("application/json", jsonObject.toString(), str_auth_token);
-            Log.e("updatepwd_json_value", jsonObject.toString());
+//            Log.e("updatepwd_json_value", jsonObject.toString());
             call.enqueue(new Callback<Category_Model>() {
                 @Override
                 public void onResponse(Call<Category_Model> call, Response<Category_Model> response) {
@@ -290,7 +289,7 @@ public class Update_New_Password_Act extends AppCompatActivity implements View.O
                             contentValues.put("PASSWORD", str_repeat_pwd);
                             db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email + "'", null);
                             DBEXPORT();
-                            Log.e("update_pwd_cntn_values", contentValues.toString());
+//                            Log.e("update_pwd_cntn_values", contentValues.toString());
                             Intent intent = new Intent(Update_New_Password_Act.this, Navigation_Drawer_Act.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -391,7 +390,7 @@ public class Update_New_Password_Act extends AppCompatActivity implements View.O
         if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
             internetStatus = getResources().getString(R.string.back_online_txt);
             snackbar = Snackbar.make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_LONG);
-            snackbar.getView().setBackgroundResource(R.color.sign_up_txt);
+            snackbar.getView().setBackgroundResource(R.color.timer_bg_color);
         } else {
             internetStatus = getResources().getString(R.string.check_internet_conn_txt);
             snackbar = Snackbar.make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_INDEFINITE);

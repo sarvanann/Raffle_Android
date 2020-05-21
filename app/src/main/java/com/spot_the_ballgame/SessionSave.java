@@ -26,11 +26,10 @@ public class SessionSave {
         }
     }
 
-    public static SharedPreferences.Editor ClearSession(String string, Context context) {
+    public static void ClearSession(String string, Context context) {
         SharedPreferences.Editor editor = context.getSharedPreferences("FCM", Activity.MODE_PRIVATE).edit();
-        editor.clear();
+        editor.remove(string);
         editor.apply();
-        return editor;
     }
 
 }

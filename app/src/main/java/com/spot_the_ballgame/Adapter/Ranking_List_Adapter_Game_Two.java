@@ -27,16 +27,16 @@ public class Ranking_List_Adapter_Game_Two extends RecyclerView.Adapter<Ranking_
 
     @NonNull
     @Override
-    public Ranking_List_Adapter_Game_Two.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view;
         view = inflater.inflate(R.layout.ranking_list_adapter_details_layout, parent, false);
-        return new Ranking_List_Adapter_Game_Two.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull Ranking_List_Adapter_Game_Two.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         /*String s = arrayList.get(position).first_name;
         String[] parts = s.split("@");
         String s1 = parts[0];*/

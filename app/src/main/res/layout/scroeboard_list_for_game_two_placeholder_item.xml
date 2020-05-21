@@ -2,16 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/new_dash_bg_color"
-    android:gravity="center"
-    android:paddingLeft="20dp"
-    android:paddingTop="5dp"
-    android:paddingRight="20dp"
-    android:paddingBottom="5dp">
+    android:paddingBottom="2dp">
 
     <View
-        android:id="@+id/name"
+        android:id="@+id/shimmer_avatar_1"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:background="@color/placeholder_bg" />
+        android:layout_height="52dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/score_board_placeholder_bg" />
 </RelativeLayout>

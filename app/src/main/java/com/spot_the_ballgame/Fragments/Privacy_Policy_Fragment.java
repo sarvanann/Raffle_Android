@@ -5,7 +5,6 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,7 @@ public class Privacy_Policy_Fragment extends Fragment {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void onBackPressed() {
         int backStackEntryCount = Objects.requireNonNull(getActivity()).getSupportFragmentManager().getBackStackEntryCount();
-        Log.e("backStackCnt_privacy", "" + backStackEntryCount);
+//        Log.e("backStackCnt_privacy", "" + backStackEntryCount);
         if (backStackEntryCount == 1) {
             Intent intent = new Intent(getContext(), Navigation_Drawer_Act.class);
             startActivity(intent);

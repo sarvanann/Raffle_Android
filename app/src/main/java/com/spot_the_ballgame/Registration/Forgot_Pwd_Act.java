@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -42,6 +43,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -113,8 +116,10 @@ public class Forgot_Pwd_Act extends AppCompatActivity implements View.OnClickLis
 
     private void GetForgot_Pwd_Details() {
         try {
+            str_et_email_id = et_email_id_in_forgot_pwd.getText().toString();
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("email", et_email_id_in_forgot_pwd.getText().toString());
+            jsonObject.put("email", str_et_email_id);
+//            jsonObject.put("email", et_email_id_in_forgot_pwd.getText().toString());
             pd.setMessage("Loading...");
             pd.show();
             pd.setCancelable(false);
@@ -148,20 +153,36 @@ public class Forgot_Pwd_Act extends AppCompatActivity implements View.OnClickLis
                                 str_active = response.body().datum.active;
                                 str_verified = response.body().datum.verified;
                                 ContentValues contentValues = new ContentValues();
-                                contentValues.put("SOURCEDETAILS", "email");
-                                contentValues.put("EMAIL", static_str_email_id);
-                                contentValues.put("STATUS", "1");
-                                contentValues.put("SIGNUPSTATUS", "4");
-//                            contentValues.put("PASSWORD", str_email_password);
-                                db.update("LOGINDETAILS", contentValues, "EMAIL='" + static_str_email_id + "'", null);
-                                DBEXPORT();
+                                if (rowIDExistEmail(str_et_email_id)) {
+                                    contentValues.put("SOURCEDETAILS", "email");
+                                    contentValues.put("EMAIL", str_et_email_id);
+                                    contentValues.put("STATUS", "1");
+                                    contentValues.put("SIGNUPSTATUS", "4");
+//                                    db.update("LOGINDETAILS", contentValues, "EMAIL='" + static_str_email_id + "'", null);
+                                    db.insert("LOGINDETAILS", null, contentValues);
+                                    DBEXPORT();
+                                    Intent intent = new Intent(Forgot_Pwd_Act.this, Email_Sign_In_Act.class);
+                                    intent.putExtra("str_email_password", str_email_password);
+                                    intent.putExtra("str_signup_status", "4");
+                                    startActivity(intent);
+                                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                                } else {
+                                    contentValues.put("SOURCEDETAILS", "email");
+                                    contentValues.put("EMAIL", str_et_email_id);
+                                    contentValues.put("STATUS", "1");
+                                    contentValues.put("SIGNUPSTATUS", "4");
+                                    db.update("LOGINDETAILS", contentValues, "EMAIL='" + static_str_email_id + "'", null);
+                                    DBEXPORT();
+
+                                    Intent intent = new Intent(Forgot_Pwd_Act.this, Email_Sign_In_Act.class);
+                                    intent.putExtra("str_email_password", str_email_password);
+                                    intent.putExtra("str_signup_status", "4");
+                                    startActivity(intent);
+                                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                                }
 //                            Log.e("frgt_pwd_cnt_values", contentValues.toString());
 //                            Toast_Message.showToastMessage(Forgot_Pwd_Act.this, str_message);
-                                Intent intent = new Intent(Forgot_Pwd_Act.this, Email_Sign_In_Act.class);
-                                intent.putExtra("str_email_password", str_email_password);
-                                intent.putExtra("str_signup_status", "4");
-                                startActivity(intent);
-                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
 //                            Log.e("str_id", str_id);
 //                            Log.e("str_source_detail", str_source_detail);
 //                            Log.e("str_firstname", str_firstname);
@@ -206,6 +227,27 @@ public class Forgot_Pwd_Act extends AppCompatActivity implements View.OnClickLis
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean rowIDExistEmail(String str_email_id) {
+        String select = "select * from LOGINDETAILS ";
+        Cursor cursor = db.rawQuery(select, null);
+        List<String> labels = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                String var = cursor.getString(3);
+                labels.add(var);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        boolean allMatch = true;
+        for (String string : labels) {
+            if (string.equalsIgnoreCase(str_email_id)) {
+                allMatch = false;
+                break;
+            }
+        }
+        return allMatch;
     }
 
     private void DBEXPORT() {
@@ -302,7 +344,7 @@ public class Forgot_Pwd_Act extends AppCompatActivity implements View.OnClickLis
         if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
             internetStatus = getResources().getString(R.string.back_online_txt);
             snackbar = Snackbar.make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_LONG);
-            snackbar.getView().setBackgroundResource(R.color.sign_up_txt);
+            snackbar.getView().setBackgroundResource(R.color.timer_bg_color);
         } else {
             internetStatus = getResources().getString(R.string.check_internet_conn_txt);
             snackbar = Snackbar.make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_INDEFINITE);

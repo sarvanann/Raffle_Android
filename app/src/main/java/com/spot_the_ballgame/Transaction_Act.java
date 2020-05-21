@@ -13,18 +13,19 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.snackbar.Snackbar;
@@ -38,6 +39,7 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
+import io.supercharge.shimmerlayout.ShimmerLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,12 +47,15 @@ import retrofit2.Response;
 public class Transaction_Act extends AppCompatActivity implements View.OnClickListener {
     private AdView mAdView;
     Button btn_transaction_history, btn_redeem_history;
-    ConstraintLayout constraintLayout_transaction_history, constraintLayout_redeem_history;
+    ConstraintLayout constraintLayout_transaction_history,
+            constraintLayout_redeem_history,
+            constraintLayout_transaction_top,
+            constraintLayout_redeem_top;
     String str_email, str_date, str_time, str_playby, str_values_in, str_values_out;
     Wallet_History_Adapter wallet_history_adapter;
     Redeem_History_Adapter redeem_history_adapter;
     SQLiteDatabase db;
-    private ShimmerFrameLayout mShimmerViewContainer, mShimmerViewContainer_redeem_history;
+    private ShimmerLayout mShimmerViewContainer, mShimmerViewContainer_redeem_history;
 
     //This is used for Internet alert using snackbar status
     public static int TYPE_WIFI = 1;
@@ -63,6 +68,7 @@ public class Transaction_Act extends AppCompatActivity implements View.OnClickLi
     RecyclerView rv_redeem_history;
     RecyclerView rv_wallet_history;
     TextView tv_no_data_available_fr_transaction_act, tv_no_data_available_fr_transaction_act_redeem;
+    String str_one_signal = "";
 
     @SuppressLint("WrongConstant")
     @Override
@@ -77,11 +83,20 @@ public class Transaction_Act extends AppCompatActivity implements View.OnClickLi
         mShimmerViewContainer_redeem_history = findViewById(R.id.mShimmerViewContainer_redeem_history);
         constraintLayout_transaction_history = findViewById(R.id.constraintLayout_transaction_history);
         constraintLayout_redeem_history = findViewById(R.id.constraintLayout_redeem_history);
+        constraintLayout_transaction_top = findViewById(R.id.constraintLayout_transaction_top);
+        constraintLayout_redeem_top = findViewById(R.id.constraintLayout_redeem_top);
         rv_wallet_history = findViewById(R.id.rv_wallet_history);
         rv_redeem_history = findViewById(R.id.rv_redeem_history);
 
         tv_no_data_available_fr_transaction_act = findViewById(R.id.tv_no_data_available_fr_transaction_act);
         tv_no_data_available_fr_transaction_act_redeem = findViewById(R.id.tv_no_data_available_fr_transaction_act_redeem);
+
+
+        str_one_signal = getIntent().getStringExtra("customkey");
+        if ((str_one_signal != null)) {
+            Toast.makeText(this, "From_One_Signal" + str_one_signal, Toast.LENGTH_SHORT).show();
+            Log.e("str_one_signal_frm_trans", str_one_signal);
+        }
 
         rv_wallet_history.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         rv_wallet_history.setHasFixedSize(true);
@@ -101,7 +116,7 @@ public class Transaction_Act extends AppCompatActivity implements View.OnClickLi
         btn_redeem_history.setOnClickListener(this);
 
         str_auth_token = SessionSave.getSession("Token_value", Transaction_Act.this);
-        Log.e("authtoken_transact", str_auth_token);
+//        Log.e("authtoken_transact", str_auth_token);
 
 
         if (!isNetworkAvaliable()) {
@@ -115,7 +130,7 @@ public class Transaction_Act extends AppCompatActivity implements View.OnClickLi
 
     private void Get_Wallet_Histroy() {
         try {
-            String select = "select EMAIL,PHONENO,BALANCE from LOGINDETAILS where STATUS ='" + 1 + "'";
+            String select = "select EMAIL from LOGINDETAILS where STATUS ='" + 1 + "'";
             Cursor cursor = db.rawQuery(select, null);
             if (cursor.moveToFirst()) {
                 do {
@@ -126,7 +141,7 @@ public class Transaction_Act extends AppCompatActivity implements View.OnClickLi
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("email", str_email);
             APIInterface apiInterface = Factory.getClient();
-            Log.e("json_transaction", jsonObject.toString());
+//            Log.e("json_transaction", jsonObject.toString());
 //            Call<Category_Model> call = apiInterface.GET_WALLET_HISTORY_CALL("application/json", jsonObject.toString(), "bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xOTIuMTY4LjIuM1wvcmFmZmxlXC9hcGlcL3YxXC9zaWdudXAiLCJpYXQiOjE1NzY5MDM3NTEsImV4cCI6MTU3OTQ5NTc1MSwibmJmIjoxNTc2OTAzNzUxLCJqdGkiOiJSMTRrOGM3V0tWbkhyZEtzIiwic3ViIjo5LCJwcnYiOiI4N2UwYWYxZWY5ZmQxNTgxMmZkZWM5NzE1M2ExNGUwYjA0NzU0NmFhIn0.r7fI_g-PixK-pURw7_Vv6Kb6hgBG5wVxv2SBiaPxDJU");
             Call<Category_Model> call = apiInterface.GET_WALLET_HISTORY_CALL("application/json", jsonObject.toString(), str_auth_token);
             call.enqueue(new Callback<Category_Model>() {
@@ -136,13 +151,30 @@ public class Transaction_Act extends AppCompatActivity implements View.OnClickLi
                         if (response.isSuccessful()) {
                             assert response.body() != null;
                             if (response.body().data.isEmpty()) {
-//                          tv_no_data_available_fr_transaction_act.setVisibility(View.VISIBLE);
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tv_no_data_available_fr_transaction_act.setVisibility(View.VISIBLE);
+                                        tv_no_data_available_fr_transaction_act_redeem.setVisibility(View.GONE);
+                                        constraintLayout_redeem_top.setVisibility(View.GONE);
+                                        constraintLayout_transaction_top.setVisibility(View.GONE);
+                                        rv_wallet_history.setVisibility(View.GONE);
+                                        mShimmerViewContainer.setVisibility(View.GONE);
+                                    }
+                                }, 2500);
+                                constraintLayout_transaction_top.setVisibility(View.VISIBLE);
+                                constraintLayout_redeem_top.setVisibility(View.GONE);
+                                tv_no_data_available_fr_transaction_act_redeem.setVisibility(View.GONE);
+                                tv_no_data_available_fr_transaction_act.setVisibility(View.GONE);
                                 mShimmerViewContainer.setVisibility(View.VISIBLE);
                                 mShimmerViewContainer.startShimmerAnimation();
-                                rv_wallet_history.setVisibility(View.GONE);
                             } else {
-                                rv_wallet_history.setVisibility(View.VISIBLE);
+                                constraintLayout_transaction_top.setVisibility(View.VISIBLE);
+                                constraintLayout_redeem_top.setVisibility(View.GONE);
+                                tv_no_data_available_fr_transaction_act_redeem.setVisibility(View.GONE);
                                 tv_no_data_available_fr_transaction_act.setVisibility(View.GONE);
+                                rv_wallet_history.setVisibility(View.VISIBLE);
                                 mShimmerViewContainer.setVisibility(View.GONE);
                                 mShimmerViewContainer.stopShimmerAnimation();
                                 wallet_history_adapter = new Wallet_History_Adapter(Transaction_Act.this, response.body().data);
@@ -186,6 +218,10 @@ public class Transaction_Act extends AppCompatActivity implements View.OnClickLi
                 btn_redeem_history.setBackground(getResources().getDrawable(R.drawable.black_border_bg_normal));
                 btn_redeem_history.setTextColor(getResources().getColor(R.color.history_grey_color));
                 mShimmerViewContainer.startShimmerAnimation();
+                constraintLayout_transaction_top.setVisibility(View.VISIBLE);
+                constraintLayout_redeem_top.setVisibility(View.VISIBLE);
+                tv_no_data_available_fr_transaction_act.setVisibility(View.GONE);
+                tv_no_data_available_fr_transaction_act_redeem.setVisibility(View.GONE);
                 Get_Wallet_Histroy();
                 break;
             case R.id.btn_redeem_history:
@@ -198,6 +234,10 @@ public class Transaction_Act extends AppCompatActivity implements View.OnClickLi
                 btn_transaction_history.setBackground(getResources().getDrawable(R.drawable.black_border_bg_normal));
                 btn_transaction_history.setTextColor(getResources().getColor(R.color.history_grey_color));
                 mShimmerViewContainer_redeem_history.startShimmerAnimation();
+                constraintLayout_transaction_top.setVisibility(View.VISIBLE);
+                constraintLayout_redeem_top.setVisibility(View.VISIBLE);
+                tv_no_data_available_fr_transaction_act.setVisibility(View.GONE);
+                tv_no_data_available_fr_transaction_act_redeem.setVisibility(View.GONE);
                 Get_Redeem_History();
                 break;
         }
@@ -216,13 +256,34 @@ public class Transaction_Act extends AppCompatActivity implements View.OnClickLi
                         if (response.isSuccessful()) {
                             assert response.body() != null;
                             if (response.body().data.isEmpty()) {
+
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tv_no_data_available_fr_transaction_act_redeem.setVisibility(View.VISIBLE);
+                                        tv_no_data_available_fr_transaction_act.setVisibility(View.GONE);
+                                        constraintLayout_transaction_top.setVisibility(View.GONE);
+                                        constraintLayout_redeem_top.setVisibility(View.GONE);
+                                        mShimmerViewContainer_redeem_history.setVisibility(View.GONE);
+                                        mShimmerViewContainer_redeem_history.stopShimmerAnimation();
+                                        rv_redeem_history.setVisibility(View.GONE);
+                                    }
+                                }, 2500);
+                                constraintLayout_redeem_top.setVisibility(View.VISIBLE);
+                                constraintLayout_transaction_top.setVisibility(View.VISIBLE);
+                                tv_no_data_available_fr_transaction_act_redeem.setVisibility(View.GONE);
+                                tv_no_data_available_fr_transaction_act.setVisibility(View.GONE);
                                 mShimmerViewContainer_redeem_history.setVisibility(View.VISIBLE);
                                 mShimmerViewContainer_redeem_history.startShimmerAnimation();
                                 rv_redeem_history.setVisibility(View.GONE);
                             } else {
-//                            tv_no_data_available_fr_transaction_act_redeem.setVisibility(View.VISIBLE);
-                                rv_redeem_history.setVisibility(View.VISIBLE);
+                                tv_no_data_available_fr_transaction_act.setVisibility(View.GONE);
                                 tv_no_data_available_fr_transaction_act_redeem.setVisibility(View.GONE);
+                                constraintLayout_redeem_top.setVisibility(View.VISIBLE);
+                                constraintLayout_transaction_top.setVisibility(View.GONE);
+
+                                rv_redeem_history.setVisibility(View.VISIBLE);
                                 mShimmerViewContainer_redeem_history.setVisibility(View.GONE);
                                 mShimmerViewContainer_redeem_history.stopShimmerAnimation();
                                 redeem_history_adapter = new Redeem_History_Adapter(Transaction_Act.this, response.body().data);
@@ -311,7 +372,7 @@ public class Transaction_Act extends AppCompatActivity implements View.OnClickLi
         if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
             internetStatus = getResources().getString(R.string.back_online_txt);
             snackbar = Snackbar.make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_LONG);
-            snackbar.getView().setBackgroundResource(R.color.black_color);
+            snackbar.getView().setBackgroundResource(R.color.timer_bg_color);
 //            GetContest_Details();
         } else {
             rv_wallet_history.setVisibility(View.VISIBLE);
@@ -320,7 +381,7 @@ public class Transaction_Act extends AppCompatActivity implements View.OnClickLi
             internetStatus = getResources().getString(R.string.check_internet_conn_txt);
             snackbar = Snackbar
                     .make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_INDEFINITE);
-            snackbar.getView().setBackgroundResource(R.color.black_color);
+            snackbar.getView().setBackgroundResource(R.color.red_color_new);
         }
         // Changing message text color
         snackbar.setActionTextColor(Color.WHITE);
@@ -335,13 +396,40 @@ public class Transaction_Act extends AppCompatActivity implements View.OnClickLi
         }
         if (internetStatus.equalsIgnoreCase(getResources().getString(R.string.check_internet_conn_txt))) {
             if (internetConnected) {
+                Log.e("internetStatus_else", internetStatus);
                 snackbar.show();
                 internetConnected = false;
+
+                tv_no_data_available_fr_transaction_act.setVisibility(View.GONE);
+                tv_no_data_available_fr_transaction_act_redeem.setVisibility(View.GONE);
+
+                rv_wallet_history.setVisibility(View.GONE);
+                rv_redeem_history.setVisibility(View.GONE);
+
+                mShimmerViewContainer_redeem_history.setVisibility(View.VISIBLE);
+                mShimmerViewContainer_redeem_history.startShimmerAnimation();
+
+                mShimmerViewContainer.setVisibility(View.VISIBLE);
+                mShimmerViewContainer.startShimmerAnimation();
             }
         } else {
             if (!internetConnected) {
+                Log.e("internetStatus_if", internetStatus);
                 internetConnected = true;
                 snackbar.show();
+
+                mShimmerViewContainer.setVisibility(View.GONE);
+                mShimmerViewContainer.stopShimmerAnimation();
+
+                mShimmerViewContainer_redeem_history.setVisibility(View.GONE);
+                mShimmerViewContainer_redeem_history.stopShimmerAnimation();
+
+
+                rv_wallet_history.setVisibility(View.VISIBLE);
+                rv_redeem_history.setVisibility(View.VISIBLE);
+
+                Get_Wallet_Histroy();
+                Get_Redeem_History();
             }
         }
     }

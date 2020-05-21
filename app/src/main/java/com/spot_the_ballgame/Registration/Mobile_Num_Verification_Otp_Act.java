@@ -15,7 +15,6 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -89,11 +88,11 @@ public class Mobile_Num_Verification_Otp_Act extends AppCompatActivity implement
             } while (cursor.moveToNext());
         }
         cursor.close();
-        Log.e("str_source_detail", String.valueOf(str_source_detail));
-        Log.e("int_phone_num", String.valueOf(str_phone_num));
-        Log.e("int_token_value", String.valueOf(str_token_value));
-        Log.e("str_firstname", String.valueOf(str_firstname));
-        Log.e("str_email_id", String.valueOf(str_email_id));
+//        Log.e("str_source_detail", String.valueOf(str_source_detail));
+//        Log.e("int_phone_num", String.valueOf(str_phone_num));
+//        Log.e("int_token_value", String.valueOf(str_token_value));
+//        Log.e("str_firstname", String.valueOf(str_firstname));
+//        Log.e("str_email_id", String.valueOf(str_email_id));
 
         tv_pincode_national_in_otp = findViewById(R.id.tv_pincode_national_in_otp);
         et_mobile_number_in_otp = findViewById(R.id.et_mobile_number_in_otp);
@@ -105,10 +104,10 @@ public class Mobile_Num_Verification_Otp_Act extends AppCompatActivity implement
         btn_send_code_in_otp = findViewById(R.id.btn_send_code_in_otp);
         btn_resend_code_in_otp = findViewById(R.id.btn_resend_code_in_otp);
 
-        et_otp_01.setText(str_token_value.substring(0, 1));
-        et_otp_02.setText(str_token_value.substring(1, 2));
-        et_otp_03.setText(str_token_value.substring(2, 3));
-        et_otp_04.setText(str_token_value.substring(3, 4));
+//        et_otp_01.setText(str_token_value.substring(0, 1));
+//        et_otp_02.setText(str_token_value.substring(1, 2));
+//        et_otp_03.setText(str_token_value.substring(2, 3));
+//        et_otp_04.setText(str_token_value.substring(3, 4));
         et_mobile_number_in_otp.setFocusable(false);
 
         et_otp_01.setFocusable(false);
@@ -235,7 +234,7 @@ public class Mobile_Num_Verification_Otp_Act extends AppCompatActivity implement
                                     contentValues.put("USERNAME", str_firstname);
                                     contentValues.put("EMAIL", str_email_id);
                                     contentValues.put("SIGNUPSTATUS", 3);
-                                    Log.e("Content_Values_otp", contentValues.toString());
+//                                    Log.e("Content_Values_otp", contentValues.toString());
                                     db.update("LOGINDETAILS", contentValues, "EMAIL='" + str_email_id + "'", null);
                                     DBEXPORT();
                                 }
@@ -428,7 +427,7 @@ public class Mobile_Num_Verification_Otp_Act extends AppCompatActivity implement
                                 str_active = response.body().datum.active;
                                 str_verified = response.body().datum.verified;
 
-                                Log.e("str_token_value", str_token_value);
+//                                Log.e("str_token_value", str_token_value);
 
                                 et_otp_01.setText(str_token_value.substring(0, 1));
                                 et_otp_02.setText(str_token_value.substring(1, 2));
@@ -538,7 +537,7 @@ public class Mobile_Num_Verification_Otp_Act extends AppCompatActivity implement
         if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
             internetStatus = getResources().getString(R.string.back_online_txt);
             snackbar = Snackbar.make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_LONG);
-            snackbar.getView().setBackgroundResource(R.color.sign_up_txt);
+            snackbar.getView().setBackgroundResource(R.color.timer_bg_color);
         } else {
             internetStatus = getResources().getString(R.string.check_internet_conn_txt);
             snackbar = Snackbar.make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_INDEFINITE);

@@ -3,17 +3,22 @@ package com.spot_the_ballgame.Fragments;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +41,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.material.snackbar.Snackbar;
 import com.spot_the_ballgame.Interface.APIInterface;
 import com.spot_the_ballgame.Interface.Factory;
 import com.spot_the_ballgame.Model.Category_Model;
@@ -76,6 +82,13 @@ public class My_Wallet_Fragment extends Fragment implements View.OnClickListener
     Dialog dialog;
     String str_wallet2, str_playby;
     int int_navi_draw_point_amount;
+
+    //This is used for Internet alert using snackbar status
+    public static int TYPE_WIFI = 1;
+    public static int TYPE_MOBILE = 2;
+    public static int TYPE_NOT_CONNECTED = 0;
+    private boolean internetConnected = true;
+    private Snackbar snackbar;
 
     @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Nullable
@@ -121,10 +134,10 @@ public class My_Wallet_Fragment extends Fragment implements View.OnClickListener
 
         Navigation_Drawer_Act.tv_title_txt.setText(R.string.wallet_txt);
         Navigation_Drawer_Act.tv_toolbar_left_arrow.setVisibility(View.VISIBLE);
-        int_navi_draw_point_amount = Integer.parseInt(Navigation_Drawer_Act.tv_points.getText().toString());
-        Log.e("int_navi_draw_point_amount", "" + int_navi_draw_point_amount);
+//        int_navi_draw_point_amount = Integer.parseInt(Navigation_Drawer_Act.tv_points.getText().toString());
+//        Log.e("int_navi_draw_point_amount", "" + int_navi_draw_point_amount);
         str_auth_token = SessionSave.getSession("Token_value", Objects.requireNonNull(getActivity()));
-        Log.e("str_auth_token_wallet", str_auth_token);
+//        Log.e("str_auth_token_wallet", str_auth_token);
 
         String select = "select PHONENO,EMAIL from LOGINDETAILS where STATUS ='" + 1 + "'";
         Cursor cursor = db.rawQuery(select, null);
@@ -156,13 +169,13 @@ public class My_Wallet_Fragment extends Fragment implements View.OnClickListener
 //                    int n1 = (int_input_point_value / int_wallet_coins) * int_amount_value;
                     int n1 = (int_input_point_value / int_amount_value) * int_wallet_coins;
                     int_remainder_value = (int_input_point_value % int_wallet_coins) * int_amount_value;
-                    Log.e("int_input_point_value", "" + int_input_point_value);
-                    Log.e("int_amount_value", "" + int_amount_value);
-                    Log.e("int_wallet_coins", "" + int_wallet_coins);
-                    Log.e("input_value", "" + n1);
-                    Log.e("remainder_value", "" + int_remainder_value);
+//                    Log.e("int_input_point_value", "" + int_input_point_value);
+//                    Log.e("int_amount_value", "" + int_amount_value);
+//                    Log.e("int_wallet_coins", "" + int_wallet_coins);
+//                    Log.e("input_value", "" + n1);
+//                    Log.e("remainder_value", "" + int_remainder_value);
                     int n11 = int_input_point_value - int_remainder_value;
-                    Log.e("final_value", "" + n11);
+//                    Log.e("final_value", "" + n11);
                     tv_coins.setText(String.valueOf(n1));
 
 
@@ -174,7 +187,11 @@ public class My_Wallet_Fragment extends Fragment implements View.OnClickListener
 
             }
         });
-        Get_User_Wallet_Details();
+        if (!isNetworkAvaliable()) {
+            registerInternetCheckReceiver();
+        } else {
+            Get_User_Wallet_Details();
+        }
         return view;
     }
 
@@ -184,21 +201,25 @@ public class My_Wallet_Fragment extends Fragment implements View.OnClickListener
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("email", str_email);
             APIInterface apiInterface = Factory.getClient();
-            Log.e("wallet_json_dashboard", jsonObject.toString());
+//            Log.e("wallet_json_dashboard", jsonObject.toString());
             Call<Category_Model> call = apiInterface.GET_WalletDetailsModelCall("application/json", jsonObject.toString(), str_auth_token);
             call.enqueue(new Callback<Category_Model>() {
                 @Override
                 public void onResponse(Call<Category_Model> call, Response<Category_Model> response) {
-                    if (response.code() == 200) {
-                        if (response.isSuccessful()) {
-                            str_wallet2 = response.body().data.get(0).wallet2;
-                            Log.e("str_wallet2", str_wallet2);
-                            tv_redeemable_coins.setText(str_wallet2);
+                    if (Objects.requireNonNull(response.body()).data != null) {
+                        if (response.code() == 200) {
+                            if (response.isSuccessful()) {
+                                str_wallet2 = response.body().data.get(0).wallet2;
+                                Log.e("str_wallet2", str_wallet2);
+                                tv_redeemable_coins.setText(str_wallet2);
+                            }
+                        } else if (response.code() == 401) {
+                            Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
+                        } else if (response.code() == 500) {
+                            Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
                         }
-                    } else if (response.code() == 401) {
-                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
-                    } else if (response.code() == 500) {
-                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
+                    } else {
+                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), "Something went wrong try again :)");
                     }
                 }
 
@@ -207,15 +228,17 @@ public class My_Wallet_Fragment extends Fragment implements View.OnClickListener
 
                 }
             });
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             e.printStackTrace();
         }
+
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void onBackPressed() {
         int backStackEntryCount = Objects.requireNonNull(getActivity()).getSupportFragmentManager().getBackStackEntryCount();
-        Log.e("backStackCnt_wallet", "" + backStackEntryCount);
+//        Log.e("backStackCnt_wallet", "" + backStackEntryCount);
         if (backStackEntryCount == 1) {
             Intent intent = new Intent(getContext(), Navigation_Drawer_Act.class);
             startActivity(intent);
@@ -241,38 +264,45 @@ public class My_Wallet_Fragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_redeem:
-                String str_points, str_amount, str_phone_number;
-                str_points = et_rupees.getText().toString();
-                str_amount = tv_coins.getText().toString();
-                str_phone_number = et_paytm_mobile_number_in_wallet.getText().toString();
-                if (str_points.isEmpty()) {
-                    Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), "Please enter points");
-                } else if (str_amount.isEmpty()) {
-                    Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), "Please enter amount");
-                }/* else if (str_phone_number.isEmpty()) {
+                if (!isNetworkAvaliable()) {
+                    registerInternetCheckReceiver();
+                } else {
+                    String str_points, str_amount, str_phone_number;
+                    str_points = et_rupees.getText().toString();
+                    str_amount = tv_coins.getText().toString();
+                    str_phone_number = et_paytm_mobile_number_in_wallet.getText().toString();
+                    if (str_points.isEmpty()) {
+                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), "Please enter points");
+                    } else if (str_amount.isEmpty()) {
+                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), "Please enter amount");
+                    }/* else if (str_phone_number.isEmpty()) {
                     Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), "Please enter phone number");
                 }*/ else {
-                    double nn = Double.parseDouble(tv_redeemable_coins.getText().toString());
-                    int int_final_point = Integer.parseInt(tv_coins.getText().toString());
-                    Log.e("tv_redeem_amount", "" + nn);
-                    Log.e("tv_chaning_amount_wallet", "" + int_final_point);
-                    if (nn > int_final_point) {
-                        Get_Redeem_Details();
-                        softKeyboardVisibility(show);
-                    } else {
-                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), "You don't have enough balance to redeem");
+                        double nn = Double.parseDouble(tv_redeemable_coins.getText().toString());
+                        int int_final_point = Integer.parseInt(tv_coins.getText().toString());
+//                    Log.e("tv_redeem_amount", "" + nn);
+//                    Log.e("tv_chaning_amount_wallet", "" + int_final_point);
+                        if (int_final_point < nn) {
+                            Get_Redeem_Details();
+                            softKeyboardVisibility(show);
+                        } else {
+                            Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), "You don't have enough balance to redeem");
+                        }
                     }
                 }
-
                 break;
             case R.id.btn_transaction:
                 Intent intent = new Intent(getContext(), Transaction_Act.class);
                 startActivity(intent);
                 break;
             case R.id.btn_earn_more:
-                Intent intent_01 = new Intent(getActivity(), Reward_Video_Act.class);
-                intent_01.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent_01);
+                if (!isNetworkAvaliable()) {
+                    registerInternetCheckReceiver();
+                } else {
+                    Intent intent_01 = new Intent(getActivity(), Reward_Video_Act.class);
+                    intent_01.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent_01);
+                }
                 break;
             case R.id.tv_info_icon:
                 dialog = new Dialog(getContext());
@@ -339,7 +369,8 @@ public class My_Wallet_Fragment extends Fragment implements View.OnClickListener
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("email", str_email);
-                jsonObject.put("phoneno", str_phone_num);
+//                jsonObject.put("phoneno", str_phone_num);
+                jsonObject.put("phoneno", "5342121689");
 //                jsonObject.put("phoneno", et_paytm_mobile_number_in_wallet.getText().toString());
 
                 /*Here tv_amount_value is equals to COINS*/
@@ -347,11 +378,12 @@ public class My_Wallet_Fragment extends Fragment implements View.OnClickListener
                 jsonObject.put("coins", tv_coins.getText().toString());
                 jsonObject.put("amount", et_rupees.getText().toString());
                 jsonObject.put("payment_type", "paytm");
-                Log.e("wallet_json", jsonObject.toString());
+//                Log.e("wallet_json_redeem", jsonObject.toString());
                 RequestQueue requestQueue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()));
                 //This is for SK
 //                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.2.3/raffle/api/v1/get_prize_distribution", jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
                 //This is for skyrand
+//                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, Factory.BASE_URL_MOBILE_APP + "redeem", jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, Factory.BASE_URL_MOBILE_APP + "redeem", jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
                     @TargetApi(Build.VERSION_CODES.KITKAT)
                     @Override
@@ -365,10 +397,10 @@ public class My_Wallet_Fragment extends Fragment implements View.OnClickListener
 
 
                             JSONObject jsonObject1 = new JSONObject(String.valueOf(response));
-                            Log.e("wallet_response", jsonObject1.toString());
+//                            Log.e("wallet_response", jsonObject1.toString());
                             String str_msg = response.getString("message");
                             Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), str_msg);
-                            Log.e("walletmessage", str_msg);
+//                            Log.e("walletmessage", str_msg);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -409,16 +441,20 @@ public class My_Wallet_Fragment extends Fragment implements View.OnClickListener
             call.enqueue(new Callback<Category_Model>() {
                 @Override
                 public void onResponse(Call<Category_Model> call, Response<Category_Model> response) {
-                    if (response.code() == 200) {
-                        if (response.isSuccessful()) {
-                            String str_amount = Objects.requireNonNull(response.body()).current_amt;
-                            Navigation_Drawer_Act.tv_points.setText(str_amount);
-                            Log.e("str_amount_nav_wal", str_amount);
+                    if (Objects.requireNonNull(response.body()).data != null) {
+                        if (response.code() == 200) {
+                            if (response.isSuccessful()) {
+                                String str_amount = Objects.requireNonNull(response.body()).current_amt;
+                                Navigation_Drawer_Act.tv_points.setText(str_amount);
+                                Log.e("str_amount_nav_wallet", str_amount);
+                            }
+                        } else if (response.code() == 401) {
+                            Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
+                        } else if (response.code() == 500) {
+                            Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
                         }
-                    } else if (response.code() == 401) {
-                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
-                    } else if (response.code() == 500) {
-                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
+                    } else {
+                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), "Something went wrong try again :)");
                     }
                 }
 
@@ -430,5 +466,117 @@ public class My_Wallet_Fragment extends Fragment implements View.OnClickListener
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /*This method is used for network connectivity*/
+    private boolean isNetworkAvaliable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        assert connectivityManager != null;
+        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+        return info != null;
+    }
+
+    /*This method automatically detect whether the internet is available or not
+     * if internet in not available GetDrawTiming,GetBalanceDetails will get stop
+     * */
+    private void registerInternetCheckReceiver() {
+        IntentFilter internetFilter = new IntentFilter();
+        internetFilter.addAction("android.net.wifi.STATE_CHANGE");
+        internetFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        getActivity().registerReceiver(broadcastReceiver, internetFilter);
+    }
+
+    /**
+     * Runtime Broadcast receiver inner class to capture internet connectivity events
+     */
+    public BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String status = getConnectivityStatusString(context);
+            setSnackbarMessage(status);
+        }
+    };
+
+    public static int getConnectivityStatus(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        assert cm != null;
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (null != activeNetwork) {
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
+                return TYPE_WIFI;
+
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
+                return TYPE_MOBILE;
+        }
+        return TYPE_NOT_CONNECTED;
+    }
+
+    public static String getConnectivityStatusString(Context context) {
+        int conn = getConnectivityStatus(context);
+        String status = null;
+        if (conn == TYPE_WIFI) {
+            status = "Wifi enabled";
+        } else if (conn == TYPE_MOBILE) {
+            status = "Mobile data enabled";
+        } else if (conn == TYPE_NOT_CONNECTED) {
+            status = "Not connected to Internet";
+        }
+        return status;
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private void setSnackbarMessage(String status) {
+        String internetStatus;
+        if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
+            internetStatus = getResources().getString(R.string.back_online_txt);
+            snackbar = Snackbar.make(Objects.requireNonNull(getView()).findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_LONG);
+            snackbar.getView().setBackgroundResource(R.color.timer_bg_color);
+            snackbar.setActionTextColor(Color.BLACK);
+        } else {
+            internetStatus = getResources().getString(R.string.check_internet_conn_txt);
+            snackbar = Snackbar
+                    .make(Objects.requireNonNull(getView()).findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_INDEFINITE);
+            snackbar.getView().setBackgroundResource(R.color.red_color_new);
+            snackbar.setActionTextColor(Color.WHITE);
+        }
+        // Changing message text color
+
+        // Changing action button text color
+        View sbView = snackbar.getView();
+        TextView textView = sbView.findViewById(R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        } else {
+            textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        }
+        if (internetStatus.equalsIgnoreCase(getResources().getString(R.string.check_internet_conn_txt))) {
+            if (internetConnected) {
+                Log.e("internetStatus_else", internetStatus);
+                snackbar.show();
+                internetConnected = false;
+            }
+        } else {
+            if (!internetConnected) {
+                Log.e("internetStatus_if", internetStatus);
+                internetConnected = true;
+                snackbar.show();
+                Get_User_Wallet_Details();
+
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerInternetCheckReceiver();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Objects.requireNonNull(getActivity()).unregisterReceiver(broadcastReceiver);
     }
 }

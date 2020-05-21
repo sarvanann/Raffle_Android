@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:shimmer="http://schemas.android.com/apk/res-auto"
+
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -804,7 +804,7 @@
             app:layout_constraintVertical_bias="0.146" />
 
         <TextView
-            android:id="@+id/textView69"
+            android:id="@+id/tv_play_anoter_contest"
             style="@style/sign_up_txt_style_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -1173,7 +1173,7 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <com.facebook.shimmer.ShimmerFrameLayout
+            <io.supercharge.shimmerlayout.ShimmerLayout
                 android:id="@+id/shimmer_view_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -1186,8 +1186,7 @@
                 app:layout_constraintHorizontal_bias="0.416"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                app:layout_constraintVertical_bias="0.0"
-                shimmer:duration="800">
+                app:layout_constraintVertical_bias="0.0">
 
                 <!-- Adding 3 rows of placeholders -->
                 <LinearLayout
@@ -1205,7 +1204,7 @@
 
                 </LinearLayout>
 
-            </com.facebook.shimmer.ShimmerFrameLayout>
+            </io.supercharge.shimmerlayout.ShimmerLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_price_list_game_two"
@@ -1272,7 +1271,7 @@
                 app:layout_constraintVertical_bias="0.0">
 
 
-                <com.facebook.shimmer.ShimmerFrameLayout
+                <io.supercharge.shimmerlayout.ShimmerLayout
                     android:id="@+id/shimmer_view_container_for_rules"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -1286,8 +1285,7 @@
                     app:layout_constraintHorizontal_bias="0.416"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0"
-                    shimmer:duration="800">
+                    app:layout_constraintVertical_bias="0.0">
 
                     <!-- Adding 3 rows of placeholders -->
                     <LinearLayout
@@ -1305,7 +1303,7 @@
 
                     </LinearLayout>
 
-                </com.facebook.shimmer.ShimmerFrameLayout>
+                </io.supercharge.shimmerlayout.ShimmerLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_rules_list_game_two"
@@ -2213,7 +2211,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/retry_button"
             android:layout_centerHorizontal="true"
-            android:onClick="showRewardedVideo"
             android:text="@string/watch_video_button_text"
             android:visibility="gone" />
 
@@ -2221,6 +2218,7 @@
             android:id="@+id/coin_count_textttt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="8dp"
@@ -2238,12 +2236,14 @@
             app:layout_constraintHorizontal_bias="0.892"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            tools:ignore="RtlHardcoded" />
 
         <TextView
             android:id="@+id/coin_count_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="8dp"
@@ -2261,7 +2261,8 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            tools:ignore="RtlHardcoded" />
 
         <ProgressBar
             android:id="@+id/progress_bar_in_reward_video"
@@ -2273,14 +2274,13 @@
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
             android:indeterminate="true"
-            android:indeterminateTint="@color/white_color"
-            android:indeterminateTintMode="src_atop"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_loading_txt"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            tools:targetApi="lollipop" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

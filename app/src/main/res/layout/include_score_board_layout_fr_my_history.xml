@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:shimmer="http://schemas.android.com/apk/res-auto"
     android:id="@+id/constraintLayout_score_board_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -63,13 +62,13 @@
             app:layout_constraintVertical_bias="0.571" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.facebook.shimmer.ShimmerFrameLayout
+    <io.supercharge.shimmerlayout.ShimmerLayout
         android:id="@+id/shimmer_view_container_for_scoreboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="14dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="68dp"
@@ -83,8 +82,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout7"
-        app:layout_constraintVertical_bias="0.015"
-        shimmer:duration="800">
+        app:layout_constraintVertical_bias="0.015">
 
         <!-- Adding 3 rows of placeholders -->
         <LinearLayout
@@ -92,17 +90,27 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/scroeboard_list_placeholder_item" />
+            <include layout="@layout/scroeboard_list_for_game_two_placeholder_item_for_history" />
 
-            <include layout="@layout/scroeboard_list_placeholder_item" />
+            <include layout="@layout/scroeboard_list_for_game_two_placeholder_item_for_history" />
 
-            <include layout="@layout/scroeboard_list_placeholder_item" />
+            <include layout="@layout/scroeboard_list_for_game_two_placeholder_item_for_history" />
 
-            <include layout="@layout/scroeboard_list_placeholder_item" />
+            <include layout="@layout/scroeboard_list_for_game_two_placeholder_item_for_history" />
+
+            <include layout="@layout/scroeboard_list_for_game_two_placeholder_item_for_history" />
+
+            <include layout="@layout/scroeboard_list_for_game_two_placeholder_item_for_history" />
+
+            <include layout="@layout/scroeboard_list_for_game_two_placeholder_item_for_history" />
+
+            <include layout="@layout/scroeboard_list_for_game_two_placeholder_item_for_history" />
+
+            <include layout="@layout/scroeboard_list_for_game_two_placeholder_item_for_history" />
 
         </LinearLayout>
 
-    </com.facebook.shimmer.ShimmerFrameLayout>
+    </io.supercharge.shimmerlayout.ShimmerLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_score_board_list_fr_my_history"

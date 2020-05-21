@@ -1,1 +1,1 @@
-include ':app', ':coverflow', ':truesdk-0.7-releasePartner'
+include ':app'

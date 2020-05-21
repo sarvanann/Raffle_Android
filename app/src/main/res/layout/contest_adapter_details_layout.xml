@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout_game_1"
-        android:layout_width="300dp"
-        android:layout_height="125dp"
+        android:layout_width="match_parent"
+        android:layout_height="123dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
         android:background="@drawable/shadow_for_border_dashboard"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout_play_with_points_contest_adapter"
-            android:layout_width="288dp"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/black_border_bg_new"
             app:layout_constraintEnd_toEndOf="parent"
@@ -31,10 +32,10 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout_country_flag_layout"
-                android:layout_width="288dp"
+                android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@drawable/black_border_bg_new"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -42,10 +43,10 @@
 
                 <ImageView
                     android:id="@+id/iv_first_country_flag"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginLeft="12dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="7dp"
+                    android:layout_marginLeft="7dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:gravity="start|center_vertical"
@@ -62,7 +63,7 @@
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:text="Ind"
+                    android:text=""
                     android:textAllCaps="true"
                     android:textColor="@color/white_color"
                     android:textSize="14sp"
@@ -72,12 +73,12 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/textView58"
+                    android:id="@+id/tv_versus_txt"
                     style="@style/sign_up_txt_style_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginLeft="6dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:text="V"
@@ -90,14 +91,14 @@
 
                 <ImageView
                     android:id="@+id/iv_second_country_flag"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginLeft="6dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/textView58"
+                    app:layout_constraintStart_toEndOf="@+id/tv_versus_txt"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -111,7 +112,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginBottom="8dp"
-                    android:text="Pak"
+                    android:text=""
                     android:textAllCaps="true"
                     android:textColor="@color/white_color"
                     android:textSize="14sp"
@@ -129,8 +130,8 @@
                 style="@style/sign_up_txt_style_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginLeft="12dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:gravity="start|center_vertical"
@@ -164,17 +165,16 @@
 
             <ImageView
                 android:id="@+id/iv_categoires_image"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="18dp"
-                android:layout_marginRight="18dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginRight="12dp"
                 android:layout_marginBottom="8dp"
                 android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_play_with_points_contest_adapter"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -185,9 +185,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginRight="1dp"
             android:text="@string/ends_in_txt"
             android:textColor="@color/sign_in_txt"
             android:textSize="14sp"
@@ -203,8 +203,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginEnd="10.5dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginRight="2dp"
             android:layout_marginBottom="8dp"
             android:gravity="start"
             android:text=""
@@ -222,9 +222,9 @@
             style="@style/sign_up_txt_style_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="11dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:gravity="center"
@@ -266,7 +266,6 @@
             android:layout_marginStart="2dp"
             android:layout_marginLeft="2dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/coin_new"
             android:textColor="@color/white_color"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -300,8 +299,8 @@
             style="@style/sign_up_txt_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginLeft="15dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginLeft="14dp"
             android:layout_marginBottom="8dp"
             android:gravity="start"
             android:text=""
@@ -321,14 +320,13 @@
             android:layout_height="12dp"
             android:layout_marginStart="2dp"
             android:layout_marginLeft="2dp"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/coin_new"
+            android:layout_marginTop="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/tv_entry_fee_details"
             app:layout_constraintTop_toBottomOf="@+id/tv_prize_pool_txt_contest_adapter"
-            app:layout_constraintVertical_bias="0.062" />
+            app:layout_constraintVertical_bias="0.100000024" />
 
         <TextView
             android:id="@+id/tv_entry_fee_txt_contest_adapter"

@@ -14,6 +14,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,28 +28,31 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.facebook.shimmer.ShimmerFrameLayout;
+import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.spot_the_ballgame.Adapter.AlbumsAdapter;
 import com.spot_the_ballgame.Adapter.ContestAdapter;
 import com.spot_the_ballgame.Adapter.GridView_Adapter;
-import com.spot_the_ballgame.DemoData;
+import com.spot_the_ballgame.Adapter.View_Pager_Adapter;
 import com.spot_the_ballgame.Interface.APIInterface;
 import com.spot_the_ballgame.Interface.APIService;
 import com.spot_the_ballgame.Interface.Factory;
@@ -60,6 +64,12 @@ import com.spot_the_ballgame.R;
 import com.spot_the_ballgame.SessionSave;
 import com.spot_the_ballgame.Toast_Message;
 
+import net.mrbin99.laravelechoandroid.Echo;
+import net.mrbin99.laravelechoandroid.EchoCallback;
+import net.mrbin99.laravelechoandroid.EchoOptions;
+import net.mrbin99.laravelechoandroid.channel.SocketIOPresenceChannel;
+import net.mrbin99.laravelechoandroid.channel.SocketIOPrivateChannel;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,30 +78,22 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
-import okhttp3.Cache;
-import okhttp3.CacheControl;
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.logging.HttpLoggingInterceptor;
+import io.socket.client.Socket;
+import io.supercharge.shimmerlayout.ShimmerLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
-import static com.facebook.FacebookSdk.getCacheDir;
-import static com.spot_the_ballgame.Interface.APIService.BASE_URL;
 
 public class Dashboard extends Fragment implements View.OnClickListener {
     private int cacheSize = 10 * 1024 * 1024; // 10 MiB
@@ -99,7 +101,7 @@ public class Dashboard extends Fragment implements View.OnClickListener {
     private APIService apiService;
     private String str_categroies;
 
-    private ConstraintLayout hidden_layout_main, constraintLayout_filter_txt;
+    //    private ConstraintLayout hidden_layout_main, constraintLayout_filter_txt;
     private int is_Visible = 0;
     private GridView grid_view;
     GridView_Adapter gridView_adapter;
@@ -113,7 +115,7 @@ public class Dashboard extends Fragment implements View.OnClickListener {
     private ConstraintLayout recycler_view_constraint_layout;
     private int int_onclcik_value;
 
-    FirebaseAnalytics firebaseAnalytics;
+    private FirebaseAnalytics firebaseAnalytics;
     private RecyclerView rv_game_list;
     ArrayList<String> Json_arrayList = new ArrayList<>();
     private String str_code, str_message, str_wallet1, str_wallet2, str_contest_id, str_name, str_price;
@@ -125,30 +127,52 @@ public class Dashboard extends Fragment implements View.OnClickListener {
     public static int TYPE_MOBILE = 2;
     public static int TYPE_NOT_CONNECTED = 0;
     private boolean internetConnected = true;
-    Snackbar snackbar;
+    private Snackbar snackbar;
+    ShimmerLayout mShimmerViewContainer, shimmer_view_container_for_carosel;
+    private SwipeRefreshLayout swip_refresh_layout;
 
-    private ShimmerFrameLayout mShimmerViewContainer, shimmer_view_container_for_carosel;
-    SwipeRefreshLayout swip_refresh_layout;
-
-    RecyclerView recycler_view_horizontal;
     private AlbumsAdapter adapter;
+    private View_Pager_Adapter view_pager_adapter;
+    //    private AlbumsAdapter_Date_Contest albumsAdapter_date_contest;
     private List<Album> albumList;
-    CollapsingToolbarLayout collapsingToolbar;
-    AppBarLayout appBarLayout;
+    private CollapsingToolbarLayout collapsingToolbar;
+    private AppBarLayout appBarLayout;
 
-    String str_auth_token,
+    private String str_auth_token,
             str_wallet_coins,
             str_wallet_rupees,
             str_initial_coins,
             str_reward_point,
             str_min_withdraw_amt,
             str_max_withdraw_amt,
+            str_referral_rules,
             str_current_amt;
 
-    TextView tv_no_data_available_fr_dashboard;
+    private TextView tv_no_data_available_fr_dashboard;
+    ViewPager viewPager;
+    String str_session_contest_value = "";
+    String str_session_banner_contest_value = "";
+    private FragmentManager support_FragmentManager;
+
+    ConstraintLayout constraint_layout_no_contest;
+    TextView tv_no_contest_for_now_txt, tv_no_internet_txt;
+    ImageView gif_image_view;
+    CoordinatorLayout constraintLayout_dashboard;
+
+    Bundle bundle;
+    String str_refresh_value = "";
+
+    /*This constructor is used for if contest is played when the used click the contest it'll directly move to my_contest page
+     * in this project fragment to framgent transision not supported so,
+     * we get FragmentManager from Navigation drawer activity and used it in adapter class*/
+    public Dashboard(FragmentManager supportFragmentManager) {
+        this.support_FragmentManager = supportFragmentManager;
+    }
+
+    Echo echo;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    @SuppressLint({"ClickableViewAccessibility", "WrongConstant"})
+    @SuppressLint({"ClickableViewAccessibility", "WrongConstant", "LongLogTag"})
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -157,8 +181,12 @@ public class Dashboard extends Fragment implements View.OnClickListener {
         db = Objects.requireNonNull(getApplicationContext()).openOrCreateDatabase("Spottheball.db", Context.MODE_PRIVATE, null);
         collapsingToolbar = view.findViewById(R.id.collapsing_toolbar);
         appBarLayout = view.findViewById(R.id.app_bar);
+        constraint_layout_no_contest = view.findViewById(R.id.constraint_layout_no_contest);
+        tv_no_contest_for_now_txt = view.findViewById(R.id.tv_no_contest_for_now_txt);
+        gif_image_view = view.findViewById(R.id.gif_image_view);
+        constraintLayout_dashboard = view.findViewById(R.id.constraintLayout_dashboard);
         initCollapsingToolbar();
-
+        viewPager = view.findViewById(R.id.viewPager);
         mShimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
         shimmer_view_container_for_carosel = view.findViewById(R.id.shimmer_view_container_for_carosel);
         recycler_view_constraint_layout = view.findViewById(R.id.recycler_view_constraint_layout);
@@ -169,17 +197,18 @@ public class Dashboard extends Fragment implements View.OnClickListener {
 //        constraintLayout_game_05 = view.findViewById(R.id.constraintLayout_game_05);
         rv_game_list = view.findViewById(R.id.rv_game_list);
         swip_refresh_layout = view.findViewById(R.id.swip_refresh_layout);
-        recycler_view_horizontal = view.findViewById(R.id.recycler_view_horizontal);
-        hidden_layout_main = view.findViewById(R.id.hidden_layout_main);
-        constraintLayout_filter_txt = view.findViewById(R.id.constraintLayout_filter_txt);
+//        hidden_layout_main = view.findViewById(R.id.hidden_layout_main);
+//        constraintLayout_filter_txt = view.findViewById(R.id.constraintLayout_filter_txt);
         grid_view = view.findViewById(R.id.grid_view);
         tv_no_data_available_fr_dashboard = view.findViewById(R.id.tv_no_data_available_fr_dashboard);
-
 
         CollapsingToolbarLayout collapsingToolbar = view.findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle("");
 
-        constraintLayout_filter_txt.setOnClickListener(new View.OnClickListener() {
+
+
+
+        /*constraintLayout_filter_txt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (is_Visible == 0) {
@@ -190,29 +219,17 @@ public class Dashboard extends Fragment implements View.OnClickListener {
                 hidden_layout_main.setVisibility(is_Visible);
             }
         });
-
+*/
 
 /*
         albumList = new ArrayList<>();
         adapter = new AlbumsAdapter(getActivity(), albumList);
 */
 
-
-        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        recycler_view_horizontal.setLayoutManager(horizontalLayoutManager);
-
-
         ((SimpleItemAnimator) Objects.requireNonNull(rv_game_list.getItemAnimator())).setSupportsChangeAnimations(false);
         rv_game_list.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         rv_game_list.setHasFixedSize(true);
         rv_game_list.setVisibility(View.VISIBLE);
-
-
-//        constraintLayout_game_01.setOnClickListener(this);
-//        constraintLayout_game_02.setOnClickListener(this);
-//        constraintLayout_game_03.setOnClickListener(this);
-//        constraintLayout_game_04.setOnClickListener(this);
-//        constraintLayout_game_05.setOnClickListener(this);
         Navigation_Drawer_Act.tv_title_txt.setText("");
         Navigation_Drawer_Act.tv_title_txt.setText(R.string.home_txt);
         Navigation_Drawer_Act.tv_toolbar_left_arrow.setVisibility(View.GONE);
@@ -223,15 +240,66 @@ public class Dashboard extends Fragment implements View.OnClickListener {
                 if (!isNetworkAvaliable()) {
                     registerInternetCheckReceiver();
                 } else {
-                    recycler_view_constraint_layout.setVisibility(View.VISIBLE);
-                    mShimmerViewContainer.setVisibility(View.VISIBLE);
-                    mShimmerViewContainer.startShimmerAnimation();
+                    constraint_layout_no_contest.setVisibility(View.GONE);
+                    SessionSave.ClearSession("Contest_Value", Objects.requireNonNull(getActivity()));
                     GetContest_Details();
                 }
                 swip_refresh_layout.setRefreshing(false);
 
             }
         });
+
+        /*SocketIOPrivateChannel privateChannel = echo.privateChannel("channel1");
+        privateChannel.listen("NewComment", new EchoCallback() {
+            @Override
+            public void call(Object... args) {
+                // Event thrown.
+                Log.e("sucess_args", "suceess̥");
+            }
+        });
+
+        privateChannel.listenForWhisper("hello", new EchoCallback() {
+            @Override
+            public void call(Object... args) {
+                // Received !
+                Log.e("Received_args", "Received");
+            }
+        });
+        SocketIOPresenceChannel presenceChannel = echo.presenceChannel("presence-channel");
+        presenceChannel.here(new EchoCallback() {
+            @Override
+            public void call(Object... args) {
+                // Gets users present in this channel.
+                // Called just after connecting to it.
+                Log.e("presence_args", "presence");
+            }
+        });
+
+        presenceChannel.joining(new EchoCallback() {
+            @Override
+            public void call(Object... args) {
+                // Called when new user join the channel.
+                Log.e("presence_joing_args", "presence_joing");
+            }
+        });
+
+        presenceChannel.leaving(new EchoCallback() {
+            @Override
+            public void call(Object... args) {
+                // Called when a user leave the channel
+                Log.e("presence_leaving_args", "presence_leaving");
+            }
+        });
+
+        echo.on(Socket.EVENT_ERROR, new EchoCallback() {
+            @Override
+            public void call(Object... args) {
+                // Callback
+                Log.e("EVENT_ERROR_args", "EVENT_ERROR̥");
+            }
+        });*/
+
+        Laravel_Host_Method();
         //        FullScreenMethod();
         String select = "select EMAIL from LOGINDETAILS where STATUS ='" + 1 + "'";
         Cursor cursor = db.rawQuery(select, null);
@@ -241,22 +309,94 @@ public class Dashboard extends Fragment implements View.OnClickListener {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        DBEXPORT();
+//        DBEXPORT();
 //        Log.e("dash_str_email", str_email);
         str_auth_token = SessionSave.getSession("Token_value", getActivity());
         Log.e("str_auth_token", str_auth_token);
+        str_session_contest_value = SessionSave.getSession("Contest_Value", getActivity());
+        str_session_banner_contest_value = SessionSave.getSession("Banner_Contest_Value", getActivity());
+//        Log.e("str_session_banner_contest_value", str_session_banner_contest_value);
         if (!isNetworkAvaliable()) {
             registerInternetCheckReceiver();
-            setupRetrofitAndOkHttp();
         } else {
             recycler_view_constraint_layout.setVisibility(View.VISIBLE);
             mShimmerViewContainer.startShimmerAnimation();
             shimmer_view_container_for_carosel.startShimmerAnimation();
-            setupRetrofitAndOkHttp();
-            GetContest_Details();
             Get_App_Settings_Details();
             Get_Balance_Details();
-            prepareAlbums();
+
+            /*
+             * Here we use cache concept when application is destroyed
+             * Session value gets 'No data' it call 'get_contest' method
+             * else if app not destroyed means rv_game_list use the session value to show list of data
+             */
+            if (str_session_banner_contest_value.equalsIgnoreCase("No data")) {
+//                Toast.makeText(getActivity(), "Banner_Null", Toast.LENGTH_SHORT).show();
+                prepareAlbums();
+            } else {
+//                Toast.makeText(getActivity(), "Banner_Non_Null", Toast.LENGTH_SHORT).show();
+                Gson gson = new Gson();
+                Type type = new TypeToken<List<Carousel_Model.Banner_Contest>>() {
+                }.getType();
+                ArrayList<Carousel_Model.Banner_Contest> arrayList = gson.fromJson(str_session_banner_contest_value, type);
+                shimmer_view_container_for_carosel.setVisibility(View.GONE);
+                shimmer_view_container_for_carosel.stopShimmerAnimation();
+                view_pager_adapter = new View_Pager_Adapter(arrayList, getActivity(), support_FragmentManager);
+                viewPager.setAdapter(view_pager_adapter);
+                viewPager.setPadding(130, 0, 130, 0);
+            }
+
+
+            bundle = getActivity().getIntent().getExtras();
+            if (bundle == null) {
+                str_refresh_value = null;
+            } else {
+                Log.e("str_refresh_value", str_refresh_value);
+                str_refresh_value = bundle.getString("refresh_value");
+                if (Objects.equals(str_refresh_value, "1")) {
+                    GetContest_Details();
+                }
+            }
+
+
+            /*
+             * Here we use cache concept when application is destroyed
+             * Session value gets 'No data' it call 'get_contest' method
+             * else if app not destroyed means rv_game_list use the session value to show list of data
+             */
+            if (str_session_contest_value.equalsIgnoreCase("No data")) {
+//                Toast.makeText(getActivity(), "Null", Toast.LENGTH_SHORT).show();
+                GetContest_Details();
+            } else {
+//                Toast.makeText(getActivity(), "Non_Null", Toast.LENGTH_SHORT).show();
+                Gson gson = new Gson();
+                Type type = new TypeToken<List<Category_Model.Data>>() {
+                }.getType();
+                ArrayList<Category_Model.Data> arrayList = gson.fromJson(str_session_contest_value, type);
+                recycler_view_constraint_layout.setVisibility(View.GONE);
+                mShimmerViewContainer.setVisibility(View.GONE);
+                mShimmerViewContainer.stopShimmerAnimation();
+
+                rv_game_list.setVisibility(View.VISIBLE);
+                tv_no_data_available_fr_dashboard.setVisibility(View.GONE);
+                contestAdapter = new ContestAdapter(getActivity(), arrayList, support_FragmentManager);
+                rv_game_list.setAdapter(contestAdapter);
+            }
+
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+//                    Toast.makeText(getActivity(), "seheduler", Toast.LENGTH_SHORT).show();
+                    GetContest_Details();
+                    if (str_session_banner_contest_value.equalsIgnoreCase("No data")) {
+                        prepareAlbums();
+                    }
+                }
+            }, 3600000);
+
+
 //            Get_User_Wallet_Details();
 //            GetContest_Details_Using_Volley();
         }
@@ -334,7 +474,42 @@ public class Dashboard extends Fragment implements View.OnClickListener {
             pager.setPageMargin(30);
         }*/
         return view;
+    }
 
+    private void Laravel_Host_Method() {
+        // Setup options
+        EchoOptions options = new EchoOptions();
+        // Setup host of your Laravel Echo Server
+        options.host = "http://datasics.in";
+        /*
+         * Add headers for authorizing your users (private and presence channels).
+         * This line can change matching how you have configured
+         * your guards on your Laravel application
+         */
+//        options.headers.put("Authorization", "Bearer {token}");
+        // Create the client
+        echo = new Echo(options);
+        echo.connect(new EchoCallback() {
+            @Override
+            public void call(Object... args) {
+                // Success connect
+                Log.e("Success_connect", "working" + Arrays.toString(args));
+            }
+        }, new EchoCallback() {
+            @Override
+            public void call(Object... args) {
+                // Error connect
+                Log.e("Error_connect", "working" + Arrays.toString(args));
+            }
+        });
+        echo.channel("channel1")
+                .listen("NewComment", new EchoCallback() {
+                    @Override
+                    public void call(Object... args) {
+                        // Event thrown.
+                        Log.e("echo_call", "sfdsfnkdlsfndksl");
+                    }
+                });
     }
 
     private void Get_Balance_Details() {
@@ -351,9 +526,7 @@ public class Dashboard extends Fragment implements View.OnClickListener {
                             str_wallet1 = response.body().wallet1;
                             str_wallet2 = response.body().wallet2;
                             str_current_amt = response.body().current_amt;
-                            Log.e("str_wallet1", str_wallet1);
-                            Log.e("str_wallet1", str_wallet2);
-                            Log.e("str_current_amt", str_current_amt);
+                            Navigation_Drawer_Act.tv_points.setText(str_current_amt);
                         }
                     } else if (response.code() == 401) {
                         Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
@@ -374,7 +547,7 @@ public class Dashboard extends Fragment implements View.OnClickListener {
 
     private void Get_App_Settings_Details() {
         try {
-            Log.e("auth_token_app_settings", str_auth_token);
+//            Log.e("auth_token_app_settings", str_auth_token);
             APIInterface apiInterface = Factory.getClient();
             Call<Category_Model> call = apiInterface.GET_APP_SETTINGS_DETAILS(str_auth_token);
             call.enqueue(new Callback<Category_Model>() {
@@ -388,6 +561,8 @@ public class Dashboard extends Fragment implements View.OnClickListener {
                             str_initial_coins = response.body().initial_coins;
                             str_min_withdraw_amt = response.body().min_withdraw_amt;
                             str_max_withdraw_amt = response.body().max_withdraw_amt;
+                            str_referral_rules = response.body().referral_rules;
+                            SessionSave.SaveSession("Referral_Rules_Link", str_referral_rules, getActivity());
                             SessionSave.SaveSession("Wallet_Coins", str_wallet_coins, getActivity());
                             SessionSave.SaveSession("Wallet_Rupees", str_wallet_rupees, getActivity());
                             SessionSave.SaveSession("Reward_Point", str_reward_point, getActivity());
@@ -422,7 +597,7 @@ public class Dashboard extends Fragment implements View.OnClickListener {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("email", str_email);
             APIInterface apiInterface = Factory.getClient();
-            Log.e("wallet_json", jsonObject.toString());
+//            Log.e("wallet_json", jsonObject.toString());
             Call<Category_Model> call = apiInterface.GET_WalletDetailsModelCall("application/json", jsonObject.toString(), str_auth_token);
             call.enqueue(new Callback<Category_Model>() {
                 @Override
@@ -433,8 +608,6 @@ public class Dashboard extends Fragment implements View.OnClickListener {
                             str_message = response.body().message;
                             str_wallet1 = response.body().data.get(0).wallet1;
                             str_wallet2 = response.body().data.get(0).wallet2;
-                            Log.e("str_wallet1", str_wallet1);
-                            Log.e("str_wallet2", str_wallet2);
                         }
                     } else if (response.code() == 401) {
                         Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
@@ -470,7 +643,7 @@ public class Dashboard extends Fragment implements View.OnClickListener {
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject json_object = (JSONObject) jsonArray.get(i);
                                 str_categroies = json_object.getString("categories");
-                                Log.e("str_categroies_json", "" + str_categroies);
+//                                Log.e("str_categroies_json", "" + str_categroies);
 
                                 arrayList.add(str_categroies);
                             }
@@ -580,34 +753,48 @@ public class Dashboard extends Fragment implements View.OnClickListener {
         adapter.notifyDataSetChanged();*/
 
         try {
-            Log.e("str_auth_token_album", str_auth_token);
+//            Log.e("str_auth_token_album", str_auth_token);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("email", str_email);
             APIInterface apiInterface = Factory.getClient();
-            Call<Carousel_Model> call = apiInterface.GET_CAROUSEL_DETAILS(str_auth_token);
+            Call<Carousel_Model> call = apiInterface.GET_CAROUSEL_DETAILS("application/json", jsonObject.toString(), str_auth_token);
             call.enqueue(new Callback<Carousel_Model>() {
                 @Override
                 public void onResponse(Call<Carousel_Model> call, Response<Carousel_Model> response) {
-                    if (response.code() == 200) {
-                        if (response.isSuccessful()) {
-                            if (Objects.requireNonNull(response.body()).normal_contest.isEmpty()) {
-//                            Toast.makeText(getActivity(), "Null", Toast.LENGTH_SHORT).show();
-                                shimmer_view_container_for_carosel.setVisibility(View.VISIBLE);
-                                shimmer_view_container_for_carosel.startShimmerAnimation();
-                                recycler_view_constraint_layout.setVisibility(View.VISIBLE);
-                                rv_game_list.setVisibility(View.VISIBLE);
-                            } else {
-                                shimmer_view_container_for_carosel.stopShimmerAnimation();
-                                shimmer_view_container_for_carosel.setVisibility(View.GONE);
-                                Log.e("normal_contest", response.body().normal_contest.toString());
-                                Log.e("normal_contest_msg", response.body().message);
-                                Log.e("normal_contest_sts", response.body().status);
-                                adapter = new AlbumsAdapter(getActivity(), Objects.requireNonNull(response.body()).normal_contest);
-                                recycler_view_horizontal.setAdapter(adapter);
+                    assert response.body() != null;
+                    try {
+                        if (response.body().banner_contest != null) {
+                            if (response.code() == 200) {
+                                if (response.isSuccessful()) {
+                                    if (Objects.requireNonNull(response.body()).banner_contest.isEmpty()) {
+                                        shimmer_view_container_for_carosel.setVisibility(View.VISIBLE);
+                                        shimmer_view_container_for_carosel.startShimmerAnimation();
+                                        recycler_view_constraint_layout.setVisibility(View.VISIBLE);
+                                        rv_game_list.setVisibility(View.VISIBLE);
+                                    } else {
+                                        shimmer_view_container_for_carosel.stopShimmerAnimation();
+                                        shimmer_view_container_for_carosel.setVisibility(View.GONE);
+//                                        Log.e("banner_size", "" + response.body().banner_contest.size());
+                                        if ((response.body().banner_contest.size() != 0)) {
+                                            Gson gson = new Gson();
+                                            String json = gson.toJson(response.body().banner_contest);
+                                            SessionSave.SaveSession("Banner_Contest_Value", json, getActivity());
+                                            view_pager_adapter = new View_Pager_Adapter(response.body().banner_contest, getActivity(), support_FragmentManager);
+                                            viewPager.setAdapter(view_pager_adapter);
+                                            viewPager.setPadding(130, 0, 130, 0);
+                                        }
+                                    }
+                                }
+                            } else if (response.code() == 401) {
+                                Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
+                            } else if (response.code() == 500) {
+                                Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
                             }
+                        } else {
+                            Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), "Something went wrong try again album :)");
                         }
-                    } else if (response.code() == 401) {
-                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
-                    } else if (response.code() == 500) {
-                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
+                    } catch (NullPointerException npe) {
+                        npe.printStackTrace();
                     }
                 }
 
@@ -622,147 +809,89 @@ public class Dashboard extends Fragment implements View.OnClickListener {
 
     }
 
-    private void setupRetrofitAndOkHttp() {
-        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
-        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        File httpCacheDirectory = new File(getCacheDir(), "offlineCache");
-        //10 MB
-        Cache cache = new Cache(httpCacheDirectory, 10 * 1024 * 1024);
-        OkHttpClient httpClient = new OkHttpClient.Builder()
-                .cache(cache)
-                .addInterceptor(httpLoggingInterceptor)
-                .addNetworkInterceptor(provideCacheInterceptor())
-                .addInterceptor(provideOfflineCacheInterceptor())
-                .build();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create(new Gson()))
-                .client(httpClient)
-                .baseUrl(BASE_URL)
-                .build();
-        apiService = retrofit.create(APIService.class);
-    }
-
-
-    private Interceptor provideCacheInterceptor() {
-        return new Interceptor() {
-            @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request request = chain.request();
-                okhttp3.Response originalResponse = chain.proceed(request);
-                String cacheControl = originalResponse.header("Cache-Control");
-                if (cacheControl == null || cacheControl.contains("no-store") || cacheControl.contains("no-cache") ||
-                        cacheControl.contains("must-revalidate") || cacheControl.contains("max-stale=0")) {
-                    CacheControl cc = new CacheControl.Builder()
-                            .maxStale(1, TimeUnit.DAYS)
-                            .build();
-                    request = request.newBuilder()
-                            .cacheControl(cc)
-                            .build();
-                    return chain.proceed(request);
-                } else {
-                    return originalResponse;
-                }
-            }
-        };
-    }
-
-    private Interceptor provideOfflineCacheInterceptor() {
-        return new Interceptor() {
-            @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
-                try {
-                    return chain.proceed(chain.request());
-                } catch (Exception e) {
-                    CacheControl cacheControl = new CacheControl.Builder()
-                            .onlyIfCached()
-                            .maxStale(1, TimeUnit.DAYS)
-                            .build();
-                    Request offlineRequest = chain.request().newBuilder()
-                            .cacheControl(cacheControl)
-                            .build();
-                    return chain.proceed(offlineRequest);
-                }
-            }
-        };
-    }
-
-
+    @SuppressLint("LongLogTag")
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private void GetContest_Details() {
-        ((SimpleItemAnimator) Objects.requireNonNull(rv_game_list.getItemAnimator())).setSupportsChangeAnimations(false);
-        Cache cache = new Cache(getCacheDir(), cacheSize);
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .cache(cache)
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public okhttp3.Response intercept(Interceptor.Chain chain)
-                            throws IOException {
-                        Request request = chain.request();
-
-                        int maxStale = 60 * 60 * 24 * 28; // tolerate 4-weeks stale \
-                        request = request
-                                .newBuilder()
-                                .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
-                                .build();
-                        return chain.proceed(request);
-                    }
-                })
-                .build();
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl("http://192.168.0.113/stb-api/index.php/categories/")
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create());
-        Retrofit retrofit = builder.build();
-//        APIInterface apiInterface = retrofit.create(APIInterface.class);
-        JSONObject jsonObject = new JSONObject();
         try {
+            JSONObject jsonObject = new JSONObject();
             jsonObject.put("email", str_email);
             APIInterface apiInterface = Factory.getClient();
+            Log.e("json_getcontest", jsonObject.toString());
+            Log.e("str_auth_token_getcontest", str_auth_token);
             Call<Category_Model> call = apiInterface.GET_CONTEST_CALL("application/json", jsonObject.toString(), str_auth_token);
             call.enqueue(new Callback<Category_Model>() {
                 @TargetApi(Build.VERSION_CODES.KITKAT)
                 @Override
                 public void onResponse(Call<Category_Model> call, Response<Category_Model> response) {
-                    if (response.code() == 200) {
-                        if (response.isSuccessful()) {
-                            try {
-//                            Toast.makeText(getActivity(), "Else_Response", Toast.LENGTH_SHORT).show();
+                    assert response.body() != null;
+                    if (response.body().data != null) {
+                        if (response.code() == 200) {
+                            if (response.isSuccessful()) {
                                 assert response.body() != null;
-                                if (response.body().data.isEmpty()) {
-                                    mShimmerViewContainer.setVisibility(View.VISIBLE);
-                                    mShimmerViewContainer.startShimmerAnimation();
-                                    recycler_view_constraint_layout.setVisibility(View.VISIBLE);
-                                    rv_game_list.setVisibility(View.VISIBLE);
-                                } else {
-                                    recycler_view_constraint_layout.setVisibility(View.GONE);
-                                    mShimmerViewContainer.setVisibility(View.GONE);
-                                    mShimmerViewContainer.stopShimmerAnimation();
-                                    rv_game_list.setVisibility(View.VISIBLE);
-                                    str_code = response.body().code;
-                                    str_message = response.body().message;
-                                    Log.e("str_datum_value-->", String.valueOf(response.body().data));
-                                    rv_game_list.setVisibility(View.VISIBLE);
-                                    tv_no_data_available_fr_dashboard.setVisibility(View.GONE);
-                                    contestAdapter = new ContestAdapter(getActivity(), response.body().data);
-                                    rv_game_list.setAdapter(contestAdapter);
-                                }
+                                try {
+//                                    Toast.makeText(getActivity(), "Network_Response", Toast.LENGTH_SHORT).show();
+                                    if (Objects.requireNonNull(response.body().data).isEmpty()) {
+                                        mShimmerViewContainer.setVisibility(View.VISIBLE);
+                                        mShimmerViewContainer.startShimmerAnimation();
+                                        gif_image_view.setVisibility(View.GONE);
+                                        recycler_view_constraint_layout.setVisibility(View.VISIBLE);
+                                        rv_game_list.setVisibility(View.VISIBLE);
 
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                        Handler handler = new Handler();
+                                        handler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                constraint_layout_no_contest.setVisibility(View.VISIBLE);
+                                                gif_image_view.setVisibility(View.VISIBLE);
+                                                try {
+                                                    Glide.with(Objects.requireNonNull(getActivity())).asGif().load(R.drawable.no_contests_gif).into(gif_image_view);
+                                                } catch (NullPointerException npe) {
+                                                    npe.printStackTrace();
+                                                }
+
+                                                mShimmerViewContainer.setVisibility(View.GONE);
+                                                mShimmerViewContainer.stopShimmerAnimation();
+                                                contestAdapter = new ContestAdapter(getActivity(), response.body().data, support_FragmentManager);
+                                                rv_game_list.setAdapter(contestAdapter);
+                                            }
+                                        }, 2500);
+                                    } else {
+                                        /*
+                                         *Here we use the following concept for saving the data to shared preference.
+                                         */
+                                        Gson gson = new Gson();
+                                        String json = gson.toJson(response.body().data);
+                                        SessionSave.SaveSession("Contest_Value", json, getActivity());
+
+                                        recycler_view_constraint_layout.setVisibility(View.GONE);
+                                        mShimmerViewContainer.setVisibility(View.GONE);
+                                        mShimmerViewContainer.stopShimmerAnimation();
+                                        rv_game_list.setVisibility(View.VISIBLE);
+                                        str_code = response.body().code;
+                                        str_message = response.body().message;
+                                        rv_game_list.setVisibility(View.VISIBLE);
+                                        tv_no_data_available_fr_dashboard.setVisibility(View.GONE);
+                                        contestAdapter = new ContestAdapter(getActivity(), response.body().data, support_FragmentManager);
+                                        rv_game_list.setAdapter(contestAdapter);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
+                        } else if (response.code() == 401) {
+                            Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
+                        } else if (response.code() == 500) {
+                            Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
                         }
-                    } else if (response.code() == 401) {
-                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
-                    } else if (response.code() == 500) {
-                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
+                    } else {
+                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), "Something went wrong try again_get_contest :)");
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Category_Model> call, Throwable t) {
-                    Log.e("error_Response", "" + t.getMessage());
+//                    Log.e("error_Response", "" + t.getMessage());
                 }
             });
         } catch (JSONException e) {
@@ -885,9 +1014,8 @@ public class Dashboard extends Fragment implements View.OnClickListener {
                 startActivity(intent_03);
             *//*
                 break;*/
-
         }
-        Log.e("Button_click_logged:", str_btnName);
+//        Log.e("Button_click_logged:", str_btnName);
     }
 
     private void DBEXPORT() {
@@ -915,8 +1043,8 @@ public class Dashboard extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         registerInternetCheckReceiver();
-        mShimmerViewContainer.startShimmerAnimation();
-        shimmer_view_container_for_carosel.startShimmerAnimation();
+//        mShimmerViewContainer.startShimmerAnimation();
+//        shimmer_view_container_for_carosel.startShimmerAnimation();
 //        String select = "select BALANCE from LOGINDETAILS";
 //        Cursor cursor = db.rawQuery(select, null);
 //        if (cursor.moveToFirst()) {
@@ -992,21 +1120,17 @@ public class Dashboard extends Fragment implements View.OnClickListener {
         if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
             internetStatus = getResources().getString(R.string.back_online_txt);
             snackbar = Snackbar.make(Objects.requireNonNull(getView()).findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_LONG);
-            snackbar.getView().setBackgroundResource(R.color.black_color);
-//            GetContest_Details();
+            snackbar.getView().setBackgroundResource(R.color.timer_bg_color);
+            snackbar.setActionTextColor(Color.BLACK);
         } else {
-            recycler_view_constraint_layout.setVisibility(View.VISIBLE);
-            mShimmerViewContainer.setVisibility(View.VISIBLE);
-            shimmer_view_container_for_carosel.setVisibility(View.VISIBLE);
-            mShimmerViewContainer.startShimmerAnimation();
-            shimmer_view_container_for_carosel.startShimmerAnimation();
             internetStatus = getResources().getString(R.string.check_internet_conn_txt);
             snackbar = Snackbar
                     .make(Objects.requireNonNull(getView()).findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_INDEFINITE);
-            snackbar.getView().setBackgroundResource(R.color.black_color);
+            snackbar.getView().setBackgroundResource(R.color.red_color_new);
+            snackbar.setActionTextColor(Color.WHITE);
         }
         // Changing message text color
-        snackbar.setActionTextColor(Color.WHITE);
+
         // Changing action button text color
         View sbView = snackbar.getView();
         TextView textView = sbView.findViewById(R.id.snackbar_text);
@@ -1018,13 +1142,48 @@ public class Dashboard extends Fragment implements View.OnClickListener {
         }
         if (internetStatus.equalsIgnoreCase(getResources().getString(R.string.check_internet_conn_txt))) {
             if (internetConnected) {
+//                Log.e("internetStatus_else", internetStatus);
                 snackbar.show();
                 internetConnected = false;
+                recycler_view_constraint_layout.setVisibility(View.VISIBLE);
+                rv_game_list.setVisibility(View.GONE);
+                viewPager.setVisibility(View.GONE);
+                mShimmerViewContainer.setVisibility(View.VISIBLE);
+                gif_image_view.setVisibility(View.GONE);
+                mShimmerViewContainer.startShimmerAnimation();
+                constraint_layout_no_contest.setVisibility(View.GONE);
+              /*  Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mShimmerViewContainer.setVisibility(View.GONE);
+                        constraint_layout_no_contest.setVisibility(View.VISIBLE);
+                        tv_no_contest_for_now_txt.setVisibility(View.GONE);
+                        tv_no_internet_txt.setVisibility(View.VISIBLE);
+                        tv_check_internet_connection.setVisibility(View.VISIBLE);
+                        tv_no_internet_txt.setText(R.string.no_internet_txt);
+                        Glide.with(Objects.requireNonNull(getActivity())).asGif().load(R.drawable.no_internet_gif).into(gif_image_view);
+                    }
+                }, 2000);
+*/
+                shimmer_view_container_for_carosel.setVisibility(View.VISIBLE);
+                shimmer_view_container_for_carosel.startShimmerAnimation();
             }
         } else {
             if (!internetConnected) {
+//                Log.e("internetStatus_if", internetStatus);
                 internetConnected = true;
                 snackbar.show();
+//                constraint_layout_no_contest.setVisibility(View.GONE);
+                mShimmerViewContainer.setVisibility(View.GONE);
+                shimmer_view_container_for_carosel.setVisibility(View.GONE);
+                mShimmerViewContainer.stopShimmerAnimation();
+                shimmer_view_container_for_carosel.stopShimmerAnimation();
+                rv_game_list.setVisibility(View.VISIBLE);
+                viewPager.setVisibility(View.VISIBLE);
+                GetContest_Details();
+                prepareAlbums();
+                Get_Balance_Details();
             }
         }
     }
@@ -1038,40 +1197,9 @@ public class Dashboard extends Fragment implements View.OnClickListener {
         shimmer_view_container_for_carosel.stopShimmerAnimation();
     }
 
-    private class MyPagerAdapter extends PagerAdapter {
-        ImageView imageView;
-        TextView text_view;
-
-        @Override
-        public Object instantiateItem(ViewGroup container, final int position) {
-            View view = LayoutInflater.from(getActivity()).inflate(R.layout.item_cover, null);
-            imageView = view.findViewById(R.id.image_cover);
-            text_view = view.findViewById(R.id.text_view);
-            imageView.setImageDrawable(getResources().getDrawable(DemoData.covers[position]));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            container.addView(view);
-            text_view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    Toast.makeText(getActivity(), "Card_Position_is" + position, Toast.LENGTH_SHORT).show();
-                }
-            });
-            return view;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
-        }
-
-        @Override
-        public int getCount() {
-            return DemoData.covers.length;
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return (view == object);
-        }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        echo.disconnect();
     }
 }

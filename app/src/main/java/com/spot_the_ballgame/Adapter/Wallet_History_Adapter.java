@@ -2,7 +2,6 @@ package com.spot_the_ballgame.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,13 +46,13 @@ public class Wallet_History_Adapter extends RecyclerView.Adapter<Wallet_History_
         String str_playby = arrayList.get(position).playby;
         String str_values_in = arrayList.get(position).values_in;
         String str_values_out = arrayList.get(position).values_out;
-        Log.e("str_date", str_date);
-        Log.e("str_playby_wlt_hist", str_playby);
+//        Log.e("str_date", str_date);
+//        Log.e("str_playby_wlt_hist", str_playby);
         if (str_values_in != null) {
-            Log.e("str_values_in", str_values_in);
+//            Log.e("str_values_in", str_values_in);
         }
         if (str_values_out != null) {
-            Log.e("str_values_out", str_values_out);
+//            Log.e("str_values_out", str_values_out);
         }
 
 
@@ -72,15 +71,41 @@ public class Wallet_History_Adapter extends RecyclerView.Adapter<Wallet_History_
 
         if (arrayList.get(position).playby.equalsIgnoreCase("coins")) {
             holder.tv_negative_points_values.setVisibility(View.GONE);
+            holder.tv_plus_icon.setVisibility(View.VISIBLE);
             holder.tv_points_values.setVisibility(View.VISIBLE);
-            holder.tv_points_values.setText(" - " + str_values_out);
+            holder.tv_plus_icon.setText(" - ");
+            holder.tv_points_values.setText(str_values_out);
+            holder.tv_plus_icon.setTextColor(context.getResources().getColor(R.color.new_ent_time_txt_color));
             holder.tv_points_values.setTextColor(context.getResources().getColor(R.color.new_ent_time_txt_color));
         }
+
         if (arrayList.get(position).playby.equalsIgnoreCase("Ads")) {
             holder.tv_points_values.setVisibility(View.GONE);
+            holder.tv_plus_icon.setVisibility(View.VISIBLE);
             holder.tv_negative_points_values.setVisibility(View.VISIBLE);
-            holder.tv_negative_points_values.setText(" + " + str_values_in);
+            holder.tv_negative_points_values.setText(str_values_in);
+            holder.tv_plus_icon.setText(" + ");
             holder.tv_negative_points_values.setTextColor(context.getResources().getColor(R.color.timer_bg_color));
+            holder.tv_plus_icon.setTextColor(context.getResources().getColor(R.color.timer_bg_color));
+        }
+
+
+        if (arrayList.get(position).playby.equalsIgnoreCase("Referral Coins")
+                || arrayList.get(position).playby.equalsIgnoreCase("Coin created for refer user")) {
+
+            holder.tv_points_values.setVisibility(View.GONE);
+
+            holder.tv_plus_icon.setVisibility(View.VISIBLE);
+            holder.tv_play_via.setVisibility(View.VISIBLE);
+            holder.tv_negative_points_values.setVisibility(View.VISIBLE);
+
+            holder.tv_negative_points_values.setText(str_values_in);
+            holder.tv_play_via.setText("Ref Bonus");
+            holder.tv_plus_icon.setText(" + ");
+
+            holder.tv_negative_points_values.setTextColor(context.getResources().getColor(R.color.timer_bg_color));
+            holder.tv_plus_icon.setTextColor(context.getResources().getColor(R.color.timer_bg_color));
+
         }
 
     }
@@ -91,7 +116,7 @@ public class Wallet_History_Adapter extends RecyclerView.Adapter<Wallet_History_
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tv_date_txt, tv_play_via, tv_points_values, tv_negative_points_values;
+        TextView tv_date_txt, tv_play_via, tv_points_values, tv_negative_points_values, tv_plus_icon;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -99,6 +124,7 @@ public class Wallet_History_Adapter extends RecyclerView.Adapter<Wallet_History_
             tv_play_via = itemView.findViewById(R.id.tv_play_via);
             tv_points_values = itemView.findViewById(R.id.tv_points_values_coins);
             tv_negative_points_values = itemView.findViewById(R.id.tv_negative_points_values);
+            tv_plus_icon = itemView.findViewById(R.id.tv_plus_icon);
         }
     }
 }

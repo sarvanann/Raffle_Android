@@ -101,8 +101,9 @@
 
     <color name="placeholder_bg">#dddddd</color>
     <color name="gray_color_new">#57D6D2D2</color>
+    <color name="gray_color_new1">#528A8787</color>
 
-
+    <color name="shimmer_background_color">#b1b1b1</color>
     <color name="item_name">#0c0c0c</color>
     <color name="description">#1a1a1a</color>
     <color name="chef">#777</color>

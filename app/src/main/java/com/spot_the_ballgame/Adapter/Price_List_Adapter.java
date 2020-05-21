@@ -10,21 +10,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.spot_the_ballgame.Game_Details_Screen_Act;
-import com.spot_the_ballgame.Model.Category_Model;
+import com.spot_the_ballgame.Model.Winnings_Model;
 import com.spot_the_ballgame.R;
 
 import java.util.ArrayList;
 
 public class Price_List_Adapter extends RecyclerView.Adapter<Price_List_Adapter.ViewHolder> {
-    private ArrayList<Category_Model.Data> arrayList;
+    private ArrayList<Winnings_Model> arrayList;
     private Context context;
-    private String str_prize_amount, str_rank;
 
-    public Price_List_Adapter(Game_Details_Screen_Act game_details_screen_act, String prize_amount, String rank) {
+    public Price_List_Adapter(Game_Details_Screen_Act game_details_screen_act, ArrayList<Winnings_Model> winning_arrayList) {
         this.context = game_details_screen_act;
-        this.str_prize_amount = prize_amount;
-        this.str_rank = rank;
-
+        this.arrayList = winning_arrayList;
     }
 
     @NonNull
@@ -34,18 +31,19 @@ public class Price_List_Adapter extends RecyclerView.Adapter<Price_List_Adapter.
         View view;
         view = inflater.inflate(R.layout.prize_list_adapter_details_layout, parent, false);
         return new Price_List_Adapter.ViewHolder(view);
-
     }
 
     @Override
     public void onBindViewHolder(@NonNull Price_List_Adapter.ViewHolder holder, int position) {
-        holder.tv_rank_in_prize_list.setText(str_rank);
-        holder.tv_prize_amount_prize_list.setText(str_prize_amount);
+//        Log.e("rankkk", arrayList.get(position).getRank_short());
+//        holder.tv_rank_in_prize_list.setText(arrayList.get(position).getRank());
+        holder.tv_rank_in_prize_list.setText(arrayList.get(position).getRank_short());
+        holder.tv_prize_amount_prize_list.setText(arrayList.get(position).getPrize_amount());
     }
 
     @Override
     public int getItemCount() {
-        return str_rank.length();
+        return arrayList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

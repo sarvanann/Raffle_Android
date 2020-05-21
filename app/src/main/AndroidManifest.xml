@@ -3,6 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.spot_the_ballgame">
 
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="29" />
+
+    <protected-broadcast android:name="com.motorola.motocare.INTENT_TRIGGER" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -23,7 +29,8 @@
     <application
         android:name=".AnalyticsApplication"
         android:allowBackup="true"
-        android:hardwareAccelerated="false"
+        android:debuggable="true"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/app_icon_02"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -31,102 +38,125 @@
         android:roundIcon="@drawable/app_icon_02"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:targetApi="n">
-        <activity android:name=".My_Contest_History">
+        <activity android:name=".Offer_Wall_Act">
 
         </activity>
         <activity
+            android:name=".Referral_Code_Act"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
+        <!-- OneSignal Notification -->
+        <meta-data
+            android:name="com.onesignal.NotificationOpened.DEFAULT"
+            android:value="DISABLE" /> <!-- Firebase Monitoring -->
+        <meta-data
+            android:name="firebase_performance_logcat_enabled"
+            android:value="true" />
+
+        <activity android:name=".My_Contest_Act" />
+        <activity android:name=".My_Contest_History" />
+        <activity
             android:name=".Carousel_View_Act"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Game_Details_Screen_Act"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".Dummy_Splash_Act"
-            android:screenOrientation="portrait" />
-
-
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Dummy_Audio_Act"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="Dummy_Image_Act"
-            android:screenOrientation="portrait" />
+            android:name=".Dummy_Image_Act"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Carousel_View_Act_02"
-            android:screenOrientation="portrait" />
-
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity android:name=".Media_Player_with_seekbar" />
-
         <activity
             android:name=".Reward_Video_Act"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".My_Contest_Live"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Navigation_Drawer_Act"
             android:label="@string/title_activity_navigation__drawer_"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Game_Act"
             android:noHistory="true"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Game_Two_Act"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Registration.SignIn.Email_Sign_In_Act"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Splash_Screen_Act"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name=".Home_Activity"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Registration.Forgot_Pwd_Act"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Registration.SignUp.Email_Sign_Up_Act"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Registration.Mobile_Num_Verification_Otp_Act"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Registration.Mobile_Num_Registration"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Registration.SignIn.All_Btn_Onclick_Sign_In_Act"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Registration.SignUp.All_Btn_OnClick_Sign_Up_Act"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Game_Details_Screen_Act_02"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".Reset_Password_Act"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            tools:ignore="LockedOrientationActivity" />
+
         <activity
             android:name=".Registration.Update_New_Password_Act"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-
-        <activity
-            android:name=".Dummy_reset_pwd"
-            android:screenOrientation="portrait" />
+            android:windowSoftInputMode="stateAlwaysHidden"
+            tools:ignore="LockedOrientationActivity" />
 
         <meta-data
             android:name="preloaded_fonts"
@@ -153,24 +183,58 @@
         </activity>
         <activity
             android:name=".Transaction_Act"
-            android:screenOrientation="portrait" />
-
-        <activity android:name=".Native_Ads" />
-
-        <!--This is for fabric key-->
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".Native_Ads" /> <!-- This is for fabric key -->
         <meta-data
             android:name="io.♦.ApiKey"
             android:value="642b87032a84cd21b20a3ee695c2e590c3ff77f4" />
-
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="642b87032a84cd21b20a3ee695c2e590c3ff77f4" />
 
-        <activity android:name=".Code_Testing_Page"></activity>
-
-        <!--This is for admob-->
+        <activity android:name=".Code_Testing_Page" /> <!-- This is for admob -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-7961776813129160~6949709129" />
+
+        <service
+            android:name=".NotificationExtenderExample"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE">
+            <intent-filter>
+                <action android:name="com.onesignal.NotificationExtender" />
+            </intent-filter>
+        </service> <!-- These following activities are used for iron source offer wall -->
+        <activity
+            android:name="com.supersonicads.sdk.controller.ControllerActivity"
+            android:configChanges="orientation|screenSize"
+            android:hardwareAccelerated="true" />
+        <activity
+            android:name="com.supersonicads.sdk.controller.InterstitialActivity"
+            android:configChanges="orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:theme="@android:style/Theme.Translucent" />
+        <activity
+            android:name="com.supersonicads.sdk.controller.OpenUrlActivity"
+            android:configChanges="orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:theme="@android:style/Theme.Translucent" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+
+        <activity
+            android:name="com.tapjoy.TJAdUnitActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:hardwareAccelerated="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+        <activity
+            android:name="com.tapjoy.TJContentActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:hardwareAccelerated="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 </manifest>

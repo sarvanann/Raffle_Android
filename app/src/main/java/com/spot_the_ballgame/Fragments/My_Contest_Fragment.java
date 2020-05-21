@@ -2,13 +2,20 @@ package com.spot_the_ballgame.Fragments;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,14 +29,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.snackbar.Snackbar;
 import com.spot_the_ballgame.Adapter.History_Contest_Details_Adapter;
 import com.spot_the_ballgame.Adapter.Live_Contest_Details_Adapter;
 import com.spot_the_ballgame.Game_Details_Screen_Act_02;
 import com.spot_the_ballgame.Interface.APIInterface;
 import com.spot_the_ballgame.Interface.Factory;
 import com.spot_the_ballgame.Model.Category_Model;
-import com.spot_the_ballgame.My_Contest_History;
 import com.spot_the_ballgame.Navigation_Drawer_Act;
 import com.spot_the_ballgame.R;
 import com.spot_the_ballgame.SessionSave;
@@ -39,6 +45,7 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
+import io.supercharge.shimmerlayout.ShimmerLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,17 +55,26 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class My_Contest_Fragment extends Fragment implements View.OnClickListener {
     SQLiteDatabase db;
     String str_db_values, str_balance;
-    TextView tv_your_points, tv_your_game_time, tv_your_game_point_values, tv_your_game_title, tv_no_data_available_fr_live_contest, tv_no_data_available_fr_history_contest;
-    TextView tv_present_contest, tv_history_contest;
-    ConstraintLayout constraintLayout_present_contest_layout, constraintLayout_history_contest_layout, constraintLayout_history_onclick_contest_layout, constraintLayout_game_1, constraintLayout_game_2, constraintLayout_game_3, constraintLayout_game_1_history, constraintLayout_game_2_history, constraintLayout_game_3_history;
+    private TextView tv_no_data_available_fr_live_contest, tv_no_data_available_fr_history_contest;
+    private TextView tv_present_contest, tv_history_contest;
+    private ConstraintLayout constraintLayout_present_contest_layout,
+            constraintLayout_history_contest_layout,
+            constraintLayout_history_onclick_contest_layout;
     Intent intent;
 
-    RecyclerView rv_contest_live_details, rv_contest_history_details;
+    private RecyclerView rv_contest_live_details, rv_contest_history_details;
     private String str_email;
-    String str_auth_token;
-    Live_Contest_Details_Adapter live_contest_details_adapter;
-    History_Contest_Details_Adapter history_contest_details_adapter;
-    private ShimmerFrameLayout mShimmerViewContainer, shimmer_view_container_history;
+    private String str_auth_token;
+    private Live_Contest_Details_Adapter live_contest_details_adapter;
+    private History_Contest_Details_Adapter history_contest_details_adapter;
+    private ShimmerLayout mShimmerViewContainer, shimmer_view_container_history;
+
+    //This is used for Internet alert using snackbar status
+    public static int TYPE_WIFI = 1;
+    public static int TYPE_MOBILE = 2;
+    public static int TYPE_NOT_CONNECTED = 0;
+    private boolean internetConnected = true;
+    private Snackbar snackbar;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @SuppressLint({"ClickableViewAccessibility", "WrongConstant"})
@@ -67,13 +83,8 @@ public class My_Contest_Fragment extends Fragment implements View.OnClickListene
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.my_contest_fragment, container, false);
         db = Objects.requireNonNull(getApplicationContext()).openOrCreateDatabase("Spottheball.db", Context.MODE_PRIVATE, null);
-        tv_your_points = view.findViewById(R.id.tv_your_points);
         rv_contest_live_details = view.findViewById(R.id.rv_contest_live_details);
         rv_contest_history_details = view.findViewById(R.id.rv_contest_history_details);
-
-        tv_your_game_time = view.findViewById(R.id.tv_your_game_time);
-        tv_your_game_point_values = view.findViewById(R.id.tv_your_game_point_values);
-        tv_your_game_title = view.findViewById(R.id.tv_your_game_title);
         tv_no_data_available_fr_live_contest = view.findViewById(R.id.tv_no_data_available_fr_live_contest);
         tv_no_data_available_fr_history_contest = view.findViewById(R.id.tv_no_data_available_fr_history_contest);
 
@@ -84,13 +95,7 @@ public class My_Contest_Fragment extends Fragment implements View.OnClickListene
         constraintLayout_history_contest_layout = view.findViewById(R.id.constraintLayout_history_contest_layout);
         constraintLayout_history_onclick_contest_layout = view.findViewById(R.id.constraintLayout_history_onclick_contest_layout);
 
-        constraintLayout_game_1_history = view.findViewById(R.id.constraintLayout_game_1_history);
-        constraintLayout_game_2_history = view.findViewById(R.id.constraintLayout_game_2_history);
-        constraintLayout_game_3_history = view.findViewById(R.id.constraintLayout_game_3_history);
 
-        constraintLayout_game_1 = view.findViewById(R.id.constraintLayout_game_11);
-        constraintLayout_game_2 = view.findViewById(R.id.constraintLayout_game_22);
-        constraintLayout_game_3 = view.findViewById(R.id.constraintLayout_game_33);
         mShimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
         shimmer_view_container_history = view.findViewById(R.id.shimmer_view_container_history);
 
@@ -98,13 +103,7 @@ public class My_Contest_Fragment extends Fragment implements View.OnClickListene
         Navigation_Drawer_Act.tv_toolbar_left_arrow.setVisibility(View.VISIBLE);
         tv_present_contest.setOnClickListener(this);
         tv_history_contest.setOnClickListener(this);
-        constraintLayout_game_1_history.setOnClickListener(this);
-        constraintLayout_game_2_history.setOnClickListener(this);
-        constraintLayout_game_3_history.setOnClickListener(this);
 
-        constraintLayout_game_1.setOnClickListener(this);
-        constraintLayout_game_2.setOnClickListener(this);
-        constraintLayout_game_3.setOnClickListener(this);
 
         constraintLayout_present_contest_layout.setVisibility(View.VISIBLE);
         constraintLayout_history_contest_layout.setVisibility(View.GONE);
@@ -129,10 +128,13 @@ public class My_Contest_Fragment extends Fragment implements View.OnClickListene
         cursor.close();
 
         str_auth_token = SessionSave.getSession("Token_value", Objects.requireNonNull(getActivity()));
-        Log.e("str_auth_token_contest", str_auth_token);
+//        Log.e("str_auth_token_contest", str_auth_token);
         mShimmerViewContainer.startShimmerAnimation();
-        Get_Live_Details();
-
+        if (!isNetworkAvaliable()) {
+            registerInternetCheckReceiver();
+        } else {
+            Get_Live_Details();
+        }
        /* db = Objects.requireNonNull(Objects.requireNonNull(getActivity()).openOrCreateDatabase("Spottheball.db", Context.MODE_PRIVATE, null));
         String select = "select USER_SELECTION_VALUE  from LOGINDETAILS";
         Cursor cursor = db.rawQuery(select, null);
@@ -142,8 +144,7 @@ public class My_Contest_Fragment extends Fragment implements View.OnClickListene
             } while (cursor.moveToNext());
         }
         cursor.close();
-        Log.e("str_source_details_contest", str_db_values);
-        tv_your_game_point_values.setText(str_db_values);*/
+        Log.e("str_source_details_contest", str_db_values);*/
         return view;
     }
 
@@ -160,14 +161,38 @@ public class My_Contest_Fragment extends Fragment implements View.OnClickListene
                         if (response.isSuccessful()) {
                             mShimmerViewContainer.startShimmerAnimation();
                             assert response.body() != null;
-                            if (response.body().data.isEmpty()) {
-//                            tv_no_data_available_fr_live_contest.setVisibility(View.GONE);
-                                rv_contest_live_details.setVisibility(View.GONE);
+                            String str_status = response.body().status;
+                            String str_message = response.body().message;
+                            if (str_status.equalsIgnoreCase("error")) {
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tv_no_data_available_fr_history_contest.setVisibility(View.GONE);
+                                        tv_no_data_available_fr_live_contest.setVisibility(View.VISIBLE);
+                                        tv_no_data_available_fr_live_contest.setText(str_message);
+                                        rv_contest_live_details.setVisibility(View.GONE);
+                                        mShimmerViewContainer.setVisibility(View.GONE);
+                                    }
+                                }, 2500);
                                 mShimmerViewContainer.startShimmerAnimation();
                                 mShimmerViewContainer.setVisibility(View.VISIBLE);
-
+                            } else if (response.body().data.isEmpty()) {
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tv_no_data_available_fr_history_contest.setVisibility(View.GONE);
+                                        tv_no_data_available_fr_live_contest.setVisibility(View.VISIBLE);
+                                        rv_contest_live_details.setVisibility(View.GONE);
+                                        mShimmerViewContainer.setVisibility(View.GONE);
+                                    }
+                                }, 2500);
+                                mShimmerViewContainer.startShimmerAnimation();
+                                mShimmerViewContainer.setVisibility(View.VISIBLE);
                             } else {
-                                //tv_no_data_available_fr_live_contest.setVisibility(View.VISIBLE);
+                                tv_no_data_available_fr_history_contest.setVisibility(View.GONE);
+                                tv_no_data_available_fr_live_contest.setVisibility(View.GONE);
                                 rv_contest_live_details.setVisibility(View.VISIBLE);
                                 mShimmerViewContainer.setVisibility(View.GONE);
                                 mShimmerViewContainer.stopShimmerAnimation();
@@ -181,6 +206,9 @@ public class My_Contest_Fragment extends Fragment implements View.OnClickListene
                     } else if (response.code() == 500) {
                         Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
                     }
+                    /*} else {
+                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), "Something went wrong try again :)");
+                    }*/
                 }
 
                 @Override
@@ -197,7 +225,7 @@ public class My_Contest_Fragment extends Fragment implements View.OnClickListene
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void onBackPressed() {
         int backStackEntryCount = Objects.requireNonNull(getActivity()).getSupportFragmentManager().getBackStackEntryCount();
-        Log.e("backStackCnt_contest", "" + backStackEntryCount);
+//        Log.e("backStackCnt_contest", "" + backStackEntryCount);
         if (backStackEntryCount == 1) {
             Intent intent = new Intent(getContext(), Navigation_Drawer_Act.class);
             startActivity(intent);
@@ -221,49 +249,41 @@ public class My_Contest_Fragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_present_contest:
+                rv_contest_live_details.setVisibility(View.GONE);
+                rv_contest_history_details.setVisibility(View.GONE);
+                constraintLayout_present_contest_layout.setVisibility(View.VISIBLE);
+                mShimmerViewContainer.setVisibility(View.VISIBLE);
+                constraintLayout_history_contest_layout.setVisibility(View.GONE);
+                shimmer_view_container_history.setVisibility(View.GONE);
+                constraintLayout_history_onclick_contest_layout.setVisibility(View.GONE);
                 tv_present_contest.setBackground(getResources().getDrawable(R.drawable.black_border_bg_normal));
                 tv_present_contest.setTextColor(getResources().getColor(R.color.black_color));
-                constraintLayout_present_contest_layout.setVisibility(View.VISIBLE);
-                constraintLayout_history_contest_layout.setVisibility(View.GONE);
-                constraintLayout_history_onclick_contest_layout.setVisibility(View.GONE);
                 tv_history_contest.setBackground(getResources().getDrawable(R.drawable.black_border_bg_normal));
                 tv_history_contest.setTextColor(getResources().getColor(R.color.history_grey_color));
                 mShimmerViewContainer.startShimmerAnimation();
+                tv_no_data_available_fr_live_contest.setVisibility(View.GONE);
+                tv_no_data_available_fr_history_contest.setVisibility(View.GONE);
                 Get_Live_Details();
                 break;
             case R.id.tv_history_contest:
+                rv_contest_live_details.setVisibility(View.GONE);
+                rv_contest_history_details.setVisibility(View.GONE);
+                mShimmerViewContainer.setVisibility(View.GONE);
                 constraintLayout_history_contest_layout.setVisibility(View.VISIBLE);
                 constraintLayout_history_onclick_contest_layout.setVisibility(View.VISIBLE);
+                shimmer_view_container_history.setVisibility(View.VISIBLE);
+                constraintLayout_present_contest_layout.setVisibility(View.GONE);
                 tv_history_contest.setBackground(getResources().getDrawable(R.drawable.black_border_bg_normal));
                 tv_history_contest.setTextColor(getResources().getColor(R.color.black_color));
                 constraintLayout_present_contest_layout.setVisibility(View.GONE);
                 tv_present_contest.setBackground(getResources().getDrawable(R.drawable.black_border_bg_normal));
                 tv_present_contest.setTextColor(getResources().getColor(R.color.history_grey_color));
+                shimmer_view_container_history.setVisibility(View.VISIBLE);
                 shimmer_view_container_history.startShimmerAnimation();
+                tv_no_data_available_fr_live_contest.setVisibility(View.GONE);
+                tv_no_data_available_fr_history_contest.setVisibility(View.GONE);
                 Get_History_Details();
                 break;
-            case R.id.constraintLayout_game_1_history:
-                intent = new Intent(getContext(), My_Contest_History.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                startActivity(intent);
-                break;
-            case R.id.constraintLayout_game_2_history:
-                intent = new Intent(getContext(), My_Contest_History.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                startActivity(intent);
-                break;
-            case R.id.constraintLayout_game_3_history:
-                intent = new Intent(getContext(), My_Contest_History.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                startActivity(intent);
-                break;
-
             case R.id.constraintLayout_game_11:
                 intent = new Intent(getContext(), Game_Details_Screen_Act_02.class);
                 intent.putExtra("onclick_contest_value", "1");
@@ -280,15 +300,6 @@ public class My_Contest_Fragment extends Fragment implements View.OnClickListene
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(intent);
                 break;
-            case R.id.constraintLayout_game_33:
-                intent = new Intent(getContext(), Game_Details_Screen_Act_02.class);
-                intent.putExtra("onclick_contest_value", "1");
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                startActivity(intent);
-
-                break;
         }
     }
 
@@ -301,31 +312,41 @@ public class My_Contest_Fragment extends Fragment implements View.OnClickListene
             call.enqueue(new Callback<Category_Model>() {
                 @Override
                 public void onResponse(Call<Category_Model> call, Response<Category_Model> response) {
-                    if (response.code() == 200) {
-                        if (response.isSuccessful()) {
-                            if (Objects.requireNonNull(response.body()).data.size() == 0) {
-//                            tv_no_data_available_fr_history_contest.setVisibility(View.VISIBLE);
-//                            tv_no_data_available_fr_live_contest.setVisibility(View.GONE);
-                                rv_contest_history_details.setVisibility(View.GONE);
-                                shimmer_view_container_history.setVisibility(View.VISIBLE);
-                                shimmer_view_container_history.startShimmerAnimation();
-                            } else {
-//                            tv_no_data_available_fr_live_contest.setVisibility(View.GONE);
-//                            tv_no_data_available_fr_history_contest.setVisibility(View.GONE);
-                                rv_contest_history_details.setVisibility(View.VISIBLE);
-                                Log.e("str_datum_value-->", String.valueOf(response.body().data));
-                                rv_contest_history_details.setVisibility(View.VISIBLE);
-                                shimmer_view_container_history.stopShimmerAnimation();
-                                shimmer_view_container_history.setVisibility(View.GONE);
+                    if (Objects.requireNonNull(response.body()).data != null) {
+                        if (response.code() == 200) {
+                            if (response.isSuccessful()) {
+                                if (Objects.requireNonNull(response.body()).data.isEmpty()) {
+                                    Handler handler = new Handler();
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            tv_no_data_available_fr_history_contest.setVisibility(View.VISIBLE);
+                                            tv_no_data_available_fr_live_contest.setVisibility(View.GONE);
+                                            rv_contest_history_details.setVisibility(View.GONE);
+                                            shimmer_view_container_history.setVisibility(View.GONE);
+                                        }
+                                    }, 2500);
+                                    shimmer_view_container_history.setVisibility(View.VISIBLE);
+                                    shimmer_view_container_history.startShimmerAnimation();
+                                } else {
+                                    tv_no_data_available_fr_live_contest.setVisibility(View.GONE);
+                                    tv_no_data_available_fr_history_contest.setVisibility(View.GONE);
+                                    rv_contest_history_details.setVisibility(View.VISIBLE);
+                                    shimmer_view_container_history.stopShimmerAnimation();
+                                    shimmer_view_container_history.setVisibility(View.GONE);
+//                                Log.e("str_datum_value-->", String.valueOf(response.body().data));
 
-                                history_contest_details_adapter = new History_Contest_Details_Adapter(getActivity(), response.body().data);
-                                rv_contest_history_details.setAdapter(history_contest_details_adapter);
+                                    history_contest_details_adapter = new History_Contest_Details_Adapter(getActivity(), response.body().data);
+                                    rv_contest_history_details.setAdapter(history_contest_details_adapter);
+                                }
                             }
+                        } else if (response.code() == 401) {
+                            Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
+                        } else if (response.code() == 500) {
+                            Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
                         }
-                    } else if (response.code() == 401) {
-                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
-                    } else if (response.code() == 500) {
-                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
+                    } else {
+                        Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), "Something went wrong try again :)");
                     }
                 }
 
@@ -342,6 +363,7 @@ public class My_Contest_Fragment extends Fragment implements View.OnClickListene
     @Override
     public void onResume() {
         super.onResume();
+        registerInternetCheckReceiver();
         Navigation_Drawer_Act.tv_title_txt.setText(R.string.contest_txt);
         Navigation_Drawer_Act.tv_toolbar_left_arrow.setVisibility(View.VISIBLE);
         mShimmerViewContainer.startShimmerAnimation();
@@ -351,7 +373,131 @@ public class My_Contest_Fragment extends Fragment implements View.OnClickListene
     @Override
     public void onPause() {
         super.onPause();
+        Objects.requireNonNull(getActivity()).unregisterReceiver(broadcastReceiver);
         mShimmerViewContainer.stopShimmerAnimation();
         shimmer_view_container_history.stopShimmerAnimation();
     }
+
+    /*This method is used for network connectivity*/
+    private boolean isNetworkAvaliable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        assert connectivityManager != null;
+        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+        return info != null;
+    }
+
+    /*This method automatically detect whether the internet is available or not
+     * if internet in not available GetDrawTiming,GetBalanceDetails will get stop
+     * */
+    private void registerInternetCheckReceiver() {
+        IntentFilter internetFilter = new IntentFilter();
+        internetFilter.addAction("android.net.wifi.STATE_CHANGE");
+        internetFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        getActivity().registerReceiver(broadcastReceiver, internetFilter);
+    }
+
+    /**
+     * Runtime Broadcast receiver inner class to capture internet connectivity events
+     */
+    public BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String status = getConnectivityStatusString(context);
+            setSnackbarMessage(status);
+        }
+    };
+
+    public static int getConnectivityStatus(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        assert cm != null;
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (null != activeNetwork) {
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
+                return TYPE_WIFI;
+
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
+                return TYPE_MOBILE;
+        }
+        return TYPE_NOT_CONNECTED;
+    }
+
+    public static String getConnectivityStatusString(Context context) {
+        int conn = getConnectivityStatus(context);
+        String status = null;
+        if (conn == TYPE_WIFI) {
+            status = "Wifi enabled";
+        } else if (conn == TYPE_MOBILE) {
+            status = "Mobile data enabled";
+        } else if (conn == TYPE_NOT_CONNECTED) {
+            status = "Not connected to Internet";
+        }
+        return status;
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private void setSnackbarMessage(String status) {
+        String internetStatus;
+        if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
+            internetStatus = getResources().getString(R.string.back_online_txt);
+            snackbar = Snackbar.make(Objects.requireNonNull(getView()).findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_LONG);
+            snackbar.getView().setBackgroundResource(R.color.timer_bg_color);
+            snackbar.setActionTextColor(Color.BLACK);
+        } else {
+            internetStatus = getResources().getString(R.string.check_internet_conn_txt);
+            snackbar = Snackbar
+                    .make(Objects.requireNonNull(getView()).findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_INDEFINITE);
+            snackbar.getView().setBackgroundResource(R.color.red_color_new);
+            snackbar.setActionTextColor(Color.WHITE);
+        }
+        // Changing message text color
+
+        // Changing action button text color
+        View sbView = snackbar.getView();
+        TextView textView = sbView.findViewById(R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        } else {
+            textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        }
+        if (internetStatus.equalsIgnoreCase(getResources().getString(R.string.check_internet_conn_txt))) {
+            if (internetConnected) {
+                Log.e("internetStatus_else", internetStatus);
+                snackbar.show();
+                internetConnected = false;
+
+                rv_contest_history_details.setVisibility(View.GONE);
+                rv_contest_live_details.setVisibility(View.GONE);
+
+                tv_no_data_available_fr_live_contest.setVisibility(View.GONE);
+                tv_no_data_available_fr_history_contest.setVisibility(View.GONE);
+
+                shimmer_view_container_history.setVisibility(View.VISIBLE);
+                shimmer_view_container_history.startShimmerAnimation();
+
+                mShimmerViewContainer.setVisibility(View.VISIBLE);
+                mShimmerViewContainer.startShimmerAnimation();
+            }
+        } else {
+            if (!internetConnected) {
+                Log.e("internetStatus_if", internetStatus);
+                internetConnected = true;
+                snackbar.show();
+
+                mShimmerViewContainer.setVisibility(View.GONE);
+                mShimmerViewContainer.stopShimmerAnimation();
+
+                shimmer_view_container_history.setVisibility(View.GONE);
+                shimmer_view_container_history.stopShimmerAnimation();
+
+                rv_contest_live_details.setVisibility(View.VISIBLE);
+                rv_contest_history_details.setVisibility(View.VISIBLE);
+
+                Get_Live_Details();
+                Get_History_Details();
+            }
+        }
+    }
+
 }

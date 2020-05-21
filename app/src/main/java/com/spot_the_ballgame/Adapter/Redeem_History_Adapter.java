@@ -2,7 +2,6 @@ package com.spot_the_ballgame.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,8 +64,8 @@ public class Redeem_History_Adapter extends RecyclerView.Adapter<Redeem_History_
 
         final String t2 = arrayList.get(position).created_at;
         stringArrayList.add(t2);
-        Log.e("t22222sub", t2);
-        Log.e("t22222sub", t2.substring(11, 19));
+//        Log.e("t22222sub", t2);
+//        Log.e("t22222sub", t2.substring(11, 19));
         holder.tv_redeem_history_time.setText(t2.substring(11, 19));
         @SuppressLint("SimpleDateFormat") DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
         @SuppressLint("SimpleDateFormat") DateFormat outputFormat = new SimpleDateFormat("dd-MM-yy");

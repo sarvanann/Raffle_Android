@@ -1,7 +1,25 @@
 package com.spot_the_ballgame.Model;
 
 public class Winnings_Model {
-    public String id, contest_id, rank, prize_amount, no_rank, no_prize_amount, total_rank, total_amount, created_at, updated_at;
+    public String id;
+    public String contest_id;
+    public String rank;
+    public String rank_short;
+    public String prize_amount;
+    public String no_rank;
+    public String no_prize_amount;
+    public String total_rank;
+    public String total_amount;
+    public String created_at;
+    public String updated_at;
+
+    public String getRank_short() {
+        return rank_short;
+    }
+
+    public void setRank_short(String rank_short) {
+        this.rank_short = rank_short;
+    }
 
     public String getId() {
         return id;

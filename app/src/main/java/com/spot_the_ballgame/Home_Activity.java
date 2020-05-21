@@ -288,12 +288,12 @@ public class Home_Activity extends AppCompatActivity implements View.OnClickList
         if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
             internetStatus = getResources().getString(R.string.back_online_txt);
             snackbar = Snackbar.make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_LONG);
-            snackbar.getView().setBackgroundResource(R.color.black_color);
+            snackbar.getView().setBackgroundResource(R.color.timer_bg_color);
         } else {
             internetStatus = getResources().getString(R.string.check_internet_conn_txt);
             snackbar = Snackbar
                     .make(findViewById(R.id.fab), internetStatus, Snackbar.LENGTH_INDEFINITE);
-            snackbar.getView().setBackgroundResource(R.color.black_color);
+            snackbar.getView().setBackgroundResource(R.color.red_color_new);
         }
 
         // Changing message text color

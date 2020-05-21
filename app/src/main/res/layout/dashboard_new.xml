@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:shimmer="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout_dashboard"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_color"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:fitsSystemWindows="true">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -28,48 +30,75 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
         android:fitsSystemWindows="true"
-        android:theme="@style/CardTheme">
+        android:theme="@style/CardTheme"
+        android:visibility="visible">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="123dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:clipToPadding="false"
+                android:foregroundGravity="center"
+                android:overScrollMode="never"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.328" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:clipToPadding="false"
-                android:scrollbars="horizontal"
-                android:visibility="visible" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="3dp"
+                android:layout_marginRight="3dp"
+                android:orientation="horizontal"
+                android:visibility="gone" />
 
-            <com.facebook.shimmer.ShimmerFrameLayout
+            <io.supercharge.shimmerlayout.ShimmerLayout
                 android:id="@+id/shimmer_view_container_for_carosel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginEnd="10dp"
                 android:orientation="vertical"
-                android:visibility="visible"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
-                shimmer:duration="800">
+                tools:context="io.supercharge.shimmeringlayout.MainActivity">
 
-                <!-- Adding 3 rows of placeholders -->
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <include layout="@layout/dashboard_carsouel_layout_shimmer" />
-                </LinearLayout>
+                    android:layout_height="wrap_content">
 
-            </com.facebook.shimmer.ShimmerFrameLayout>
+                    <View
+                        android:id="@+id/shimmer_avatar_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="110dp"
+                        android:layout_marginStart="54dp"
+                        android:layout_marginLeft="54dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="54dp"
+                        android:layout_marginRight="54dp"
+                        android:background="@drawable/banner_placeholder_bg" />
+                </RelativeLayout>
+            </io.supercharge.shimmerlayout.ShimmerLayout>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -77,5 +106,9 @@
         layout="@layout/content_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_marginTop="0dp"
+        android:visibility="visible"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar"
+        tools:layout_editor_absoluteX="57dp" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Category_Model {
     //    public Datum datum;
     public ArrayList<Data> data;
-    public String message, code;
+    public String message, code, status, url;
 
     /*This is for get_ranking.php*/
     public String your_rank;
@@ -18,12 +18,12 @@ public class Category_Model {
     public String reward_point;
     public String min_withdraw_amt;
     public String max_withdraw_amt;
+    public String referral_rules;
 
     /*This is for wallet_balance.php*/
     public String current_amt;
     public String wallet1;
     public String wallet2;
-
 
 
     public static class Data {
@@ -45,6 +45,7 @@ public class Category_Model {
         public String timed;
         public String seconds;
         public String fee_type;
+        public String prize_type;
         public String entry_fee;
         public String powerup_2x;
         public String powerup_count;
@@ -58,6 +59,7 @@ public class Category_Model {
         public String rules_id;
         public String status;
         public String play_status;
+        public String question_type;
 
         /*This is for get_prize_distribution.php*/
         public String rank;
@@ -86,6 +88,9 @@ public class Category_Model {
         /*This is user_wallet_details.php*/
         public String wallet1;
         public String wallet2;
+        public String username;
+
+        public String last_name;
 
 
         /*This is user_wallet_history.php*/

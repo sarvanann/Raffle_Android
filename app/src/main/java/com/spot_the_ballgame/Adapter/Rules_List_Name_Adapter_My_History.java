@@ -2,7 +2,6 @@ package com.spot_the_ballgame.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +38,7 @@ public class Rules_List_Name_Adapter_My_History extends RecyclerView.Adapter<Rul
     @Override
     public void onBindViewHolder(@NonNull Rules_List_Name_Adapter_My_History.ViewHolder holder, int position) {
         String s1 = arrayList.get(position).rules;
-        Log.e("s1_value", s1);
+//        Log.e("s1_value", s1);
         String[] s2 = s1.split(",");
         comma_arrayList.add(s2);
 //        Log.e("comma_arrayList", "" + s2.length);
@@ -48,8 +47,8 @@ public class Rules_List_Name_Adapter_My_History extends RecyclerView.Adapter<Rul
 //            Log.e("RULES_LIST", arrayList.get(position).rules);
 //            Toast.makeText(context, "Length" + arrayList.get(position).rules, Toast.LENGTH_SHORT).show();
 //            holder.tv_rules_serial_number.setText(String.valueOf(i));
-            Log.e("s2_of_i", "" + s2[i]);
-            Log.e("s2_of_length", "" + i);
+//            Log.e("s2_of_i", "" + s2[i]);
+//            Log.e("s2_of_length", "" + i);
             int n1 = i;
             int n2 = n1 + 1;
             holder.tv_rules_name.append(n2 + " ." + s2[i]);
