@@ -21,6 +21,7 @@ import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -366,22 +367,32 @@ public class My_Profile_Fragment extends Fragment implements View.OnClickListene
 
             pd.setMessage("Loading...");
             pd.show();
-            pd.setCancelable(false);
+            pd.setCancelable(true);
             ProgressBar progressbar = pd.findViewById(android.R.id.progress);
             progressbar.getIndeterminateDrawable().setColorFilter(Color.parseColor("#000000"), android.graphics.PorterDuff.Mode.SRC_IN);
-//            Log.e("Json_value_Profile", jsonObject.toString());
+            Log.e("Json_value_Profile", jsonObject.toString());
             APIInterface apiInterface = Factory.getClient();
             Call<Category_Model> call = apiInterface.GET_NEW_PWD_UPDATE_CALL("application/json", jsonObject.toString(), str_auth_token);
             call.enqueue(new Callback<Category_Model>() {
                 @TargetApi(Build.VERSION_CODES.KITKAT)
                 @Override
                 public void onResponse(Call<Category_Model> call, Response<Category_Model> response) {
-                    if (Objects.requireNonNull(response.body()).data != null) {
+//                    if (Objects.requireNonNull(response.body()).data != null) {
                         if (response.code() == 200) {
                             str_code = Objects.requireNonNull(response.body()).status;
                             str_message = response.body().message;
+                            Log.e("str_code_profile", str_code);
+                            Log.e("str_message_profile", str_message);
                             if (response.isSuccessful()) {
-                                if (str_code.equalsIgnoreCase("success")) {
+                                if (str_code.equalsIgnoreCase("error")) {
+                                    pd.dismiss();
+                                    assert response.body() != null;
+                                    Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.body().message);
+                                    if (str_message.equalsIgnoreCase("Old password doesn't match.")) {
+                                        dialog.show();
+                                        dialog.setCancelable(true);
+                                    }
+                                } else if (str_code.equalsIgnoreCase("success")) {
                                     pd.dismiss();
                                     dialog.dismiss();
                                     ContentValues contentValues = new ContentValues();
@@ -402,14 +413,6 @@ public class My_Profile_Fragment extends Fragment implements View.OnClickListene
                                         ft = getFragmentManager().beginTransaction();
                                         ft.detach(My_Profile_Fragment.this).attach(My_Profile_Fragment.this).commit();
                                     }
-                                } else if (str_code.equalsIgnoreCase("error")) {
-                                    pd.dismiss();
-                                    assert response.body() != null;
-                                    Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.body().message);
-                                    if (str_message.equalsIgnoreCase("Old password doesn't match.")) {
-                                        dialog.show();
-                                        dialog.setCancelable(true);
-                                    }
                                 }
                             }
                         } else if (response.code() == 401) {
@@ -417,9 +420,9 @@ public class My_Profile_Fragment extends Fragment implements View.OnClickListene
                         } else if (response.code() == 500) {
                             Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), response.message());
                         }
-                    } else {
+                     /*} else {
                         Toast_Message.showToastMessage(Objects.requireNonNull(getActivity()), "Something went wrong try again :)");
-                    }
+                    }*/
                 }
 
                 @Override

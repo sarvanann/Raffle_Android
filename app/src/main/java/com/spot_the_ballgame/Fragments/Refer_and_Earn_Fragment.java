@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -101,12 +102,23 @@ public class Refer_and_Earn_Fragment extends Fragment implements View.OnClickLis
 
                 break;
             case R.id.constraintLayout_share:
+                String app_url = "";
                 Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Your Referral code is");
-                String app_url = str_referral_Code;
-                shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, app_url);
-                startActivity(Intent.createChooser(shareIntent, "Share via"));
+                if (str_referral_Code.equalsIgnoreCase("No data")) {
+                    app_url = "";
+                } else {
+                    app_url = str_referral_Code;
+                }
+                if (app_url.isEmpty()) {
+                    Toast.makeText(getActivity(), "Referral code is empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, app_url);
+                    startActivity(Intent.createChooser(shareIntent, "Share via"));
+                }
+
+
                 break;
             case R.id.btn_referral_policy:
                 if (!(str_referral_rules_link.equalsIgnoreCase("No data"))) {

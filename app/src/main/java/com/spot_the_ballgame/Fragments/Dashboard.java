@@ -299,7 +299,7 @@ public class Dashboard extends Fragment implements View.OnClickListener {
             }
         });*/
 
-        Laravel_Host_Method();
+//        Laravel_Host_Method();
         //        FullScreenMethod();
         String select = "select EMAIL from LOGINDETAILS where STATUS ='" + 1 + "'";
         Cursor cursor = db.rawQuery(select, null);
