@@ -1200,6 +1200,6 @@ public class Dashboard extends Fragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        echo.disconnect();
+//        echo.disconnect();
     }
 }

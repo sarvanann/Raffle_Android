@@ -423,7 +423,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="310dp"
-            android:background="@color/black_color"
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -434,8 +433,7 @@
             <ImageView
                 android:id="@+id/iv_changing_image"
                 android:layout_width="match_parent"
-                android:layout_height="310dp"
-                android:background="@color/black_color" />
+                android:layout_height="310dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

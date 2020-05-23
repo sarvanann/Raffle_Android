@@ -32,6 +32,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,6 +47,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.snackbar.Snackbar;
@@ -385,7 +388,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
             milliseconds = Long.parseLong(str_count_down_seconds_for_res_downloading) * 1000 + 1;
             startTimer_For_Resource_Downloading(milliseconds);
         }*/
-
+        Before_Download_Method();
         new Thread(new Runnable() {
             public void run() {
                 while (progressStatus < 100) {
@@ -421,6 +424,39 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
 //        Get_Image_Assets_Details();
     }
 
+    private void Before_Download_Method() {
+        str_session_images = SessionSave.getSession("All_Image_File", Game_Act.this);
+        Log.e("str_session_images_log_Before", str_session_images);
+        if (!(str_session_images.equals("0") || str_session_images.equalsIgnoreCase("No data"))) {
+            String[] str_array = str_session_images.replace("[", "").replace("]", "").split(",");
+            List<String> fixedLenghtList = Arrays.asList(str_array);
+            ArrayList<String> stringArrayList = new ArrayList<String>(fixedLenghtList);
+            linkedHashSet = new LinkedHashSet<>(stringArrayList);
+            Log.e("linkedHashSet_sizeee", String.valueOf(linkedHashSet.size()));
+            for (int j = 0; j < linkedHashSet.size(); j++) {
+                imagequestionsIntegerArrayList.add(stringArrayList.get(j));
+                Log.e("imagequestionsIntegerArrayList_get_00_Before", imagequestionsIntegerArrayList.get(j));
+
+                Glide.with(Game_Act.this)
+                        .load(imagequestionsIntegerArrayList.get(j))
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .apply(RequestOptions.placeholderOf(R.drawable.card_loading).error(R.drawable.card_loading))
+                        .into(iv_changing_image);
+            }
+
+            /*String str_image_path = imagequestionsIntegerArrayList.get(0);
+            Log.e("str_image_path_get_00_Before", str_image_path);
+            str_session_images = SessionSave.getSession("All_Image_File", Game_Act.this);
+            if (!(str_session_images.equals("0") || str_session_images.equalsIgnoreCase("No data"))) {
+//                File imgFile_01 = new File(imagequestionsIntegerArrayList.get(j).replace("/ ", ""));
+                Log.e("imgFile_01_get_question_Before", String.valueOf(str_image_path));
+                Glide.with(Game_Act.this)
+                        .load(str_image_path)
+                        .apply(RequestOptions.placeholderOf(R.drawable.card_loading).error(R.drawable.card_loading))
+                        .into(iv_changing_image);
+            }*/
+        }
+    }
 
     private void Get_Image_Assets_Details() {
         try {
@@ -452,7 +488,20 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
     }
 
     private void After_Download_Method() {
+        iv_changing_image.setVisibility(View.VISIBLE);
+//        Toast.makeText(Game_Act.this, "After_Download_Method_Toast", Toast.LENGTH_SHORT).show();
+        String str_image_path = imagequestionsIntegerArrayList.get(0);
+//        Log.e("str_image_path_get_00", str_image_path);
         str_session_images = SessionSave.getSession("All_Image_File", Game_Act.this);
+        if (!(str_session_images.equals("0") || str_session_images.equalsIgnoreCase("No data"))) {
+//            Log.e("imgFile_01_get_question", String.valueOf(str_image_path));
+            Glide.with(Game_Act.this)
+                    .load(str_image_path)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .apply(RequestOptions.placeholderOf(R.drawable.card_loading).error(R.drawable.card_loading))
+                    .into(iv_changing_image);
+        }
+        /*str_session_images = SessionSave.getSession("All_Image_File", Game_Act.this);
         Log.e("str_session_images_log", str_session_images);
         if (!(str_session_images.equals("0") || str_session_images.equalsIgnoreCase("No data"))) {
             String[] str_array = str_session_images.replace("[", "").replace("]", "").split(",");
@@ -465,15 +514,34 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
 //                        Log.e("resultIAV_get_of_i_next", stringArrayList.get(j));
 //                Log.e("resultIAV_get_of_i_tostring", imagequestionsIntegerArrayList.toString().replace("/ ", "").replace("[", "").replace("]", ""));
             }
-        }
+            str_remaining_count_value = tv_remaining_count_value.getText().toString();
+            int n1_1 = Integer.parseInt(str_remaining_count_value);
+            int nn = n1_1 - 1;
+            Log.e("n111_1_after_download", String.valueOf(n1_1));
+            Log.e("imagequestionsIntegerArrayList_get_00", imagequestionsIntegerArrayList.get(0));
+
+            String str_image_path = imagequestionsIntegerArrayList.get(0);
+            Log.e("str_image_path_get_00", str_image_path);
+            str_session_images = SessionSave.getSession("All_Image_File", Game_Act.this);
+            if (!(str_session_images.equals("0") || str_session_images.equalsIgnoreCase("No data"))) {
+//                File imgFile_01 = new File(String.valueOf(imagequestionsIntegerArrayList.indexOf(n1_1)));
+//                File imgFile_01 = new File(imagequestionsIntegerArrayList.get(n1_1).replace("/ ", ""));
+                Log.e("imgFile_01_get_question", String.valueOf(str_image_path));
+                Glide.with(Game_Act.this)
+//                        .load(imgFile_01.getAbsolutePath().replace("/ ", ""))
+                        .load(str_image_path)
+                        .apply(RequestOptions.placeholderOf(R.drawable.card_loading).error(R.drawable.card_loading))
+                        .into(iv_changing_image);
+            }
+        }*/
 
         handler = new Handler();
         handler.postDelayed(new Runnable() {
             @SuppressLint("LongLogTag")
             @Override
             public void run() {
+//                Toast.makeText(Game_Act.this, "Handler_Toast", Toast.LENGTH_SHORT).show();
                 Get_Questions_Details();
-                iv_changing_image.setVisibility(View.VISIBLE);
                 constraintLayout_just_a_moment.setVisibility(View.GONE);
                 constraintLayout_game.setVisibility(View.VISIBLE);
                 if (!isNetworkAvaliable()) {
@@ -484,7 +552,8 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                     startTimer(milliseconds);
                 }
             }
-        }, 2900);
+//        }, 2900);
+        }, 2800);
         constraintLayout_end_game.setVisibility(View.GONE);
     }
 
@@ -532,10 +601,10 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                                 Final_Answer_ArrayList.add(answer);
 
                                 int n1 = Integer.parseInt(tv_remaining_count_value.getText().toString());
-                                Log.e("tv_remaining_count_value_get_quest", "" + n1);
+//                                Log.e("tv_remaining_count_value_get_quest", "" + n1);
                                 int_reaming_page_count_value = n1 + 1;
                                 int_count_value = n1;
-                                Log.e("int_count_value_get_question", "" + int_count_value);
+//                                Log.e("int_count_value_get_question", "" + int_count_value);
 
                                 /*str_session_images = SessionSave.getSession("All_Image_File", Game_Act.this);
                                 if (!(str_session_images.equals("0") || str_session_images.equalsIgnoreCase("No data"))) {
@@ -547,14 +616,14 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                                 }*/
 
 
-                                str_session_images = SessionSave.getSession("All_Image_File", Game_Act.this);
+                                /*str_session_images = SessionSave.getSession("All_Image_File", Game_Act.this);
                                 if (!(str_session_images.equals("0") || str_session_images.equalsIgnoreCase("No data"))) {
                                     File imgFile_01 = new File(imagequestionsIntegerArrayList.get(0).replace("/ ", ""));
                                     Log.e("imgFile_01_get_question", String.valueOf(imgFile_01));
                                     Glide.with(Game_Act.this)
                                             .load(imgFile_01.getAbsolutePath().replace("/ ", ""))
                                             .into(iv_changing_image);
-                                }
+                                }*/
 
 
                                 if (answersIntegerArrayList_01.get(0).length() >= 50 || answersIntegerArrayList_02.get(0).length() >= 50
@@ -675,10 +744,11 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
 //                    Log.e("imagequestionsIntegerArrayList_onfinish", imagequestionsIntegerArrayList.toString());
                     if (int_count_value < imagequestionsIntegerArrayList.size()) {
                         int n1 = Integer.parseInt(tv_remaining_count_value.getText().toString());
+//                        Log.e("onfinish_n1111", "" + n1);
                         int_reaming_page_count_value = n1 + 1;
                         int_count_value = n1;
 
-                        Log.e("tv_remaining_count_value_current_onfinish", String.valueOf(int_count_value));
+//                        Log.e("tv_remaining_count_value_current_onfinish", String.valueOf(int_count_value));
 
                         try {
                             if (int_reaming_page_count_value <= int_number_of_questions) {
@@ -734,9 +804,11 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
 //                                        Log.e("str_session_images_log", str_session_images);
                                         if (!(str_session_images.equals("0") || str_session_images.equalsIgnoreCase("No data"))) {
                                             File imgFile_01 = new File(imagequestionsIntegerArrayList.get(int_count_value).replace("/ ", ""));
-                                            Log.e("imgFile_01_onFinish", String.valueOf(imgFile_01));
+//                                            Log.e("imgFile_01_onFinish", String.valueOf(imgFile_01));
                                             Glide.with(Game_Act.this)
                                                     .load(imgFile_01.getAbsolutePath().replace("/ ", ""))
+                                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                                    .apply(RequestOptions.placeholderOf(R.drawable.card_loading).error(R.drawable.card_loading))
                                                     .into(iv_changing_image);
                                         }
 
@@ -1731,6 +1803,23 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                     int_correct_ans = Integer.parseInt(str_correct_ans);
                     Total_Result_Value_Method(int_onclcik_2x_power_up, int_correct_ans, str_difference_time, int_skip_else, int_correct_ans_notations, n1_1, str_onclick_string_answer_selection);
                 }
+
+                /*str_remaining_count_value = tv_remaining_count_value.getText().toString();
+                int n1_11 = Integer.parseInt(str_remaining_count_value);
+                Log.e("tv_remaining_count_value_screen_one_method", "" + n1_11);
+                str_session_images = SessionSave.getSession("All_Image_File", Game_Act.this);
+
+                //            Log.e("str_session_images_log", str_session_images);
+                if (!(str_session_images.equals("0") || str_session_images.equalsIgnoreCase("No data"))) {
+                    File imgFile_01 = new File(imagequestionsIntegerArrayList.get(n1_11).replace("/ ", ""));
+                    Log.e("imgFile_01_Screen_0ne", String.valueOf(imgFile_01));
+                    Glide.with(Game_Act.this)
+                            .load(imgFile_01.getAbsolutePath().replace("/ ", ""))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .apply(RequestOptions.placeholderOf(R.drawable.card_loading).error(R.drawable.card_loading))
+                            .into(iv_changing_image);
+                }*/
+
         /*} else{
             tv_A_alphabet.setBackground(getResources().getDrawable(R.drawable.onclick_wrong_answer_circle));
             tv_A_alphabet.setTextColor(getResources().getColor(R.color.black_color));
@@ -1762,10 +1851,17 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                         dialog_fr_timer.show();
                         dialog_fr_timer.setCancelable(false);
                     }
-                }, 200);
+                }, 50);
+
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        /*tv_A_alphabet.setBackground(getResources().getDrawable(R.drawable.onclick_effect_circle));
+                        tv_A_alphabet.setTextColor(getResources().getColor(R.color.black_color));
+
+                        dialog_fr_timer.show();
+                        dialog_fr_timer.setCancelable(false);*/
+
                         int_2x_onclick_or_not = 0;
                         Screen_01_Method(n1_1,
                                 str_onclick_answer_selection,
@@ -1773,7 +1869,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                                 str_onclick_2x_powerup,
                                 int_2x_onclick_or_not);
                     }
-                }, 300);
+                }, 100);
                 break;
             case R.id.tv_B_alphabet:
 //                str_onclick_string_answer_selection = tv_B_alphabet.getText().toString();
@@ -1808,6 +1904,23 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                     Total_Result_Value_Method(int_onclcik_2x_power_up, int_correct_ans, str_difference_time, int_skip_else, int_correct_ans_notations, n1_1, str_onclick_string_answer_selection);
                 }
                 Disable_All_Buttons();
+                //Created On 23-05-2020
+                /*str_remaining_count_value = tv_remaining_count_value.getText().toString();
+                int n1_12 = Integer.parseInt(str_remaining_count_value);
+                Log.e("tv_remaining_count_value_screen_one_method", "" + n1_12);
+                str_session_images = SessionSave.getSession("All_Image_File", Game_Act.this);
+
+                //            Log.e("str_session_images_log", str_session_images);
+                if (!(str_session_images.equals("0") || str_session_images.equalsIgnoreCase("No data"))) {
+                    File imgFile_01 = new File(imagequestionsIntegerArrayList.get(n1_12).replace("/ ", ""));
+                    Log.e("imgFile_01_Screen_0ne", String.valueOf(imgFile_01));
+                    Glide.with(Game_Act.this)
+                            .load(imgFile_01.getAbsolutePath().replace("/ ", ""))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .apply(RequestOptions.placeholderOf(R.drawable.card_loading).error(R.drawable.card_loading))
+                            .into(iv_changing_image);
+                }*/
+
         /*} else{
             tv_B_alphabet.setBackground(getResources().getDrawable(R.drawable.onclick_wrong_answer_circle));
             tv_B_alphabet.setTextColor(getResources().getColor(R.color.black_color));
@@ -1842,10 +1955,17 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                         dialog_fr_timer.setCancelable(false);
                     }
 //                }, 800);
-                }, 200);
+                }, 50);
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        //Created On 23-05-2020
+                        /*tv_B_alphabet.setBackground(getResources().getDrawable(R.drawable.normal_effect_circle));
+                        tv_B_alphabet.setTextColor(getResources().getColor(R.color.white_color));
+
+                        dialog_fr_timer.show();
+                        dialog_fr_timer.setCancelable(false);*/
+
                         int_2x_onclick_or_not = 0;
                         Screen_01_Method(n1_1,
                                 str_onclick_answer_selection,
@@ -1854,7 +1974,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                                 int_2x_onclick_or_not);
                     }
 //                }, 1200);
-                }, 300);
+                }, 100);
                 break;
             case R.id.tv_C_alphabet:
 //                str_onclick_string_answer_selection = tv_C_alphabet.getText().toString();
@@ -1887,6 +2007,22 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                     int_correct_ans = Integer.parseInt(str_correct_ans);
                     Total_Result_Value_Method(int_onclcik_2x_power_up, int_correct_ans, str_difference_time, int_skip_else, int_correct_ans_notations, n1_1, str_onclick_string_answer_selection);
                 }
+                //Created On 23-05-2020
+                /*str_remaining_count_value = tv_remaining_count_value.getText().toString();
+                int n1_13 = Integer.parseInt(str_remaining_count_value);
+                Log.e("tv_remaining_count_value_screen_one_method", "" + n1_13);
+                str_session_images = SessionSave.getSession("All_Image_File", Game_Act.this);
+
+                //            Log.e("str_session_images_log", str_session_images);
+                if (!(str_session_images.equals("0") || str_session_images.equalsIgnoreCase("No data"))) {
+                    File imgFile_01 = new File(imagequestionsIntegerArrayList.get(n1_13).replace("/ ", ""));
+                    Log.e("imgFile_01_Screen_0ne", String.valueOf(imgFile_01));
+                    Glide.with(Game_Act.this)
+                            .load(imgFile_01.getAbsolutePath().replace("/ ", ""))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .apply(RequestOptions.placeholderOf(R.drawable.card_loading).error(R.drawable.card_loading))
+                            .into(iv_changing_image);
+                }*/
 
         /*} else{
             tv_C_alphabet.setBackground(getResources().getDrawable(R.drawable.onclick_wrong_answer_circle));
@@ -1920,10 +2056,16 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                         dialog_fr_timer.setCancelable(false);
                     }
 //                }, 800);
-                }, 200);
+                }, 50);
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        /*tv_C_alphabet.setBackground(getResources().getDrawable(R.drawable.normal_effect_circle));
+                        tv_C_alphabet.setTextColor(getResources().getColor(R.color.white_color));
+
+                        dialog_fr_timer.show();
+                        dialog_fr_timer.setCancelable(false);*/
+
                         int_2x_onclick_or_not = 0;
                         Screen_01_Method(n1_1,
                                 str_onclick_answer_selection,
@@ -1932,7 +2074,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                                 int_2x_onclick_or_not);
                     }
 //                }, 1200);
-                }, 300);
+                }, 100);
                 break;
             case R.id.tv_D_alphabet:
 //                str_onclick_string_answer_selection = tv_D_alphabet.getText().toString();
@@ -1965,6 +2107,23 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                     int_correct_ans = Integer.parseInt(str_correct_ans);
                     Total_Result_Value_Method(int_onclcik_2x_power_up, int_correct_ans, str_difference_time, int_skip_else, int_correct_ans_notations, n1_1, str_onclick_string_answer_selection);
                 }
+
+                //Created On 23-05-2020
+                /*str_remaining_count_value = tv_remaining_count_value.getText().toString();
+                int n1_14 = Integer.parseInt(str_remaining_count_value);
+                Log.e("tv_remaining_count_value_screen_one_method", "" + n1_14);
+                str_session_images = SessionSave.getSession("All_Image_File", Game_Act.this);
+
+                //            Log.e("str_session_images_log", str_session_images);
+                if (!(str_session_images.equals("0") || str_session_images.equalsIgnoreCase("No data"))) {
+                    File imgFile_01 = new File(imagequestionsIntegerArrayList.get(n1_14).replace("/ ", ""));
+                    Log.e("imgFile_01_Screen_0ne", String.valueOf(imgFile_01));
+                    Glide.with(Game_Act.this)
+                            .load(imgFile_01.getAbsolutePath().replace("/ ", ""))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .apply(RequestOptions.placeholderOf(R.drawable.card_loading).error(R.drawable.card_loading))
+                            .into(iv_changing_image);
+                }*/
 
         /*} else{
             tv_D_alphabet.setBackground(getResources().getDrawable(R.drawable.onclick_wrong_answer_circle));
@@ -1999,10 +2158,17 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                         dialog_fr_timer.setCancelable(false);
                     }
 //                }, 800);
-                }, 200);
+                }, 50);
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        /*tv_D_alphabet.setBackground(getResources().getDrawable(R.drawable.normal_effect_circle));
+                        tv_D_alphabet.setTextColor(getResources().getColor(R.color.white_color));
+
+                        dialog_fr_timer.show();
+                        dialog_fr_timer.setCancelable(false);*/
+
+
                         int_2x_onclick_or_not = 0;
                         Screen_01_Method(n1_1,
                                 str_onclick_answer_selection,
@@ -2011,7 +2177,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                                 int_2x_onclick_or_not);
                     }
 //                }, 1200);
-                }, 300);
+                }, 100);
                 break;
 
         }
@@ -2049,6 +2215,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                 Log.e("imgFile_01_Screen_0ne", String.valueOf(imgFile_01));
                 Glide.with(Game_Act.this)
                         .load(imgFile_01.getAbsolutePath().replace("/ ", ""))
+                        .apply(RequestOptions.placeholderOf(R.drawable.card_loading).error(R.drawable.card_loading))
                         .into(iv_changing_image);
             }
 
