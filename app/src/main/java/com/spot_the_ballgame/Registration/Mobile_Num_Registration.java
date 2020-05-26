@@ -1,5 +1,6 @@
 package com.spot_the_ballgame.Registration;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -15,6 +16,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -28,12 +30,16 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.spot_the_ballgame.Interface.APIInterface;
 import com.spot_the_ballgame.Interface.Factory;
 import com.spot_the_ballgame.Model.UserModel;
 import com.spot_the_ballgame.R;
 import com.spot_the_ballgame.Referral_Code_Act;
+import com.spot_the_ballgame.Registration.SignIn.Email_Sign_In_Act;
 import com.spot_the_ballgame.SessionSave;
 import com.spot_the_ballgame.Toast_Message;
 
@@ -58,7 +64,7 @@ public class Mobile_Num_Registration extends AppCompatActivity implements View.O
     Button btn_send_code;
     String str_id, str_source_detail, str_app_id, str_first_name, str_last_name,
             str_email, str_phoneno, str_image, str_walet, str_money, str_token,
-            str_username, str_password, str_active, str_verified, str_code, str_message;
+            str_username, str_password, str_active, str_verified, str_code, str_message, str_fcm_token;
     String str_intent_source_details;
     SQLiteDatabase db;
     //This is for Internet alert using snackbar status
@@ -102,6 +108,18 @@ public class Mobile_Num_Registration extends AppCompatActivity implements View.O
             } while (cursor.moveToNext());
         }
         cursor.close();
+
+        /*Here we the following source code for getting token for FCM and Firebase InAppMessaging*/
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, new OnSuccessListener<InstanceIdResult>() {
+            @SuppressLint("LongLogTag")
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                str_fcm_token = instanceIdResult.getToken();
+                Log.e("Mobile_Num_Registration_newToken", str_fcm_token);
+                Mobile_Num_Registration.this.getPreferences(Context.MODE_PRIVATE).edit().putString("fb", str_fcm_token).apply();
+            }
+        });
+
 //        Log.e("str_source_details", String.valueOf(str_intent_source_details));
 //        Log.e("str_email", String.valueOf(str_email));
        /*
@@ -150,15 +168,14 @@ public class Mobile_Num_Registration extends AppCompatActivity implements View.O
             jsonObject.put("source_detail", str_intent_source_details);
             jsonObject.put("email", str_email);
             jsonObject.put("phoneno", str_mobile_num);
-
+            jsonObject.put("fcm_token", str_fcm_token);
             pd.setMessage("Loading...");
             pd.show();
             pd.setCancelable(false);
             ProgressBar progressbar = pd.findViewById(android.R.id.progress);
             progressbar.getIndeterminateDrawable().setColorFilter(Color.parseColor("#000000"), android.graphics.PorterDuff.Mode.SRC_IN);
-
             APIInterface apiInterface = Factory.getClient();
-//            Log.e("Json_Value_mob_reg", jsonObject.toString());
+            Log.e("Json_Value_mob_reg", jsonObject.toString());
             Call<UserModel> call = apiInterface.MOBILE_NUM_REGISTER_RESPONSE_CALL("application/json", jsonObject.toString());
             call.enqueue(new Callback<UserModel>() {
                 @Override

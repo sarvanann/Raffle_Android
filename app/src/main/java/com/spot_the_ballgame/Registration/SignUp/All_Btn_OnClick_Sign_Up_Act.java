@@ -161,8 +161,8 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements
         constraintLayout_email_signup_in_signup.setOnClickListener(this);
 
         /*
-        * This is used for showing signup layout while back press the button and user logout
-        * */
+         * This is used for showing signup layout while back press the button and user logout
+         * */
         String s1 = SessionSave.getSession("layout_visible_value", All_Btn_OnClick_Sign_Up_Act.this);
         if (s1.equals("No data")) {
 //            Toast.makeText(this, "Nodata", Toast.LENGTH_SHORT).show();
@@ -943,6 +943,10 @@ public class All_Btn_OnClick_Sign_Up_Act extends AppCompatActivity implements
 //        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 //        System.exit(0);
 
+        /*
+         * This functionality is used for if user logout the application screen will redirect to this screen then user back press the button
+         * it'll check if the user status is '0' or other if '0' means backpress will exit the application.
+         * */
         String select = "select STATUS from LOGINDETAILS where STATUS ='" + 0 + "'";
         Cursor cursor = db.rawQuery(select, null);
         if (cursor.moveToFirst()) {

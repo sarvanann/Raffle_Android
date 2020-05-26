@@ -1,5 +1,6 @@
 package com.spot_the_ballgame.Registration.SignIn;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -18,6 +19,7 @@ import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.Gravity;
 import android.view.View;
@@ -38,7 +40,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.spot_the_ballgame.Interface.APIInterface;
 import com.spot_the_ballgame.Interface.Factory;
 import com.spot_the_ballgame.Model.UserModel;
@@ -48,6 +53,7 @@ import com.spot_the_ballgame.Registration.Forgot_Pwd_Act;
 import com.spot_the_ballgame.Registration.Mobile_Num_Registration;
 import com.spot_the_ballgame.Registration.SignUp.Email_Sign_Up_Act;
 import com.spot_the_ballgame.SessionSave;
+import com.spot_the_ballgame.Splash_Screen_Act;
 import com.spot_the_ballgame.Toast_Message;
 
 import org.json.JSONObject;
@@ -85,7 +91,8 @@ public class Email_Sign_In_Act extends AppCompatActivity implements View.OnClick
             str_source_details,
             str_sign_up_status,
             str_intent_signup_status,
-            str_email_password;
+            str_email_password,
+            str_fcm_token;
 
     //This is for Internet alert using snackbar status
     public static int TYPE_WIFI = 1;
@@ -117,6 +124,18 @@ public class Email_Sign_In_Act extends AppCompatActivity implements View.OnClick
         btn_show_hide_crnt_pwd = findViewById(R.id.btn_show_hide_crnt_pwd);
         tv_forgot_pwd_in_signin.setOnClickListener(this);
         btn_login.setOnClickListener(this);
+
+
+        /*Here we the following source code for getting token for FCM and Firebase InAppMessaging*/
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, new OnSuccessListener<InstanceIdResult>() {
+            @SuppressLint("LongLogTag")
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                str_fcm_token = instanceIdResult.getToken();
+                Log.e("Email_Sign_In_Act_newToken", str_fcm_token);
+                Email_Sign_In_Act.this.getPreferences(Context.MODE_PRIVATE).edit().putString("fb", str_fcm_token).apply();
+            }
+        });
 
 
         et_pwd_in_signin.addTextChangedListener(new TextWatcher() {
@@ -391,15 +410,14 @@ public class Email_Sign_In_Act extends AppCompatActivity implements View.OnClick
             jsonObject.put("source_detail", "email");
             jsonObject.put("email", str_email_id);
             jsonObject.put("password", str_pwd);
+            jsonObject.put("fcm_token", str_fcm_token);
             APIInterface apiInterface = Factory.getClient();
-
             pd.setMessage("Loading...");
             pd.show();
             pd.setCancelable(false);
             ProgressBar progressbar = pd.findViewById(android.R.id.progress);
             progressbar.getIndeterminateDrawable().setColorFilter(Color.parseColor("#000000"), android.graphics.PorterDuff.Mode.SRC_IN);
-
-//            Log.e("Json_value", jsonObject.toString());
+            Log.e("Json_value", jsonObject.toString());
             Call<UserModel> call = apiInterface.NORMAL_LOGIN_RESPONSE_CALL("application/json", jsonObject.toString());
             call.enqueue(new Callback<UserModel>() {
                 @Override

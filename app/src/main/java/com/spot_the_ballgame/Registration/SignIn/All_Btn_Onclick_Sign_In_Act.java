@@ -1,5 +1,6 @@
 package com.spot_the_ballgame.Registration.SignIn;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -48,7 +49,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
 import com.spot_the_ballgame.Interface.APIInterface;
 import com.spot_the_ballgame.Interface.ErrorResponse;
@@ -109,7 +113,8 @@ public class All_Btn_Onclick_Sign_In_Act extends AppCompatActivity
             str_first_name,
             str_last_name,
             str_image,
-            str_username;
+            str_username,
+            str_fcm_token;
     String str_intent_source_details = "";
 
     private static final String EMAIL = "email";
@@ -134,6 +139,7 @@ public class All_Btn_Onclick_Sign_In_Act extends AppCompatActivity
     Bundle bundle;
     String str_layout_visible_value = "";
 
+    @SuppressLint("LongLogTag")
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,8 +158,22 @@ public class All_Btn_Onclick_Sign_In_Act extends AppCompatActivity
         constraintLayout2_sign_in = findViewById(R.id.constraintLayout2_sign_in);
 
 
+        /*Here we the following source code for getting token for FCM and Firebase InAppMessaging*/
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, new OnSuccessListener<InstanceIdResult>() {
+            @SuppressLint("LongLogTag")
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                str_fcm_token = instanceIdResult.getToken();
+                Log.e("All_Btn_Onclick_Sign_In_Act_newToken", str_fcm_token);
+                All_Btn_Onclick_Sign_In_Act.this.getPreferences(Context.MODE_PRIVATE).edit().putString("fb", str_fcm_token).apply();
+            }
+        });
+
         /*
-         * This is used for showing signup layout while back press the button and user logout
+         * This is used for showing signup layout while back press the button
+         * and if user logout the application and press backpress means this screen would ,so
+         * that here we created a function to move up to All_Btn_OnClick_Sign_Up_Act screen
+         * else means layout_visible_value==>1 means stayed in this screen and visible constraintLayout2_sign_in
          * */
         str_layout_visible_value = SessionSave.getSession("layout_visible_value", All_Btn_Onclick_Sign_In_Act.this);
         Log.e("str_layout_visible_value", str_layout_visible_value);
@@ -220,7 +240,8 @@ public class All_Btn_Onclick_Sign_In_Act extends AppCompatActivity
             jsonObject.put("source_detail", "facebook");
             jsonObject.put("email", fbUserEmail);
             jsonObject.put("app_id", fbUserId);
-
+            jsonObject.put("fcm_token", str_fcm_token);
+            Log.e("signin_FB", jsonObject.toString());
             pd.setMessage("Loading...");
             pd.show();
             pd.setCancelable(false);
@@ -362,10 +383,14 @@ public class All_Btn_Onclick_Sign_In_Act extends AppCompatActivity
                 /*
                  * This is used for showing signup layout while back press the button and user logout
                  * */
+                /*
+                 * This is used for showing signup layout while back press the button
+                 * and if user logout the application and press backpress means this screen would ,so
+                 * that here we created a function to move up to All_Btn_OnClick_Sign_Up_Act screen
+                 * */
 
                 SessionSave.ClearSession("layout_visible_value", All_Btn_Onclick_Sign_In_Act.this);
                 SessionSave.SaveSession("layout_visible_value", "0", All_Btn_Onclick_Sign_In_Act.this);
-
                 Intent intent = new Intent(All_Btn_Onclick_Sign_In_Act.this, All_Btn_OnClick_Sign_Up_Act.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -668,6 +693,7 @@ public class All_Btn_Onclick_Sign_In_Act extends AppCompatActivity
             jsonObject.put("source_detail", "gmail");
             jsonObject.put("email", str_email);
             jsonObject.put("app_id", str_id);
+            jsonObject.put("fcm_token", str_fcm_token);
             APIInterface apiInterface = Factory.getClient();
 
             pd.setMessage("Loading...");

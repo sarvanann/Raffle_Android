@@ -15,6 +15,9 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.spot_the_ballgame.Registration.Mobile_Num_Registration;
 import com.spot_the_ballgame.Registration.SignIn.Email_Sign_In_Act;
 import com.spot_the_ballgame.Registration.SignUp.All_Btn_OnClick_Sign_Up_Act;
@@ -25,6 +28,10 @@ import java.security.NoSuchAlgorithmException;
 
 import io.fabric.sdk.android.Fabric;
 
+/*
+ *This is the first screen when we open application initially
+ *after registered with application,here we maintain database using status
+ *  */
 public class Splash_Screen_Act extends AppCompatActivity {
     private static final String TAG = "splashscreen";
     public static SQLiteDatabase db;
@@ -47,6 +54,7 @@ public class Splash_Screen_Act extends AppCompatActivity {
         printHashKey(getApplicationContext());
     }
 
+    //Here we get SHA1 key value
     public void printHashKey(Context pContext) {
         try {
             PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
@@ -63,6 +71,20 @@ public class Splash_Screen_Act extends AppCompatActivity {
         }
     }
 
+    /*
+     * In this thread we set sleeper for 360 milliseconds after that particular screen will open.
+     * here we maintain database using status
+     * if status= 1 ==>Mobile_Num_Registration
+     * if status= 2 ==>Referral_Code_Act
+     * if status= 3 ==>Navigation_Drawer_Act
+     * if status= 4 ==>Email_Sign_In_Act
+     * if status= 5 ==>Update_New_Password_Act
+     * if status= 6 ==>Navigation_Drawer_Act
+     * if status= 8 ==>Navigation_Drawer_Act
+     *and also we maintain Carosel Status value
+     * if str_carosel_status= No data ==>Carousel_View_Act
+     * if str_carosel_status= 1 ==>All_Btn_OnClick_Sign_Up_Act
+     * */
     private class IntentLauncher extends Thread {
         public void run() {
             try {

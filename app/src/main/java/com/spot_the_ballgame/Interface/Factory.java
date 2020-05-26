@@ -23,9 +23,13 @@ public class Factory {
 //    public static final String BASE_URL_FOR_IMAGE_LOCAL_HOST = "http://skyrand.in/stbadmin/public/";
 
     //This is for live
-    public static final String BASE_URL_MOBILE_APP = "http://skyrand.in/raffle/api/v1/";
+    public static final String BASE_URL_MOBILE_APP = "http://45.32.59.138/api/v1/";
     public static final String BASE_HELP_TC_URL_MOBILE_APP = "http://skyrand.in/stb/api/v1/";
-    public static final String BASE_URL_FOR_IMAGE_LOCAL_HOST = "http://skyrand.in/stbadmin/public";
+    public static final String BASE_URL_FOR_IMAGE_LOCAL_HOST = "http://45.32.59.138/raffle_admin/public";
+
+//    public static final String BASE_URL_MOBILE_APP = "http://skyrand.in/raffle/api/v1/";
+//    public static final String BASE_HELP_TC_URL_MOBILE_APP = "http://skyrand.in/stb/api/v1/";
+//    public static final String BASE_URL_FOR_IMAGE_LOCAL_HOST = "http://skyrand.in/stbadmin/public";
 
 
     //This is for SK
