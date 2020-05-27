@@ -262,5 +262,5 @@
     <string name="owButtonState">owButtonState</string>
 
     <string name="new_terms_and_condition_txt">I am over 18, and I agree to all\n<u>terms &amp;conditions</u> and <u>privacy policies</u></string>
-
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
 </resources>

@@ -451,10 +451,15 @@ public class Game_Details_Screen_Act extends AppCompatActivity implements View.O
         Get_Questions_Details();
 
         if (str_entry_fees.equalsIgnoreCase("Free")) {
+            tv_enter_contest_btn_for_free.setText("Contest Loading");
+        }
+
+        if (str_entry_fees.equalsIgnoreCase("Free")) {
             tv_just_a_moment.stop();
             interstitialAd.setAdListener(new AdListener() {
                 @Override
                 public void onAdLoaded() {
+                    tv_enter_contest_btn_for_free.setText(R.string.play_for_free_txt);
                 }
 
                 @Override
@@ -686,14 +691,14 @@ public class Game_Details_Screen_Act extends AppCompatActivity implements View.O
                                 int n11 = int_entry_fee - int_tv_points;
 //                                Log.e("n1111", String.valueOf(n11));
                                 tv_enter_contest_btn.setVisibility(View.GONE);
-                                if (str_status_onclick.equals("2")) {
-                                    constraintLayout_watch_ads_btn.setVisibility(View.GONE);
-                                    constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
-                                    tv_earn_coins.setVisibility(View.GONE);
-                                } else if (str_status_onclick.equals("0")) {
+                                if (str_status_onclick.equals("0")) {
                                     constraintLayout_watch_ads_btn.setVisibility(View.VISIBLE);
                                     constraintLayout_watch_ads_btn_inside.setVisibility(View.VISIBLE);
                                     tv_earn_coins.setVisibility(View.VISIBLE);
+                                } else if (str_status_onclick.equals("2")) {
+                                    constraintLayout_watch_ads_btn.setVisibility(View.GONE);
+                                    constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                                    tv_earn_coins.setVisibility(View.GONE);
                                 }
                                 tv_play_btn.setVisibility(View.GONE);
                                 tv_earn_coins.setText(String.valueOf(n11));
@@ -887,17 +892,22 @@ public class Game_Details_Screen_Act extends AppCompatActivity implements View.O
                         }
                     }
                 } else {
+                    /*This method is used for setting play status value 1 or 2 if play status value is 1 means the contest is live , or else 2 means contest is completed*/
+                    int_play_status = 1;
+                    Get_Enter_Game_Page();
+
                     if (int_entry_fee > int_tv_points) {
                         int n11 = int_entry_fee - int_tv_points;
                         tv_enter_contest_btn.setVisibility(View.GONE);
-                        if (str_status_onclick.equals("2")) {
-                            constraintLayout_watch_ads_btn.setVisibility(View.GONE);
-                            constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
-                            tv_earn_coins.setVisibility(View.GONE);
-                        } else if (str_status_onclick.equals("0")) {
+
+                        if (str_status_onclick.equals("0")) {
                             constraintLayout_watch_ads_btn.setVisibility(View.VISIBLE);
                             constraintLayout_watch_ads_btn_inside.setVisibility(View.VISIBLE);
                             tv_earn_coins.setVisibility(View.VISIBLE);
+                        } else if (str_status_onclick.equals("2")) {
+                            constraintLayout_watch_ads_btn.setVisibility(View.GONE);
+                            constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                            tv_earn_coins.setVisibility(View.GONE);
                         }
                         tv_play_btn.setVisibility(View.GONE);
                         tv_earn_coins.setText(String.valueOf(n11));
@@ -916,9 +926,6 @@ public class Game_Details_Screen_Act extends AppCompatActivity implements View.O
                             constraintLayout_watch_ads_btn.setBackground(getResources().getDrawable(R.drawable.game_list_bg_free_btn));
                             constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
                         }
-                        /*This method is used for setting play status value 1 or 2 if play status value is 1 means the contest is live , or else 2 means contest is completed*/
-                        int_play_status = 1;
-                        Get_Enter_Game_Page();
 //                    str_playby = "Coins";
 //                    Getting_Update_Status_Details_Initial(int_play_status);
 //                    Get_Points_Add_Delete_Details(str_playby);
@@ -1287,14 +1294,14 @@ public class Game_Details_Screen_Act extends AppCompatActivity implements View.O
                                 int n11 = int_entry_fee - int_db_balance;
 //                            Log.e("n1111", String.valueOf(n11));
                                 tv_enter_contest_btn.setVisibility(View.GONE);
-                                if (str_status_onclick.equals("2")) {
-                                    constraintLayout_watch_ads_btn.setVisibility(View.GONE);
-                                    constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
-                                    tv_earn_coins.setVisibility(View.GONE);
-                                } else if (str_status_onclick.equals("0")) {
+                                if (str_status_onclick.equals("0")) {
                                     constraintLayout_watch_ads_btn.setVisibility(View.VISIBLE);
                                     constraintLayout_watch_ads_btn_inside.setVisibility(View.VISIBLE);
                                     tv_earn_coins.setVisibility(View.VISIBLE);
+                                } else if (str_status_onclick.equals("2")) {
+                                    constraintLayout_watch_ads_btn.setVisibility(View.GONE);
+                                    constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                                    tv_earn_coins.setVisibility(View.GONE);
                                 }
                                 tv_play_btn.setVisibility(View.GONE);
                                 tv_earn_coins.setText(String.valueOf(n11));

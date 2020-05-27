@@ -133,7 +133,6 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
             str_onclick_string_answer_selection,
             str_contest_id,
             str_local_host,
-            str_team_a_path,
             str_onclick_time,
             str_difference_time,
             str_final_answer,
@@ -337,7 +336,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
             str_skip = bundle.getString("str_skip");
             str_entry_fees = bundle.getString("str_entry_fees");
             str_contest_id = bundle.getString("str_contest_id");
-            str_team_a_path = bundle.getString("str_team_a_path");
+
 
             str_int_play_status = bundle.getString("int_play_status");
             str_playby = bundle.getString("str_playby");
@@ -1072,9 +1071,9 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                         jsonObject.put("click_points_skip", total_skip_values_ArrayList.toString().replace("[", "").replace("]", ""));
                         jsonObject.put("click_points_wrong", total_onclick_wrong_answer_values_ArrayList.toString().replace("[", "").replace("]", ""));
                         jsonObject.put("total_onclick_answer_values", int_difference_final_values);
-//                        Log.e("Total_Json_Values_STB", jsonObject.toString());
+                       Log.e("Total_Json_Values_STB", jsonObject.toString());
 
-                        Getting_Update_Status_Details();
+//                        Getting_Update_Status_Details();
                         APIInterface apiInterface = Factory.getClient();
                         Call<Category_Model> call = apiInterface.GET_FINAL_RESULT_CALL("application/json", jsonObject.toString(), str_auth_token);
                         call.enqueue(new Callback<Category_Model>() {
@@ -1134,7 +1133,11 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
 //                Log.e("add_dlt_json_value_ad", jsonObject.toString());
             } else if (str_playby.equalsIgnoreCase("Coins")) {
                 jsonObject.put("email", str_email);
-                jsonObject.put("wallet", str_entry_fees);
+                if (str_entry_fees.equalsIgnoreCase("Free")) {
+                    jsonObject.put("wallet", "0");
+                } else {
+                    jsonObject.put("wallet", str_entry_fees);
+                }
                 jsonObject.put("playby", str_playby);
 //                Log.e("add_dlt_json_value_coins", jsonObject.toString());
             }

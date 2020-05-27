@@ -92,8 +92,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
@@ -677,11 +679,17 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
                 .thumbnail(Glide.with(Game_Two_Act.this).load(str_connect_host_image))
                 .apply(RequestOptions.circleCropTransform())
                 .into(iv_categoires_image_game_two_act);
+
+        if (str_entry_fees.equalsIgnoreCase("Free")) {
+            tv_enter_contest_btn_for_free.setText("Contest Loading");
+        }
+
         if (str_entry_fees.equalsIgnoreCase("Free")) {
             tv_just_a_moment.stop();
             interstitialAd.setAdListener(new AdListener() {
                 @Override
                 public void onAdLoaded() {
+                    tv_enter_contest_btn_for_free.setText(R.string.play_for_free_txt);
                 }
 
                 @Override
@@ -2327,7 +2335,7 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
             jsonObject.put("contest_id", str_contest_id);
             jsonObject.put("play_status", int_play_status);
             jsonObject.put("email", str_email);
-//            Log.e("update_response_init", jsonObject.toString());
+            Log.e("update_response_init", jsonObject.toString());
             APIInterface apiInterface = Factory.getClient();
             Call<Category_Model> call = apiInterface.GET_UPDATE_STATUS_CALL("application/json", jsonObject.toString(), str_auth_token);
             call.enqueue(new Callback<Category_Model>() {
@@ -2474,7 +2482,7 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
                             jsonObject.put("total_onclick_answer_values", int_difference_final_values);
                             Log.e("ELSE_Total_Json_Values", jsonObject.toString());
                         }
-                        Getting_Update_Status_Details();
+//                        Getting_Update_Status_Details();
                         APIInterface apiInterface = Factory.getClient();
                         Call<Category_Model> call = apiInterface.GET_FINAL_RESULT_CALL("application/json", jsonObject.toString(), str_auth_token);
                         call.enqueue(new Callback<Category_Model>() {
@@ -2484,7 +2492,7 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
                                     if (response.isSuccessful()) {
 
                                         /*This method is used for setting play status value 1 or 2 if play status value is 1 means the contest is live , or else 2 means contest is completed*/
-                                        int_play_status = 1;
+                                        int_play_status = 2;
                                         Getting_Update_Status_Details_Initial(int_play_status);
                                         str_playby = "Coins";
                                         Get_Points_Add_Delete_Details(str_playby);
@@ -2848,12 +2856,16 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
                 jsonObject.put("email", str_email);
                 jsonObject.put("wallet", mCoinCountText.getText().toString());
                 jsonObject.put("playby", str_playby);
-//                Log.e("add_dlt_json_value_ad", jsonObject.toString());
+                Log.e("add_dlt_json_value_ad", jsonObject.toString());
             } else if (str_playby.equalsIgnoreCase("Coins")) {
                 jsonObject.put("email", str_email);
-                jsonObject.put("wallet", str_entry_fees);
                 jsonObject.put("playby", str_playby);
-//                Log.e("add_dlt_json_value_coins", jsonObject.toString());
+                if (str_entry_fees.equalsIgnoreCase("Free")) {
+                    jsonObject.put("wallet", "0");
+                } else {
+                    jsonObject.put("wallet", str_entry_fees);
+                }
+                Log.e("add_dlt_json_value_coins", jsonObject.toString());
             }
 
             APIInterface apiInterface = Factory.getClient();
@@ -3098,7 +3110,7 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
             jsonObject.put("contest_id", str_contest_id);
             jsonObject.put("play_status", "2");
             jsonObject.put("email", str_email);
-//            Log.e("update_response_end", jsonObject.toString());
+            Log.e("update_response_end", jsonObject.toString());
             APIInterface apiInterface = Factory.getClient();
             Call<Category_Model> call = apiInterface.GET_UPDATE_STATUS_CALL("application/json", jsonObject.toString(), str_auth_token);
             call.enqueue(new Callback<Category_Model>() {
@@ -3687,7 +3699,7 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
 
                             /*This method is used for setting play status value 1 or 2 if play status value is 1 means the contest is live ,
                              or else 2 means contest is completed*/
-                            int_play_status = 1;
+                            int_play_status = 2;
                             Getting_Update_Status_Details_Initial(int_play_status);
                             str_playby = "Coins";
                             Get_Points_Add_Delete_Details(str_playby);
