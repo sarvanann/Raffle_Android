@@ -67,9 +67,11 @@ public class How_To_Play_Fragment extends Fragment {
         // layouts of all welcome sliders
         // add few more layouts if you want
         layouts = new int[]{
-                R.layout.welcome_slide1,
-                R.layout.welcome_slide2,
-                R.layout.welcome_slide3};
+                R.layout.welcome_screen1_for_how_to_play,
+                R.layout.welcome_screen2_for_how_to_play,
+                R.layout.welcome_screen3_for_how_to_play,
+                R.layout.welcome_slide4_for_how_to_play,
+                R.layout.welcome_slide5_for_how_to_play};
         // adding bottom dots
         addBottomDots(0);
         // making notification bar transparent
@@ -93,8 +95,8 @@ public class How_To_Play_Fragment extends Fragment {
     private void addBottomDots(int currentPage) {
         dots = new TextView[layouts.length];
 
-        int[] colorsActive = getResources().getIntArray(R.array.array_dot_active);
-        int[] colorsInactive = getResources().getIntArray(R.array.array_dot_inactive);
+        int[] colorsActive = getResources().getIntArray(R.array.array_dot_active_for_how_to_play);
+        int[] colorsInactive = getResources().getIntArray(R.array.array_dot_inactive_for_how_to_play);
 
         carousel_dotsLayout.removeAllViews();
         for (int i = 0; i < dots.length; i++) {

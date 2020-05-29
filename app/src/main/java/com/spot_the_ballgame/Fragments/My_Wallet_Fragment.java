@@ -46,8 +46,8 @@ import com.spot_the_ballgame.Interface.APIInterface;
 import com.spot_the_ballgame.Interface.Factory;
 import com.spot_the_ballgame.Model.Category_Model;
 import com.spot_the_ballgame.Navigation_Drawer_Act;
+import com.spot_the_ballgame.Offer_Wall_Act;
 import com.spot_the_ballgame.R;
-import com.spot_the_ballgame.Reward_Video_Act;
 import com.spot_the_ballgame.SessionSave;
 import com.spot_the_ballgame.Toast_Message;
 import com.spot_the_ballgame.Transaction_Act;
@@ -299,7 +299,8 @@ public class My_Wallet_Fragment extends Fragment implements View.OnClickListener
                 if (!isNetworkAvaliable()) {
                     registerInternetCheckReceiver();
                 } else {
-                    Intent intent_01 = new Intent(getActivity(), Reward_Video_Act.class);
+                    Intent intent_01 = new Intent(getActivity(), Offer_Wall_Act.class);
+//                    Intent intent_01 = new Intent(getActivity(), Reward_Video_Act.class);
                     intent_01.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent_01);
                 }

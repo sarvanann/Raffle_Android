@@ -72,6 +72,9 @@ public interface APIInterface {
     @POST("get_contest")
     Call<Category_Model> GET_CONTEST_CALL(@Header("content-type") String type, @Body String user, @Header("Authorization") String authtoken);
 
+    @POST("get_single_contest")
+    Call<Category_Model> GET_SINGLE_CONTEST_CALL(@Header("content-type") String type, @Body String user, @Header("Authorization") String authtoken);
+
     @POST("app_settings")
     Call<Category_Model> GET_APP_SETTINGS_DETAILS(@Header("Authorization") String authtoken);
 

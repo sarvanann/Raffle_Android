@@ -55,7 +55,13 @@
             android:value="true" />
 
         <activity android:name=".My_Contest_Act" />
-        <activity android:name=".My_Contest_History" />
+        <activity android:name=".My_Contest_History">
+            <intent-filter>
+                <action android:name="MYCONTESTHISTORYACTIVITY" />
+                <!--            <action android:name="com.spot_the_ballgame_TARGET_NOTIFICATION"/>-->
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Carousel_View_Act"
             android:screenOrientation="portrait"
@@ -96,11 +102,23 @@
             android:name=".Game_Act"
             android:noHistory="true"
             android:screenOrientation="landscape"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="LockedOrientationActivity">
+            <intent-filter>
+                <action android:name="GAMEACTIVITY" />
+                <!--            <action android:name="com.spot_the_ballgame_TARGET_NOTIFICATION"/>-->
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Game_Two_Act"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="LockedOrientationActivity">
+            <intent-filter>
+                <action android:name="GAMETWOACTIVITY" />
+                <!--            <action android:name="com.spot_the_ballgame_TARGET_NOTIFICATION"/>-->
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Registration.SignIn.Email_Sign_In_Act"
             android:screenOrientation="portrait"
@@ -182,7 +200,13 @@
         <activity
             android:name=".Transaction_Act"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="LockedOrientationActivity">
+            <intent-filter>
+                <action android:name="TRANSACTIONACTIVITY" />
+                <!--                <action android:name="com.spot_the_ballgame_TARGET_NOTIFICATION"/>-->
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".Native_Ads" /> <!-- This is for fabric key -->
         <meta-data
             android:name="io.♦.ApiKey"

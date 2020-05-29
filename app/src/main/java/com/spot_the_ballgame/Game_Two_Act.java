@@ -355,7 +355,8 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
         db = Objects.requireNonNull(Game_Two_Act.this).openOrCreateDatabase("Spottheball.db", Context.MODE_PRIVATE, null);
 
         str_auth_token = SessionSave.getSession("Token_value", Game_Two_Act.this);
-//        Log.e("authtoken_game2", str_auth_token);
+        str_contest_id = SessionSave.getSession("Session_str_contest_idd", Game_Two_Act.this);
+        Log.e("str_contest_id_game2", str_contest_id);
 
         String select = "select EMAIL,PHONENO from LOGINDETAILS where STATUS ='" + 1 + "'";
         Cursor cursor = db.rawQuery(select, null);
@@ -550,14 +551,18 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
 
 //            Log.e("str_end_time_game_2", str_end_time);
         }
-        if (str_prize_type.equalsIgnoreCase("Coin")) {
-            tv_prize_pool_details_icon.setBackground(getResources().getDrawable(R.drawable.coin_new));
-            tv_entry_fee_details_icon.setBackground(getResources().getDrawable(R.drawable.coin_new));
-        } else if (str_prize_type.equalsIgnoreCase("Cash") || str_prize_type.equalsIgnoreCase("Fee")) {
-            tv_prize_pool_details_icon.setBackground(getResources().getDrawable(R.drawable.rupee_indian));
-            tv_entry_fee_details_icon.setBackground(getResources().getDrawable(R.drawable.rupee_indian));
+        if (str_entry_fees != null) {
+            if (str_prize_type.equalsIgnoreCase("Coin")) {
+                tv_prize_pool_details_icon.setBackground(getResources().getDrawable(R.drawable.coin_new));
+                tv_entry_fee_details_icon.setBackground(getResources().getDrawable(R.drawable.coin_new));
+            } else if (str_prize_type.equalsIgnoreCase("Cash") || str_prize_type.equalsIgnoreCase("Fee")) {
+                tv_prize_pool_details_icon.setBackground(getResources().getDrawable(R.drawable.rupee_indian));
+                tv_entry_fee_details_icon.setBackground(getResources().getDrawable(R.drawable.rupee_indian));
+            }
+            if (str_entry_fees.equalsIgnoreCase("Free")) {
+                tv_entry_fee_details_icon.setVisibility(View.GONE);
+            }
         }
-
         /*
          *
          * 0-->Text
@@ -567,10 +572,12 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
          * 4-->STB
          *
          * */
+        if (str_question_type != null) {
 //        if (str_categories.equalsIgnoreCase("Trivia") || str_categories.equalsIgnoreCase("Prediction")) {
-        if (str_question_type.equals("0") || str_question_type.equals("3")) {
-            constraintLayout_image_plus_text_contest.setVisibility(View.GONE);
-            constraintLayout_trivia_text__plus_hint.setVisibility(View.VISIBLE);
+            if (str_question_type.equals("0") || str_question_type.equals("3")) {
+                constraintLayout_image_plus_text_contest.setVisibility(View.GONE);
+                constraintLayout_trivia_text__plus_hint.setVisibility(View.VISIBLE);
+            }
         }
         /*
          *
@@ -581,10 +588,12 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
          * 4-->STB
          *
          * */
+        if (str_question_type != null) {
 //        if (str_categories.equalsIgnoreCase("Trivia_Image")) {
-        if (str_question_type.equals("1")) {
-            constraintLayout_trivia_text__plus_hint.setVisibility(View.GONE);
-            constraintLayout_image_plus_text_contest.setVisibility(View.VISIBLE);
+            if (str_question_type.equals("1")) {
+                constraintLayout_trivia_text__plus_hint.setVisibility(View.GONE);
+                constraintLayout_image_plus_text_contest.setVisibility(View.VISIBLE);
+            }
         }
 
         /*
@@ -596,48 +605,58 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
          * 4-->STB
          *
          * */
+        if (str_question_type != null) {
 //        if (str_categories.equalsIgnoreCase("Prediction")) {
-        if (str_question_type.equals("3")) {
-            constraintLayout_country_flag_layout.setVisibility(View.VISIBLE);
-            tv_game_name.setVisibility(View.GONE);
+            if (str_question_type.equals("3")) {
+                constraintLayout_country_flag_layout.setVisibility(View.VISIBLE);
+                tv_game_name.setVisibility(View.GONE);
 
-            str_connect_host_image_01 = str_local_host + "" + str_team_a_path;
-            Glide.with(Game_Two_Act.this).load(str_connect_host_image_01)
-                    .thumbnail(Glide.with(Game_Two_Act.this).load(str_connect_host_image_01))
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(iv_first_country_flag);
+                str_connect_host_image_01 = str_local_host + "" + str_team_a_path;
+                Glide.with(Game_Two_Act.this).load(str_connect_host_image_01)
+                        .thumbnail(Glide.with(Game_Two_Act.this).load(str_connect_host_image_01))
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(iv_first_country_flag);
 
-            str_connect_host_image_02 = str_local_host + "" + str_team_b_path;
-            Glide.with(Game_Two_Act.this).load(str_connect_host_image_02)
-                    .thumbnail(Glide.with(Game_Two_Act.this).load(str_connect_host_image_02))
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(iv_second_country_flag);
-            tv_first_country_txt.setText(str_team_a_path_name_txt);
-            tv_second_country_txt.setText(str_team_b_path_name_txt);
-        } else {
-            tv_game_name.setVisibility(View.VISIBLE);
+                str_connect_host_image_02 = str_local_host + "" + str_team_b_path;
+                Glide.with(Game_Two_Act.this).load(str_connect_host_image_02)
+                        .thumbnail(Glide.with(Game_Two_Act.this).load(str_connect_host_image_02))
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(iv_second_country_flag);
+                tv_first_country_txt.setText(str_team_a_path_name_txt);
+                tv_second_country_txt.setText(str_team_b_path_name_txt);
+            } else {
+                tv_game_name.setVisibility(View.VISIBLE);
+            }
         }
-        try {
-            int_entry_fee = Integer.parseInt(str_entry_fees);
-            int_correct_ans = Integer.parseInt(str_correct_ans);
-            int_wrong_ans = Integer.parseInt(str_wrong_ans);
-            int_skip = Integer.parseInt(str_skip);
-        } catch (NumberFormatException nfe) {
-            nfe.printStackTrace();
+        if (str_entry_fees != null
+                || str_correct_ans != null
+                || str_wrong_ans != null
+                || str_skip != null) {
+            try {
+                int_entry_fee = Integer.parseInt(str_entry_fees);
+                int_correct_ans = Integer.parseInt(str_correct_ans);
+                int_wrong_ans = Integer.parseInt(str_wrong_ans);
+                int_skip = Integer.parseInt(str_skip);
+            } catch (NumberFormatException nfe) {
+                nfe.printStackTrace();
+            }
         }
 
-
-        tv_correct_ans_values.setText("+ " + str_correct_ans + " Points");
+        if (str_correct_ans != null
+                || str_wrong_ans != null
+                || str_skip != null) {
+            tv_correct_ans_values.setText("+ " + str_correct_ans + " Points");
 //        tv_wrong_ans_values.setText("- " + str_wrong_ans + " Points");
-        tv_wrong_ans_values.setText(str_wrong_ans + " Points");
-        tv_skip_points_values.setText(str_skip + " Points");
-
-
-        if (str_entry_fees.equalsIgnoreCase("Free")) {
-            tv_enter_contest_btn_for_free.setVisibility(View.VISIBLE);
-            tv_enter_contest_btn.setVisibility(View.GONE);
-            tv_watch_ads_btn.setVisibility(View.GONE);
-            constraintLayout_watch_ads_btn.setVisibility(View.GONE);
+            tv_wrong_ans_values.setText(str_wrong_ans + " Points");
+            tv_skip_points_values.setText(str_skip + " Points");
+        }
+        if (str_entry_fees != null) {
+            if (str_entry_fees.equalsIgnoreCase("Free")) {
+                tv_enter_contest_btn_for_free.setVisibility(View.VISIBLE);
+                tv_enter_contest_btn.setVisibility(View.GONE);
+                tv_watch_ads_btn.setVisibility(View.GONE);
+                constraintLayout_watch_ads_btn.setVisibility(View.GONE);
+            }
         }
 
         /*
@@ -649,154 +668,169 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
          * 4-->STB
          *
          * */
+        if (str_question_type != null) {
 //        if (str_categories.equalsIgnoreCase("Prediction")) {
-        if (str_question_type.equals("3")) {
-            tv_hint_text.setVisibility(View.VISIBLE);
-            iv_hint_icon.setVisibility(View.VISIBLE);
-        } else {
-            tv_hint_text.setVisibility(View.GONE);
-            iv_hint_icon.setVisibility(View.GONE);
+            if (str_question_type.equals("3")) {
+                tv_hint_text.setVisibility(View.VISIBLE);
+                iv_hint_icon.setVisibility(View.VISIBLE);
+            } else {
+                tv_hint_text.setVisibility(View.GONE);
+                iv_hint_icon.setVisibility(View.GONE);
+            }
         }
 
 
-        if (str_status_onclick.equals("2")) {
-            tv_enter_contest_btn_for_free.setVisibility(View.GONE);
-            constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
-            constraintLayout_watch_ads_btn.setVisibility(View.GONE);
-            tv_enter_contest_btn.setVisibility(View.GONE);
+        if (str_status_onclick != null) {
+            if (str_status_onclick.equals("2")) {
+                tv_enter_contest_btn_for_free.setVisibility(View.GONE);
+                constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                constraintLayout_watch_ads_btn.setVisibility(View.GONE);
+                tv_enter_contest_btn.setVisibility(View.GONE);
+            }
         }
 
-
-        int_2x_onclick_count = Integer.parseInt(str_2x_powerup);
-        tv_2x_power_up.setText(str_2x_powerup);
-        tv_time_limit_sec_txt.setText(str_seconds + "s");
-
-        tv_game_name.setText(str_game_name);
-        tv_prize_amount_game_details.setText(str_prize_amount);
-        tv_entry_fee_details.setText(String.valueOf(str_entry_fees));
-        str_connect_host_image = str_local_host + "" + str_imagepath;
-        Glide.with(Game_Two_Act.this).load(str_connect_host_image)
-                .thumbnail(Glide.with(Game_Two_Act.this).load(str_connect_host_image))
-                .apply(RequestOptions.circleCropTransform())
-                .into(iv_categoires_image_game_two_act);
-
-        if (str_entry_fees.equalsIgnoreCase("Free")) {
-            tv_enter_contest_btn_for_free.setText("Contest Loading");
+        if (str_2x_powerup != null || str_seconds != null) {
+            int_2x_onclick_count = Integer.parseInt(str_2x_powerup);
+            tv_2x_power_up.setText(str_2x_powerup);
+            tv_time_limit_sec_txt.setText(str_seconds + "s");
         }
+        if (str_game_name != null
+                || str_prize_amount != null
+                || str_entry_fees != null
+                || str_imagepath != null) {
+            tv_game_name.setText(str_game_name);
+            tv_prize_amount_game_details.setText(str_prize_amount);
+            tv_entry_fee_details.setText(String.valueOf(str_entry_fees));
+            str_connect_host_image = str_local_host + "" + str_imagepath;
+            Glide.with(Game_Two_Act.this).load(str_connect_host_image)
+                    .thumbnail(Glide.with(Game_Two_Act.this).load(str_connect_host_image))
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(iv_categoires_image_game_two_act);
+        }
+        if (str_entry_fees != null) {
+            if (str_entry_fees.equalsIgnoreCase("Free")) {
+                tv_enter_contest_btn_for_free.setText("Contest Loading");
+            }
+            if (str_entry_fees.equalsIgnoreCase("Free")) {
+                tv_just_a_moment.stop();
+                interstitialAd.setAdListener(new AdListener() {
+                    @Override
+                    public void onAdLoaded() {
+                        tv_enter_contest_btn_for_free.setText(R.string.play_for_free_txt);
+                    }
 
-        if (str_entry_fees.equalsIgnoreCase("Free")) {
-            tv_just_a_moment.stop();
-            interstitialAd.setAdListener(new AdListener() {
-                @Override
-                public void onAdLoaded() {
-                    tv_enter_contest_btn_for_free.setText(R.string.play_for_free_txt);
-                }
+                    @Override
+                    public void onAdFailedToLoad(int errorCode) {
+                    }
 
-                @Override
-                public void onAdFailedToLoad(int errorCode) {
-                }
-
-                @Override
-                public void onAdClosed() {
-                    /*This method is used for setting play status value 1 or 2 if play status value is 1 means the contest is live , or else 2 means contest is completed*/
-                    int_play_status = 1;
-                    Getting_Update_Status_Details_Initial(int_play_status);
-                    startGame();
-                    mAdView.setVisibility(View.GONE);
-                    constraintLayout_game_details_screen_in_game_two.setVisibility(View.GONE);
-                    constraintLayout_just_a_moment_game_two.setVisibility(View.VISIBLE);
-                    tv_just_a_moment.restart();
-                    Glide.with(Game_Two_Act.this).asGif().load(R.drawable.ready_steady_go).into(iv_ready_steady_go_state);
-                    Get_Questions_Details();
+                    @Override
+                    public void onAdClosed() {
+                        /*This method is used for setting play status value 1 or 2 if play status value is 1 means the contest is live , or else 2 means contest is completed*/
+                        int_play_status = 1;
+                        Getting_Update_Status_Details_Initial(int_play_status);
+                        startGame();
+                        mAdView.setVisibility(View.GONE);
+                        constraintLayout_game_details_screen_in_game_two.setVisibility(View.GONE);
+                        constraintLayout_just_a_moment_game_two.setVisibility(View.VISIBLE);
+                        tv_just_a_moment.restart();
+                        Glide.with(Game_Two_Act.this).asGif().load(R.drawable.ready_steady_go).into(iv_ready_steady_go_state);
+                        Get_Questions_Details();
 //                    Get_User_Wallet_Details();
-                    handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            constraintLayout_game_screen_in_game_two.setVisibility(View.VISIBLE);
-                            if (!isNetworkAvaliable()) {
-                                registerInternetCheckReceiver();
-                            } else {
-                                startTimer(milliseconds);
+                        handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                constraintLayout_game_screen_in_game_two.setVisibility(View.VISIBLE);
+                                if (!isNetworkAvaliable()) {
+                                    registerInternetCheckReceiver();
+                                } else {
+                                    startTimer(milliseconds);
+                                }
                             }
-                        }
-                    }, 3500);
-                    constraintLayout_end_game_game_two.setVisibility(View.GONE);
-                }
-            });
+                        }, 3500);
+                        constraintLayout_end_game_game_two.setVisibility(View.GONE);
+                    }
+                });
 
+            }
         }
-        try {
-            milliseconds = Long.parseLong(str_seconds) * 1000 + 1;
-        } catch (NumberFormatException nfe) {
-            nfe.printStackTrace();
-        }
+        if (str_seconds != null) {
+            try {
+                milliseconds = Long.parseLong(str_seconds) * 1000 + 1;
+            } catch (NumberFormatException nfe) {
+                nfe.printStackTrace();
+            }
 
-
-        final String str_t2_game_two = str_end_time;
+            if (str_end_time != null) {
+                final String str_t2_game_two = str_end_time;
 //        Log.e("str_t2_game_two", str_t2_game_two);
 
-        /*Getting Current Time*/
-        Calendar calendar = Calendar.getInstance();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-M-dd hh:mm:ss");
-        mdformat.setTimeZone(TimeZone.getTimeZone("GMT"));
-        String strDate = mdformat.format(calendar.getTime());
+                /*Getting Current Time*/
+                Calendar calendar = Calendar.getInstance();
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-M-dd hh:mm:ss");
+                mdformat.setTimeZone(TimeZone.getTimeZone("GMT"));
+                String strDate = mdformat.format(calendar.getTime());
 
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd hh:mm:ss");
-        try {
-            current_system_time = mdformat.parse(strDate);
-            end_date_api = sdf.parse(str_t2_game_two);
-            different_milli_seconds = end_date_api.getTime() - current_system_time.getTime();
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd hh:mm:ss");
+                try {
+                    current_system_time = mdformat.parse(strDate);
+                    end_date_api = sdf.parse(str_t2_game_two);
+                    different_milli_seconds = end_date_api.getTime() - current_system_time.getTime();
 //            Log.e("diff_milli_sec_2", String.valueOf(different_milli_seconds));
-            if (different_milli_seconds < 0) {
-                if (str_status_onclick.equalsIgnoreCase("2")) {
-                    tv_game_end_time_game_details.setText("Played");
-                } else {
-                    tv_game_end_time_game_details.setText("Finished");
+                    if (different_milli_seconds < 0) {
+                        if (str_status_onclick != null) {
+                            if (str_status_onclick.equalsIgnoreCase("2")) {
+                                tv_game_end_time_game_details.setText("Played");
+                            } else {
+                                tv_game_end_time_game_details.setText("Finished");
+                            }
+                        }
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
 //        Log.e("str_status_onclick_2", str_status_onclick);
+        if (str_status_onclick != null) {
+            if (str_status_onclick.equalsIgnoreCase("2")) {
+                tv_game_end_time_game_details.setText("Played");
+            } else {
+                countDownTimer_game_details = new CountDownTimer(different_milli_seconds, 1000) {
+                    @TargetApi(Build.VERSION_CODES.N)
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        lng_seconds = millisUntilFinished;
+                        @SuppressLint("DefaultLocale") String s1 = String.format("%2d", lng_seconds).trim();
+                        @SuppressLint("DefaultLocale") String ss = String.format("%02d:%02d:%02d", lng_seconds / 60, lng_seconds % 60, 0);
 
-        if (str_status_onclick.equalsIgnoreCase("2")) {
-            tv_game_end_time_game_details.setText("Played");
-        } else {
-            countDownTimer_game_details = new CountDownTimer(different_milli_seconds, 1000) {
-                @TargetApi(Build.VERSION_CODES.N)
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    lng_seconds = millisUntilFinished;
-                    @SuppressLint("DefaultLocale") String s1 = String.format("%2d", lng_seconds).trim();
-                    @SuppressLint("DefaultLocale") String ss = String.format("%02d:%02d:%02d", lng_seconds / 60, lng_seconds % 60, 0);
-
-                    @SuppressLint("DefaultLocale") String hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millisUntilFinished),
-                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
-                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)));
+                        @SuppressLint("DefaultLocale") String hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millisUntilFinished),
+                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)));
 //                    System.out.println("HH_MM_SS:: " + hms);
 
 
-                    long secondsInMilli = 1000;
-                    long minutesInMilli = secondsInMilli * 60;
-                    long hoursInMilli = minutesInMilli * 60;
-                    long daysInMilli = hoursInMilli * 24;
+                        long secondsInMilli = 1000;
+                        long minutesInMilli = secondsInMilli * 60;
+                        long hoursInMilli = minutesInMilli * 60;
+                        long daysInMilli = hoursInMilli * 24;
 
-                    long elapsedDays = lng_seconds / daysInMilli;
-                    lng_seconds = lng_seconds % daysInMilli;
-                    if (elapsedDays == 1) {
-                        tv_game_end_time_game_details.setText(elapsedDays + " day left");
-                    } else if (elapsedDays > 1) {
-                        tv_game_end_time_game_details.setText(elapsedDays + " days left");
-                    } else {
-                        tv_game_end_time_game_details.setText(hms);
+                        long elapsedDays = lng_seconds / daysInMilli;
+                        lng_seconds = lng_seconds % daysInMilli;
+                        if (elapsedDays == 1) {
+                            tv_game_end_time_game_details.setText(elapsedDays + " day left");
+                        } else if (elapsedDays > 1) {
+                            tv_game_end_time_game_details.setText(elapsedDays + " days left");
+                        } else {
+                            tv_game_end_time_game_details.setText(hms);
+                        }
                     }
-                }
 
-                @Override
-                public void onFinish() {
-                }
-            }.start();
+                    @Override
+                    public void onFinish() {
+                    }
+                }.start();
+            }
         }
         if (!isNetworkAvaliable()) {
             registerInternetCheckReceiver();
@@ -843,31 +877,34 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
                                 int n11 = int_entry_fee - int_tv_points;
 //                                Log.e("n1111", String.valueOf(n11));
                                 tv_enter_contest_btn.setVisibility(View.GONE);
-                                if (str_status_onclick.equals("2")) {
-                                    constraintLayout_watch_ads_btn.setVisibility(View.GONE);
-                                    constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
-                                    tv_earn_coins.setVisibility(View.GONE);
-                                } else if (str_status_onclick.equals("0")) {
-                                    constraintLayout_watch_ads_btn.setVisibility(View.VISIBLE);
-                                    constraintLayout_watch_ads_btn_inside.setVisibility(View.VISIBLE);
-                                    tv_earn_coins.setVisibility(View.VISIBLE);
+                                if (str_status_onclick != null) {
+                                    if (str_status_onclick.equals("2")) {
+                                        constraintLayout_watch_ads_btn.setVisibility(View.GONE);
+                                        constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                                        tv_earn_coins.setVisibility(View.GONE);
+                                    } else if (str_status_onclick.equals("0")) {
+                                        constraintLayout_watch_ads_btn.setVisibility(View.VISIBLE);
+                                        constraintLayout_watch_ads_btn_inside.setVisibility(View.VISIBLE);
+                                        tv_earn_coins.setVisibility(View.VISIBLE);
+                                    }
                                 }
                                 tv_play_btn.setVisibility(View.GONE);
                                 tv_earn_coins.setText(String.valueOf(n11));
                                 tv_coins.setVisibility(View.VISIBLE);
                             } else {
-                                if (str_status_onclick.equals("2")) {
-                                    constraintLayout_watch_ads_btn.setVisibility(View.GONE);
-                                    tv_play_btn.setVisibility(View.GONE);
-                                    constraintLayout_watch_ads_btn.setBackground(getResources().getDrawable(R.drawable.game_list_bg_free_btn));
-                                    constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
-                                } else {
-                                    constraintLayout_watch_ads_btn.setVisibility(View.VISIBLE);
-                                    tv_play_btn.setVisibility(View.VISIBLE);
-                                    constraintLayout_watch_ads_btn.setBackground(getResources().getDrawable(R.drawable.game_list_bg_free_btn));
-                                    constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                                if (str_status_onclick != null) {
+                                    if (str_status_onclick.equals("2")) {
+                                        constraintLayout_watch_ads_btn.setVisibility(View.GONE);
+                                        tv_play_btn.setVisibility(View.GONE);
+                                        constraintLayout_watch_ads_btn.setBackground(getResources().getDrawable(R.drawable.game_list_bg_free_btn));
+                                        constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                                    } else {
+                                        constraintLayout_watch_ads_btn.setVisibility(View.VISIBLE);
+                                        tv_play_btn.setVisibility(View.VISIBLE);
+                                        constraintLayout_watch_ads_btn.setBackground(getResources().getDrawable(R.drawable.game_list_bg_free_btn));
+                                        constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                                    }
                                 }
-
                             }
                         }
                     } else if (response.code() == 401) {
@@ -914,29 +951,33 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
                                 int n11 = int_entry_fee - int_db_balance;
 //                            Log.e("n1111", String.valueOf(n11));
                                 tv_enter_contest_btn.setVisibility(View.GONE);
-                                if (str_status_onclick.equals("2")) {
-                                    constraintLayout_watch_ads_btn.setVisibility(View.GONE);
-                                    constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
-                                    tv_earn_coins.setVisibility(View.GONE);
-                                } else if (str_status_onclick.equals("0")) {
-                                    constraintLayout_watch_ads_btn.setVisibility(View.VISIBLE);
-                                    constraintLayout_watch_ads_btn_inside.setVisibility(View.VISIBLE);
-                                    tv_earn_coins.setVisibility(View.VISIBLE);
+                                if (str_status_onclick != null) {
+                                    if (str_status_onclick.equals("2")) {
+                                        constraintLayout_watch_ads_btn.setVisibility(View.GONE);
+                                        constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                                        tv_earn_coins.setVisibility(View.GONE);
+                                    } else if (str_status_onclick.equals("0")) {
+                                        constraintLayout_watch_ads_btn.setVisibility(View.VISIBLE);
+                                        constraintLayout_watch_ads_btn_inside.setVisibility(View.VISIBLE);
+                                        tv_earn_coins.setVisibility(View.VISIBLE);
+                                    }
                                 }
                                 tv_play_btn.setVisibility(View.GONE);
                                 tv_earn_coins.setText(String.valueOf(n11));
                                 tv_coins.setVisibility(View.VISIBLE);
                             } else {
-                                if (str_status_onclick.equals("2")) {
-                                    constraintLayout_watch_ads_btn.setVisibility(View.GONE);
-                                    tv_play_btn.setVisibility(View.GONE);
-                                    constraintLayout_watch_ads_btn.setBackground(getResources().getDrawable(R.drawable.game_list_bg_free_btn));
-                                    constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
-                                } else {
-                                    constraintLayout_watch_ads_btn.setVisibility(View.VISIBLE);
-                                    tv_play_btn.setVisibility(View.VISIBLE);
-                                    constraintLayout_watch_ads_btn.setBackground(getResources().getDrawable(R.drawable.game_list_bg_free_btn));
-                                    constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                                if (str_status_onclick != null) {
+                                    if (str_status_onclick.equals("2")) {
+                                        constraintLayout_watch_ads_btn.setVisibility(View.GONE);
+                                        tv_play_btn.setVisibility(View.GONE);
+                                        constraintLayout_watch_ads_btn.setBackground(getResources().getDrawable(R.drawable.game_list_bg_free_btn));
+                                        constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                                    } else {
+                                        constraintLayout_watch_ads_btn.setVisibility(View.VISIBLE);
+                                        tv_play_btn.setVisibility(View.VISIBLE);
+                                        constraintLayout_watch_ads_btn.setBackground(getResources().getDrawable(R.drawable.game_list_bg_free_btn));
+                                        constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                                    }
                                 }
                             }
                         }
@@ -1136,6 +1177,7 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
 
                                     Glide.with(Game_Two_Act.this).load(imagequestionsIntegerArrayList.get(0))
                                             .thumbnail(Glide.with(Game_Two_Act.this).load(str_team_a_path))
+                                            .apply(RequestOptions.placeholderOf(R.drawable.placeholder_screen).error(R.drawable.placeholder_screen))
                                             .into(iv_changing_image);
 
                                     if (tv_questions_in_image_plus_txt.getText().toString().length() >= 200) {
@@ -1151,12 +1193,14 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
                                  * 4-->STB
                                  *
                                  * */
+                                if (str_question_type != null) {
 //                                if (str_categories.equalsIgnoreCase("Trivia") || str_categories.equalsIgnoreCase("Prediction")) {
-                                if (str_question_type.equals("0") || str_question_type.equals("3")) {
-                                    tv_questions_in_game_two.setText(questionsIntegerArrayList.get(0));
+                                    if (str_question_type.equals("0") || str_question_type.equals("3")) {
+                                        tv_questions_in_game_two.setText(questionsIntegerArrayList.get(0));
 //                                    Log.e("qstn_length1", "" + tv_questions_in_game_two.getText().toString().length());
-                                    if (tv_questions_in_game_two.getText().toString().length() >= 200) {
-                                        tv_questions_in_game_two.setTextSize(12);
+                                        if (tv_questions_in_game_two.getText().toString().length() >= 200) {
+                                            tv_questions_in_game_two.setTextSize(12);
+                                        }
                                     }
                                 }
 
@@ -1440,15 +1484,18 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
                                          *
                                          * */
 //                                        if (str_categories.equalsIgnoreCase("Trivia_Image")) {
-                                        if (str_question_type.equals("1")) {
-                                            Glide.with(Game_Two_Act.this).load(imagequestionsIntegerArrayList.get(int_count_value))
-                                                    .thumbnail(Glide.with(Game_Two_Act.this).load(str_team_a_path))
-                                                    .into(iv_changing_image);
+                                        if (str_question_type != null) {
+                                            if (str_question_type.equals("1")) {
+                                                Glide.with(Game_Two_Act.this).load(imagequestionsIntegerArrayList.get(int_count_value))
+                                                        .thumbnail(Glide.with(Game_Two_Act.this).load(str_team_a_path))
+                                                        .apply(RequestOptions.placeholderOf(R.drawable.placeholder_screen).error(R.drawable.placeholder_screen))
+                                                        .into(iv_changing_image);
 
-                                            tv_questions_in_image_plus_txt.setText(questionsIntegerArrayList.get(int_count_value));
+                                                tv_questions_in_image_plus_txt.setText(questionsIntegerArrayList.get(int_count_value));
 //                                            Log.e("qstn_length2_tri_image", "" + tv_questions_in_image_plus_txt.getText().toString().length());
-                                            if (tv_questions_in_image_plus_txt.getText().toString().length() >= 200) {
-                                                tv_questions_in_image_plus_txt.setTextSize(12);
+                                                if (tv_questions_in_image_plus_txt.getText().toString().length() >= 200) {
+                                                    tv_questions_in_image_plus_txt.setTextSize(12);
+                                                }
                                             }
                                         }
                                         /*
@@ -1460,12 +1507,14 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
                                          * 4-->STB
                                          *
                                          * */
+                                        if (str_question_type != null) {
 //                                        if (str_categories.equalsIgnoreCase("Trivia") || str_categories.equalsIgnoreCase("Prediction")) {
-                                        if (str_question_type.equals("0") || str_question_type.equals("3")) {
-                                            tv_questions_in_game_two.setText(questionsIntegerArrayList.get(int_count_value));
+                                            if (str_question_type.equals("0") || str_question_type.equals("3")) {
+                                                tv_questions_in_game_two.setText(questionsIntegerArrayList.get(int_count_value));
 //                                            Log.e("qstn_length2", "" + tv_questions_in_game_two.getText().toString().length());
-                                            if (tv_questions_in_game_two.getText().toString().length() >= 200) {
-                                                tv_questions_in_game_two.setTextSize(12);
+                                                if (tv_questions_in_game_two.getText().toString().length() >= 200) {
+                                                    tv_questions_in_game_two.setTextSize(12);
+                                                }
                                             }
                                         }
 
@@ -1535,6 +1584,7 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
                                         int_correct_ans_notations = 1;
 //                                        Log.e("onfinish_01", "" + int_onclcik_2x_power_up);
                                         int int_2x_powerup = 0;
+                                        int_skip = Integer.parseInt(str_skip);
                                         Total_Result_Value_Method(int_2x_powerup, int_correct_ans, str_seconds, int_skip, int_correct_ans_notations, int_previous_page, str_onclick_string_answer_selection);
                                         str_onclick_time = tv_timer_seconds_count_game_two.getText().toString();
                                         startTimer(milliseconds);
@@ -1598,6 +1648,7 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
                                         int_correct_ans_notations = 1;
 //                                        Log.e("onfinish_02", "" + int_onclcik_2x_power_up);
                                         int int_2x_powerup = 0;
+                                        int_skip = Integer.parseInt(str_skip);
                                         Total_Result_Value_Method(int_2x_powerup, int_correct_ans, str_seconds, int_skip, int_correct_ans_notations, int_previous_page, str_onclick_string_answer_selection);
 
                                         int_onclcik_2x_power_up = 0;
@@ -2084,14 +2135,16 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
                 if (int_entry_fee > int_tv_points) {
                     int n11 = int_entry_fee - int_tv_points;
                     tv_enter_contest_btn.setVisibility(View.GONE);
-                    if (str_status_onclick.equals("2")) {
-                        constraintLayout_watch_ads_btn.setVisibility(View.GONE);
-                        constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
-                        tv_earn_coins.setVisibility(View.GONE);
-                    } else if (str_status_onclick.equals("0")) {
-                        constraintLayout_watch_ads_btn.setVisibility(View.VISIBLE);
-                        constraintLayout_watch_ads_btn_inside.setVisibility(View.VISIBLE);
-                        tv_earn_coins.setVisibility(View.VISIBLE);
+                    if (str_status_onclick != null) {
+                        if (str_status_onclick.equals("2")) {
+                            constraintLayout_watch_ads_btn.setVisibility(View.GONE);
+                            constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                            tv_earn_coins.setVisibility(View.GONE);
+                        } else if (str_status_onclick.equals("0")) {
+                            constraintLayout_watch_ads_btn.setVisibility(View.VISIBLE);
+                            constraintLayout_watch_ads_btn_inside.setVisibility(View.VISIBLE);
+                            tv_earn_coins.setVisibility(View.VISIBLE);
+                        }
                     }
                     tv_play_btn.setVisibility(View.GONE);
                     tv_earn_coins.setText(String.valueOf(n11));
@@ -2099,16 +2152,18 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
                     constraintLayout_rewarded_video.setVisibility(View.VISIBLE);
                     Get_Rewarded_Video_Method(savedInstanceState);
                 } else {
-                    if (str_status_onclick.equals("2")) {
-                        constraintLayout_watch_ads_btn.setVisibility(View.GONE);
-                        tv_play_btn.setVisibility(View.GONE);
-                        constraintLayout_watch_ads_btn.setBackground(getResources().getDrawable(R.drawable.game_list_bg_free_btn));
-                        constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
-                    } else {
-                        constraintLayout_watch_ads_btn.setVisibility(View.VISIBLE);
-                        tv_play_btn.setVisibility(View.VISIBLE);
-                        constraintLayout_watch_ads_btn.setBackground(getResources().getDrawable(R.drawable.game_list_bg_free_btn));
-                        constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                    if (str_status_onclick != null) {
+                        if (str_status_onclick.equals("2")) {
+                            constraintLayout_watch_ads_btn.setVisibility(View.GONE);
+                            tv_play_btn.setVisibility(View.GONE);
+                            constraintLayout_watch_ads_btn.setBackground(getResources().getDrawable(R.drawable.game_list_bg_free_btn));
+                            constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                        } else {
+                            constraintLayout_watch_ads_btn.setVisibility(View.VISIBLE);
+                            tv_play_btn.setVisibility(View.VISIBLE);
+                            constraintLayout_watch_ads_btn.setBackground(getResources().getDrawable(R.drawable.game_list_bg_free_btn));
+                            constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                        }
                     }
                     /*This method is used for setting play status value 1 or 2 if play status value is 1 means the contest is live , or else 2 means contest is completed*/
                     /*int_play_status = 1;
@@ -2455,32 +2510,34 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
                         dialog_fr_timer.dismiss();
                         countDownTimer.cancel();
                         JSONObject jsonObject = new JSONObject();
-                        if (str_question_type.equals("3")) {
-                            jsonObject.put("email", str_email);
-                            jsonObject.put("contest_id", str_contest_id);
-                            jsonObject.put("total_onclick_time", finalInt_sum_total_time);
-                            jsonObject.put("contest_answer", finalStr_selection_values);
-                            jsonObject.put("onclick_time", total_onclick_time_ArrayList.toString().replace("[", "").replace("]", ""));
-                            jsonObject.put("contest_2x", _2x_power_up_continous_update_to_api_ArrayList.toString().replace("[", "").replace("]", ""));
+                        if (str_question_type != null) {
+                            if (str_question_type.equals("3")) {
+                                jsonObject.put("email", str_email);
+                                jsonObject.put("contest_id", str_contest_id);
+                                jsonObject.put("total_onclick_time", finalInt_sum_total_time);
+                                jsonObject.put("contest_answer", finalStr_selection_values);
+                                jsonObject.put("onclick_time", total_onclick_time_ArrayList.toString().replace("[", "").replace("]", ""));
+                                jsonObject.put("contest_2x", _2x_power_up_continous_update_to_api_ArrayList.toString().replace("[", "").replace("]", ""));
 
-                            jsonObject.put("total_onclick_answer_values", int_difference_final_values);
-                            jsonObject.put("click_points_correct", "");
-                            jsonObject.put("click_points_skip", "");
-                            jsonObject.put("click_points_wrong", "");
-                            Log.e("IF_Total_Json_Values", jsonObject.toString());
-                        } else {
-                            jsonObject.put("email", str_email);
-                            jsonObject.put("contest_id", str_contest_id);
-                            jsonObject.put("total_onclick_time", finalInt_sum_total_time);
-                            jsonObject.put("contest_answer", finalStr_selection_values);
-                            jsonObject.put("onclick_time", total_onclick_time_ArrayList.toString().replace("[", "").replace("]", ""));
-                            jsonObject.put("contest_2x", _2x_power_up_continous_update_to_api_ArrayList.toString().replace("[", "").replace("]", ""));
+                                jsonObject.put("total_onclick_answer_values", int_difference_final_values);
+                                jsonObject.put("click_points_correct", "");
+                                jsonObject.put("click_points_skip", "");
+                                jsonObject.put("click_points_wrong", "");
+                                Log.e("IF_Total_Json_Values", jsonObject.toString());
+                            } else {
+                                jsonObject.put("email", str_email);
+                                jsonObject.put("contest_id", str_contest_id);
+                                jsonObject.put("total_onclick_time", finalInt_sum_total_time);
+                                jsonObject.put("contest_answer", finalStr_selection_values);
+                                jsonObject.put("onclick_time", total_onclick_time_ArrayList.toString().replace("[", "").replace("]", ""));
+                                jsonObject.put("contest_2x", _2x_power_up_continous_update_to_api_ArrayList.toString().replace("[", "").replace("]", ""));
 
-                            jsonObject.put("click_points_correct", total_onclick_correct_answer_values_ArrayList.toString().replace("[", "").replace("]", ""));
-                            jsonObject.put("click_points_skip", total_skip_values_ArrayList.toString().replace("[", "").replace("]", ""));
-                            jsonObject.put("click_points_wrong", total_onclick_wrong_answer_values_ArrayList.toString().replace("[", "").replace("]", ""));
-                            jsonObject.put("total_onclick_answer_values", int_difference_final_values);
-                            Log.e("ELSE_Total_Json_Values", jsonObject.toString());
+                                jsonObject.put("click_points_correct", total_onclick_correct_answer_values_ArrayList.toString().replace("[", "").replace("]", ""));
+                                jsonObject.put("click_points_skip", total_skip_values_ArrayList.toString().replace("[", "").replace("]", ""));
+                                jsonObject.put("click_points_wrong", total_onclick_wrong_answer_values_ArrayList.toString().replace("[", "").replace("]", ""));
+                                jsonObject.put("total_onclick_answer_values", int_difference_final_values);
+                                Log.e("ELSE_Total_Json_Values", jsonObject.toString());
+                            }
                         }
 //                        Getting_Update_Status_Details();
                         APIInterface apiInterface = Factory.getClient();
@@ -2747,16 +2804,18 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
                                 constraintLayout_game_screen_in_game_two.setVisibility(View.GONE);
                             } else {
 //                                recreate();
-                                if (str_status_onclick.equals("2")) {
-                                    constraintLayout_watch_ads_btn.setVisibility(View.GONE);
-                                    tv_play_btn.setVisibility(View.GONE);
-                                    constraintLayout_watch_ads_btn.setBackground(getResources().getDrawable(R.drawable.game_list_bg_free_btn));
-                                    constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
-                                } else {
-                                    constraintLayout_watch_ads_btn.setVisibility(View.VISIBLE);
-                                    tv_play_btn.setVisibility(View.VISIBLE);
-                                    constraintLayout_watch_ads_btn.setBackground(getResources().getDrawable(R.drawable.game_list_bg_free_btn));
-                                    constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                                if (str_status_onclick != null) {
+                                    if (str_status_onclick.equals("2")) {
+                                        constraintLayout_watch_ads_btn.setVisibility(View.GONE);
+                                        tv_play_btn.setVisibility(View.GONE);
+                                        constraintLayout_watch_ads_btn.setBackground(getResources().getDrawable(R.drawable.game_list_bg_free_btn));
+                                        constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                                    } else {
+                                        constraintLayout_watch_ads_btn.setVisibility(View.VISIBLE);
+                                        tv_play_btn.setVisibility(View.VISIBLE);
+                                        constraintLayout_watch_ads_btn.setBackground(getResources().getDrawable(R.drawable.game_list_bg_free_btn));
+                                        constraintLayout_watch_ads_btn_inside.setVisibility(View.GONE);
+                                    }
                                 }
                             }
                             if (int_rewarded_coins_point != 10) {
@@ -2841,6 +2900,7 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
         constraintLayout_end_game_game_two.setVisibility(View.GONE);*/
     }
 
+    @SuppressLint("LongLogTag")
     private void Get_Points_Add_Delete_Details(String str_playby) {
         try {
             /*String select = "select BALANCE from LOGINDETAILS where STATUS ='" + 1 + "'";
@@ -2995,15 +3055,18 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
              * 4-->STB
              *
              * */
+            if (str_question_type != null) {
 //            if (str_categories.equalsIgnoreCase("Trivia_Image")) {
-            if (str_question_type.equals("1")) {
-                Glide.with(Game_Two_Act.this).load(imagequestionsIntegerArrayList.get(n1_1))
-                        .thumbnail(Glide.with(Game_Two_Act.this).load(str_team_a_path))
-                        .into(iv_changing_image);
-                tv_questions_in_image_plus_txt.setText(questionsIntegerArrayList.get(n1_1));
+                if (str_question_type.equals("1")) {
+                    Glide.with(Game_Two_Act.this).load(imagequestionsIntegerArrayList.get(n1_1))
+                            .thumbnail(Glide.with(Game_Two_Act.this).load(str_team_a_path))
+                            .apply(RequestOptions.placeholderOf(R.drawable.placeholder_screen).error(R.drawable.placeholder_screen))
+                            .into(iv_changing_image);
+                    tv_questions_in_image_plus_txt.setText(questionsIntegerArrayList.get(n1_1));
 //                Log.e("qstn_length3", "" + tv_questions_in_image_plus_txt.getText().toString().length());
-                if (tv_questions_in_image_plus_txt.getText().toString().length() >= 200) {
-                    tv_questions_in_image_plus_txt.setTextSize(12);
+                    if (tv_questions_in_image_plus_txt.getText().toString().length() >= 200) {
+                        tv_questions_in_image_plus_txt.setTextSize(12);
+                    }
                 }
             }
             /*
@@ -3015,12 +3078,14 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
              * 4-->STB
              *
              * */
+            if (str_question_type != null) {
 //            if (str_categories.equalsIgnoreCase("Trivia") || str_categories.equalsIgnoreCase("Prediction")) {
-            if (str_question_type.equals("0") || str_question_type.equals("3")) {
-                tv_questions_in_game_two.setText(questionsIntegerArrayList.get(n1_1));
+                if (str_question_type.equals("0") || str_question_type.equals("3")) {
+                    tv_questions_in_game_two.setText(questionsIntegerArrayList.get(n1_1));
 //                Log.e("qstn_length3", "" + tv_questions_in_game_two.getText().toString().length());
-                if (tv_questions_in_game_two.getText().toString().length() >= 200) {
-                    tv_questions_in_game_two.setTextSize(12);
+                    if (tv_questions_in_game_two.getText().toString().length() >= 200) {
+                        tv_questions_in_game_two.setTextSize(12);
+                    }
                 }
             }
 
@@ -3651,42 +3716,44 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
             dialog_fr_timer.dismiss();
             countDownTimer.cancel();
             JSONObject jsonObject = new JSONObject();
-            if (str_question_type.equals("3")) {
+            if (str_question_type != null) {
+                if (str_question_type.equals("3")) {
 //                Log.e("str_auth_token_if_wt", str_auth_token);
-                jsonObject.put("email", str_email);
-                jsonObject.put("contest_id", str_contest_id);
-                jsonObject.put("total_onclick_time", finalInt_sum_total_time);
-                jsonObject.put("total_onclick_answer_values", int_difference_onclick_values);
-                jsonObject.put("contest_answer", finalStr_selection_values);
-                jsonObject.put("onclick_time", total_onclick_time_ArrayList.toString().replace("[", "").replace("]", ""));
-                jsonObject.put("contest_2x", str_duplicate_2x_power_values);
+                    jsonObject.put("email", str_email);
+                    jsonObject.put("contest_id", str_contest_id);
+                    jsonObject.put("total_onclick_time", finalInt_sum_total_time);
+                    jsonObject.put("total_onclick_answer_values", int_difference_onclick_values);
+                    jsonObject.put("contest_answer", finalStr_selection_values);
+                    jsonObject.put("onclick_time", total_onclick_time_ArrayList.toString().replace("[", "").replace("]", ""));
+                    jsonObject.put("contest_2x", str_duplicate_2x_power_values);
                 /*jsonObject.put("click_points_correct", "");
                 jsonObject.put("click_points_skip", "");
                 jsonObject.put("click_points_wrong", "");*/
 
-                jsonObject.put("click_points_skip", duplicate_onclick_point_ArrayList.toString().replace("[", "").replace("]", ""));
-                jsonObject.put("click_points_wrong", total_onclick_wrong_answer_values_ArrayList.toString().replace("[", "").replace("]", ""));
-                jsonObject.put("click_points_correct", duplicate_correct_answerselection_ArrayList.toString().replace("[", "").replace("]", ""));
+                    jsonObject.put("click_points_skip", duplicate_onclick_point_ArrayList.toString().replace("[", "").replace("]", ""));
+                    jsonObject.put("click_points_wrong", total_onclick_wrong_answer_values_ArrayList.toString().replace("[", "").replace("]", ""));
+                    jsonObject.put("click_points_correct", duplicate_correct_answerselection_ArrayList.toString().replace("[", "").replace("]", ""));
 
 //              jsonObject.put("contest_2x", _2x_power_up_continous_update_to_api_ArrayList.toString().replace("[", "").replace("]", ""));
 //              jsonObject.put("click_points_correct", total_all_onclick_point_values_ArrayList.toString().replace("[", "").replace("]", "") + total_onclick_correct_answer_values_ArrayList.toString().replace("[", "").replace("]", ""));
 
-                Log.e("IF_Total_Json_Values_wt", jsonObject.toString());
-            } else {
-                Log.e("str_auth_token_else_wt", str_auth_token);
-                jsonObject.put("email", str_email);
-                jsonObject.put("contest_id", str_contest_id);
-                jsonObject.put("total_onclick_time", finalInt_sum_total_time);
-                jsonObject.put("total_onclick_answer_values", int_difference_onclick_values);
-                jsonObject.put("contest_answer", finalStr_selection_values);
-                jsonObject.put("onclick_time", total_onclick_time_ArrayList.toString().replace("[", "").replace("]", ""));
-                jsonObject.put("contest_2x", str_duplicate_2x_power_values);
-                jsonObject.put("click_points_skip", duplicate_onclick_point_ArrayList.toString().replace("[", "").replace("]", ""));
-                jsonObject.put("click_points_wrong", total_onclick_wrong_answer_values_ArrayList.toString().replace("[", "").replace("]", ""));
-                jsonObject.put("click_points_correct", duplicate_correct_answerselection_ArrayList.toString().replace("[", "").replace("]", ""));
+                    Log.e("IF_Total_Json_Values_wt", jsonObject.toString());
+                } else {
+                    Log.e("str_auth_token_else_wt", str_auth_token);
+                    jsonObject.put("email", str_email);
+                    jsonObject.put("contest_id", str_contest_id);
+                    jsonObject.put("total_onclick_time", finalInt_sum_total_time);
+                    jsonObject.put("total_onclick_answer_values", int_difference_onclick_values);
+                    jsonObject.put("contest_answer", finalStr_selection_values);
+                    jsonObject.put("onclick_time", total_onclick_time_ArrayList.toString().replace("[", "").replace("]", ""));
+                    jsonObject.put("contest_2x", str_duplicate_2x_power_values);
+                    jsonObject.put("click_points_skip", duplicate_onclick_point_ArrayList.toString().replace("[", "").replace("]", ""));
+                    jsonObject.put("click_points_wrong", total_onclick_wrong_answer_values_ArrayList.toString().replace("[", "").replace("]", ""));
+                    jsonObject.put("click_points_correct", duplicate_correct_answerselection_ArrayList.toString().replace("[", "").replace("]", ""));
 //              jsonObject.put("click_points_correct", total_all_onclick_point_values_ArrayList.toString().replace("[", "").replace("]", "") + total_onclick_correct_answer_values_ArrayList.toString().replace("[", "").replace("]", ""));
 //              jsonObject.put("contest_2x", _2x_power_up_continous_update_to_api_ArrayList.toString().replace("[", "").replace("]", ""));
-                Log.e("ELSE_Total_Json_Values_wt", jsonObject.toString());
+                    Log.e("ELSE_Total_Json_Values_wt", jsonObject.toString());
+                }
             }
 
             APIInterface apiInterface = Factory.getClient();
@@ -3784,6 +3851,7 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
         if (vibrator.hasVibrator()) {
             vibrator.cancel();
         }
+        unregisterReceiver(broadcastReceiver);
         /*This components are used for Rewarded video*/
         mRewardedVideoAd.destroy(this);
     }

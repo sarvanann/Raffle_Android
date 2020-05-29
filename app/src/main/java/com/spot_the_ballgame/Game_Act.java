@@ -439,7 +439,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                 Glide.with(Game_Act.this)
                         .load(imagequestionsIntegerArrayList.get(j))
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .apply(RequestOptions.placeholderOf(R.drawable.card_loading).error(R.drawable.card_loading))
+                        .apply(RequestOptions.placeholderOf(R.drawable.placeholder_screen_for_stb).error(R.drawable.placeholder_screen_for_stb))
                         .into(iv_changing_image);
             }
 
@@ -497,7 +497,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
             Glide.with(Game_Act.this)
                     .load(str_image_path)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .apply(RequestOptions.placeholderOf(R.drawable.card_loading).error(R.drawable.card_loading))
+                    .apply(RequestOptions.placeholderOf(R.drawable.placeholder_screen_for_stb).error(R.drawable.placeholder_screen_for_stb))
                     .into(iv_changing_image);
         }
         /*str_session_images = SessionSave.getSession("All_Image_File", Game_Act.this);
@@ -807,7 +807,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                                             Glide.with(Game_Act.this)
                                                     .load(imgFile_01.getAbsolutePath().replace("/ ", ""))
                                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                                    .apply(RequestOptions.placeholderOf(R.drawable.card_loading).error(R.drawable.card_loading))
+                                                    .apply(RequestOptions.placeholderOf(R.drawable.placeholder_screen_for_stb).error(R.drawable.placeholder_screen_for_stb))
                                                     .into(iv_changing_image);
                                         }
 
@@ -2218,7 +2218,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                 Log.e("imgFile_01_Screen_0ne", String.valueOf(imgFile_01));
                 Glide.with(Game_Act.this)
                         .load(imgFile_01.getAbsolutePath().replace("/ ", ""))
-                        .apply(RequestOptions.placeholderOf(R.drawable.card_loading).error(R.drawable.card_loading))
+                        .apply(RequestOptions.placeholderOf(R.drawable.placeholder_screen_for_stb).error(R.drawable.placeholder_screen_for_stb))
                         .into(iv_changing_image);
             }
 

@@ -69,14 +69,27 @@ public class Wallet_History_Adapter extends RecyclerView.Adapter<Wallet_History_
 
         holder.tv_play_via.setText(str_playby);
 
-        if (arrayList.get(position).playby.equalsIgnoreCase("coins")) {
-            holder.tv_negative_points_values.setVisibility(View.GONE);
-            holder.tv_plus_icon.setVisibility(View.VISIBLE);
-            holder.tv_points_values.setVisibility(View.VISIBLE);
-            holder.tv_plus_icon.setText(" - ");
-            holder.tv_points_values.setText(str_values_out);
-            holder.tv_plus_icon.setTextColor(context.getResources().getColor(R.color.new_ent_time_txt_color));
-            holder.tv_points_values.setTextColor(context.getResources().getColor(R.color.new_ent_time_txt_color));
+        if (arrayList.get(position).playby.equalsIgnoreCase("Coins")) {
+            if (str_values_in.equals("0")
+                    || str_values_out.equals("0")
+                    || str_values_in.equalsIgnoreCase("Free")
+                    || str_values_out.equalsIgnoreCase("Free")) {
+                holder.tv_negative_points_values.setVisibility(View.GONE);
+                holder.tv_plus_icon.setVisibility(View.GONE);
+                holder.tv_points_values.setVisibility(View.VISIBLE);
+                holder.tv_plus_icon.setText("");
+                holder.tv_points_values.setText("Free");
+                holder.tv_plus_icon.setTextColor(context.getResources().getColor(R.color.button_pressed));
+                holder.tv_points_values.setTextColor(context.getResources().getColor(R.color.button_pressed));
+            } else {
+                holder.tv_negative_points_values.setVisibility(View.GONE);
+                holder.tv_plus_icon.setVisibility(View.VISIBLE);
+                holder.tv_points_values.setVisibility(View.VISIBLE);
+                holder.tv_plus_icon.setText(" - ");
+                holder.tv_points_values.setText(str_values_out);
+                holder.tv_plus_icon.setTextColor(context.getResources().getColor(R.color.new_ent_time_txt_color));
+                holder.tv_points_values.setTextColor(context.getResources().getColor(R.color.new_ent_time_txt_color));
+            }
         }
 
         if (arrayList.get(position).playby.equalsIgnoreCase("Ads")) {

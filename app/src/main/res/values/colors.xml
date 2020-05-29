@@ -83,16 +83,38 @@
         <item>@color/dot_dark_screen3</item>
     </array>
 
+
+    <array name="array_dot_active_for_how_to_play">
+        <item>@color/dot_light_screen1</item>
+        <item>@color/dot_light_screen2</item>
+        <item>@color/dot_light_screen3</item>
+        <item>@color/dot_light_screen4</item>
+        <item>@color/dot_light_screen5</item>
+    </array>
+
+    <array name="array_dot_inactive_for_how_to_play">
+        <item>@color/dot_dark_screen1</item>
+        <item>@color/dot_dark_screen2</item>
+        <item>@color/dot_dark_screen3</item>
+        <item>@color/dot_dark_screen4</item>
+        <item>@color/dot_dark_screen5</item>
+    </array>
+
+
     <!-- dots inactive colors -->
     <color name="dot_dark_screen1">#282828</color>
     <color name="dot_dark_screen2">#282828</color>
     <color name="dot_dark_screen3">#282828</color>
+    <color name="dot_dark_screen4">#282828</color>
+    <color name="dot_dark_screen5">#282828</color>
 
 
     <!-- dots active colors -->
     <color name="dot_light_screen1">#FDD835</color>
     <color name="dot_light_screen2">#FDD835</color>
     <color name="dot_light_screen3">#FDD835</color>
+    <color name="dot_light_screen4">#FDD835</color>
+    <color name="dot_light_screen5">#FDD835</color>
     <!-- dots active colors -->
 
     <color name="history_grey_color">#B9B9B9</color>

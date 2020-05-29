@@ -376,7 +376,9 @@ public class Game_Details_Screen_Act extends AppCompatActivity implements View.O
             tv_prize_pool_details_icon.setBackground(getResources().getDrawable(R.drawable.rupee_indian));
             tv_entry_fee_details_coins.setBackground(getResources().getDrawable(R.drawable.rupee_indian));
         }
-
+        if (str_entry_fees.equalsIgnoreCase("Free")) {
+            tv_entry_fee_details_coins.setVisibility(View.GONE);
+        }
 
         try {
             int_entry_fee = Integer.parseInt(str_entry_fees);
