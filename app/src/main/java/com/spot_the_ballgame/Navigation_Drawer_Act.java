@@ -178,7 +178,7 @@ public class Navigation_Drawer_Act extends AppCompatActivity implements Navigati
         slideshow = (TextView) MenuItemCompat.getActionView(navigationView2.getMenu().
                 findItem(R.id.nav_contest));
 //This method will initialize the count value
-        initializeCountDrawer();
+//        initializeCountDrawer();
 
         tv_toolbar_left_arrow.setOnClickListener(new View.OnClickListener() {
             @Override

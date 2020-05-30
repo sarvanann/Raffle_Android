@@ -704,6 +704,7 @@ public class Game_Act extends AppCompatActivity implements View.OnClickListener 
                     tv_timer_seconds_count_game_one.setTextColor(getResources().getColor(R.color.white_color));
                     tv_timer_seconds_txt.setTextColor(getResources().getColor(R.color.white_color));
                 } else if (seconds == 3) {
+                    constraintLayout_count_down_timer_game_one.startAnimation(AnimationUtils.loadAnimation(Game_Act.this, R.anim.shake));
                     if (Build.VERSION.SDK_INT >= 26) {
                         vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
                     } else {

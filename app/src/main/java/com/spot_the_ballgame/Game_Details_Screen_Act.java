@@ -42,6 +42,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.adcolony.sdk.AdColony;
+import com.agrawalsuneet.dotsloader.loaders.LazyLoader;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -100,6 +101,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Game_Details_Screen_Act extends AppCompatActivity implements View.OnClickListener {
+    LazyLoader tv_contest_loading_library;
     private static final int SEND_STORAGE_PERMISSION_REQUEST_CODE = 1000;
     private static final String TAG = "TEST";
 
@@ -254,7 +256,7 @@ public class Game_Details_Screen_Act extends AppCompatActivity implements View.O
 
         Get_Wallet_Balance_Details_Without_Ad();
 
-
+        tv_contest_loading_library = findViewById(R.id.tv_contest_loading_library);
         constraintLayout_game_details_screen_in_game_two = findViewById(R.id.constraintLayout_game_details_screen_in_game_two);
         constraintLayout_just_a_moment_contest_one = findViewById(R.id.constraintLayout_just_a_moment_contest_one);
         constraintLayout_end_game_game_two = findViewById(R.id.constraintLayout_end_game_game_two);
@@ -453,7 +455,8 @@ public class Game_Details_Screen_Act extends AppCompatActivity implements View.O
         Get_Questions_Details();
 
         if (str_entry_fees.equalsIgnoreCase("Free")) {
-            tv_enter_contest_btn_for_free.setText("Contest Loading");
+            tv_enter_contest_btn_for_free.setText("Loading");
+            tv_contest_loading_library.setVisibility(View.VISIBLE);
         }
 
         if (str_entry_fees.equalsIgnoreCase("Free")) {
@@ -462,6 +465,7 @@ public class Game_Details_Screen_Act extends AppCompatActivity implements View.O
                 @Override
                 public void onAdLoaded() {
                     tv_enter_contest_btn_for_free.setText(R.string.play_for_free_txt);
+                    tv_contest_loading_library.setVisibility(View.GONE);
                 }
 
                 @Override

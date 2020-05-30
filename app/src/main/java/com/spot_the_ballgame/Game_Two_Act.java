@@ -28,17 +28,20 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.adcolony.sdk.AdColony;
+import com.agrawalsuneet.dotsloader.loaders.LazyLoader;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -106,6 +109,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Game_Two_Act extends AppCompatActivity implements View.OnClickListener {
+    LazyLoader tv_contest_loading_library;
     Fragment fragment;
     SQLiteDatabase db;
     ConstraintLayout constraintLayout_just_a_moment_game_two,
@@ -488,7 +492,7 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
         dialog_fr_timer.setContentView(R.layout.please_wait_lay);
         Objects.requireNonNull(dialog_fr_timer.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-
+        tv_contest_loading_library = findViewById(R.id.tv_contest_loading_library);
         /*These components are for Quiz game screen*/
         tv_ans_0_game_two = findViewById(R.id.tv_ans_0_game_two);
         tv_ans_1_game_two = findViewById(R.id.tv_ans_1_game_two);
@@ -709,7 +713,8 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
         }
         if (str_entry_fees != null) {
             if (str_entry_fees.equalsIgnoreCase("Free")) {
-                tv_enter_contest_btn_for_free.setText("Contest Loading");
+                tv_enter_contest_btn_for_free.setText("Loading");
+                tv_contest_loading_library.setVisibility(View.VISIBLE);
             }
             if (str_entry_fees.equalsIgnoreCase("Free")) {
                 tv_just_a_moment.stop();
@@ -717,6 +722,7 @@ public class Game_Two_Act extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onAdLoaded() {
                         tv_enter_contest_btn_for_free.setText(R.string.play_for_free_txt);
+                        tv_contest_loading_library.setVisibility(View.GONE);
                     }
 
                     @Override

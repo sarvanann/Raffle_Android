@@ -1826,6 +1826,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout66"
             app:layout_constraintVertical_bias="0.0" />
+
+        <com.agrawalsuneet.dotsloader.loaders.LazyLoader
+            android:id="@+id/tv_contest_loading_library"
+            android:layout_width="32dp"
+            android:layout_height="21dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.65"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout66"
+            app:lazyloader_dotsDist="3dp"
+            app:lazyloader_dotsRadius="3dp"
+            app:lazyloader_firstDotColor="@android:color/white"
+            app:lazyloader_interpolator="@android:anim/decelerate_interpolator"
+            app:lazyloader_secondDotColor="@android:color/white"
+            app:lazyloader_thirdDotColor="@android:color/white" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
